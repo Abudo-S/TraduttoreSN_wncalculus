@@ -5,6 +5,7 @@
  */
 package Scanner;
 
+import java.util.ArrayList;
 import org.w3c.dom.*;
 
 /**
@@ -15,10 +16,11 @@ import org.w3c.dom.*;
 //parent
 public class ElementScanner {
     protected static Document doc;
-    protected Element element;
+    protected ArrayList<Element> element_tags;
     
     public ElementScanner(final Document doc){
-        ElementScanner.doc = doc;     
+        ElementScanner.doc = doc;  
+        this.element_tags = new ArrayList<>();
     }
     
     public void Scan_element(String object_tag){
@@ -28,7 +30,7 @@ public class ElementScanner {
              for(int i=0; i<object_list.getLength();i++){
                 Node node_of_element  = object_list.item(i);
                 if(node_of_element.getNodeType() == Node.ELEMENT_NODE){
-                    this.element = (Element) node_of_element;
+                    this.element_tags.add((Element) node_of_element);
                 }
              }   
         }catch(Exception e){
@@ -36,12 +38,22 @@ public class ElementScanner {
         }
     }
     
-    public String get_element_name(){
-        return this.element.getAttribute("id"); // id should have object's name
+    public String[] get_element_names() throws NullPointerException{
+         int size = this.element_tags.size(); 
+         String[] names = new String[size]; 
+         
+         if(size == 0){
+             throw new NullPointerException("");
+         } 
+         for(var i = 0; i < element_tags.size(); i++){
+            names[i] = element_tags.get(i).getAttribute("id"); // id should have object's name
+         }
+         
+         return names;
     }
     
-    public Element get_element_tag(){
-        return this.element;
+    public ArrayList<Element> get_element_tags(){
+        return this.element_tags;
     }
     
 }
