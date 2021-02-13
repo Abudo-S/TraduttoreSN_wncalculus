@@ -15,7 +15,7 @@ import org.w3c.dom.*;
 //parent
 public class ElementScanner {
     protected static Document doc;
-    protected String element_name;
+    protected Element element;
     
     public ElementScanner(final Document doc){
         ElementScanner.doc = doc;     
@@ -28,8 +28,7 @@ public class ElementScanner {
              for(int i=0; i<object_list.getLength();i++){
                 Node node_of_element  = object_list.item(i);
                 if(node_of_element.getNodeType() == Node.ELEMENT_NODE){
-                    Element colour_class = (Element) node_of_element;
-                    this.element_name = colour_class.getAttribute("id"); // id should have object's name
+                    this.element = (Element) node_of_element;
                 }
              }   
         }catch(Exception e){
@@ -38,7 +37,11 @@ public class ElementScanner {
     }
     
     public String get_element_name(){
-        return this.element_name;
+        return this.element.getAttribute("id"); // id should have object's name
+    }
+    
+    public Element get_element_tag(){
+        return this.element;
     }
     
 }
