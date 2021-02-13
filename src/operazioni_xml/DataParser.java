@@ -1,25 +1,33 @@
-///*
-// * To change this license header, choose License Headers in Project Properties.
-// * To change this template file, choose Tools | Templates
-// * and open the template in the editor.
-// */
-//package operazioni_xml;
-//
-//import java.util.ArrayList;
-//import struttura_sn.*;
-//
-///**
-// *
-// * @author dell
-// */
-//public class DataParser {
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package operazioni_xml;
+
+import java.util.ArrayList;
+import struttura_sn.*;
+
+/**
+ *
+ * @author dell
+ */
+public class DataParser {
 //    
 //    private static SN sn;
 //    
 //    public DataParser(SN sn){
 //        DataParser.sn = sn;
 //    }
-//     
+      
+      public void add_ColorClass(String class_name, int start, int end, boolean circular){
+        
+      }
+      
+      public void add_ColorClass(String class_name, ArrayList token_names, boolean circular){
+          
+      }
+      
 //    public void add_colourClass(String class_name, String[] available_tokens, boolean circular){
 //        sn.add_colourClass(new ColourClass(class_name, available_tokens, circular));
 //    }
@@ -227,4 +235,4 @@
 //    public SN get_sn(){
 //        return sn;
 //    }
-//}
+}

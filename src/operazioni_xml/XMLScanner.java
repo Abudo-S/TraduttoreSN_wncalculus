@@ -1,25 +1,25 @@
-///*
-// * To change this license header, choose License Headers in Project Properties.
-// * To change this template file, choose Tools | Templates
-// * and open the template in the editor.
-// */
-//package operazioni_xml;
-//
-//import javax.xml.parsers.*;
-//import org.w3c.dom.*;
-//import java.io.*;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-//import org.xml.sax.SAXException;
-//import struttura_sn.SN;
-//
-///**
-// *
-// * @author dell
-// */
-//
-////singleton class
-//public class XMLScanner {
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package operazioni_xml;
+
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.xml.sax.SAXException;
+import struttura_sn.SN;
+
+/**
+ *
+ * @author dell
+ */
+
+//singleton class
+public class XMLScanner {
 //    //Guard: \s*(!)?[(]*\s*[(]*predicate[)]*\s*[)]*(([&]{2}|[|]{2})[(]*\s*[(]*predicate[)]*\s*[)]*)*[)]*\s*
 //    //predicate: [(]*([_a-zA-Z]+[_a-zA-Z0-9]*)\s*(<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*)[)]*
 //    //Guard uses predicate:
@@ -62,4 +62,4 @@
 //    public void set_file_address(final String address){
 //        this.file_address = address;
 //    }
-//}
+}
