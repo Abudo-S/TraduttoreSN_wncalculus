@@ -7,6 +7,7 @@ package Scanner;
 
 import static Scanner.ElementScanner.dp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,16 +28,19 @@ public class ColorClass_scanner extends ElementScanner{
          
         if(color_class.getElementsByTagName("finiteintrange").getLength()>0){
             this.scan_finiterange(color_class);
+            
         }else if(color_class.getElementsByTagName("finiteenumeration").getLength()>0){
             this.scan_finiteenumeration(color_class);
+            
         }else if(color_class.getElementsByTagName("partitionelement").getLength()>0){
             this.scan_partionedclass(color_class);
+            
         }else{
             throw new NullPointerException("Can't find color class type: " + this.get_element_name(color_class));
         }
     }
     
-    private void scan_finiterange(Element color_class){
+    private void scan_finiterange(Element color_class){ //namesort tag
         int rangStart, rangEnd;
         boolean circular = false;
         Node fing = color_class.getElementsByTagName("finiteintrange").item(0);
@@ -54,12 +58,12 @@ public class ColorClass_scanner extends ElementScanner{
         }
     }
     
-    private void scan_finiteenumeration(Element color_class){
+    private void scan_finiteenumeration(Element color_class){ //namesort tag
         boolean circular = false;
         NodeList finco_list = color_class.getElementsByTagName("feconstant");
         ArrayList<String> token_names = new ArrayList<>();
         
-        for(var i = 0; i < finco_list.getLength(); i++){
+        for(var i = 0; i< finco_list.getLength(); i++){
             Node finco = finco_list.item(i);
             if(finco.getNodeType() == Node.ELEMENT_NODE){
                 Element finiteenumeration = (Element) finco;
@@ -74,8 +78,49 @@ public class ColorClass_scanner extends ElementScanner{
         dp.add_ColorClass(this.get_element_name(color_class), token_names, circular);
     }
     
-    private void scan_partionedclass(Element color_class){ //partition tag
+    private void scan_partionedclass(Element color_class) throws NullPointerException{ //partition tag
+        NodeList partiel_list = color_class.getElementsByTagName("partitionelement");
+        HashMap<String, ArrayList<String>> subclasses = new HashMap<>(); //subclass_name -> subclass elements
         
+        for(var i = 0; i< partiel_list.getLength(); i++){
+            Node partiel = partiel_list.item(i);
+            
+            if(partiel.getNodeType() == Node.ELEMENT_NODE){
+                Element subclass = (Element) partiel;
+                NodeList subclass_tokens = subclass.getElementsByTagName("useroperator"); //finiteenumeration
+                ArrayList<String> subclass_elements = new ArrayList<>();
+                
+                for(var j = 0; j< subclass_tokens.getLength(); j++){
+                    Node subclass_token = subclass_tokens.item(j);
+                    
+                    if(subclass_token.getNodeType() == Node.ELEMENT_NODE){
+                        Element token = (Element) subclass_token;
+                        subclass_elements.add(token.getAttribute("declaration"));
+                    }
+                }
+                
+                if(subclass.getElementsByTagName("finiteintrange").getLength()>0){
+                    int rangStart, rangEnd;
+                    Node fing = color_class.getElementsByTagName("finiteintrange").item(0);
+        
+                    if(fing.getNodeType() == Node.ELEMENT_NODE){
+                        Element finiteintrange = (Element) fing;
+                        rangStart = Integer.parseInt(finiteintrange.getAttribute("start"));
+                        rangEnd = Integer.parseInt(finiteintrange.getAttribute("end"));
+                        //will be filtered in DataParser
+                        subclass_elements.add("lb=" + rangStart);
+                        subclass_elements.add("ub=" + rangEnd);
+                    }
+                }
+                
+                if(subclass_elements.isEmpty()){
+                    throw new NullPointerException("Can't create subclass " + subclass.getAttribute("id") + " without its elements!");
+                }
+                subclasses.put(subclass.getAttribute("id"), subclass_elements);
+            }
+        }
+        //call DataParser function to create color class of extracted data
+        dp.add_ColorClass(this.get_element_name(color_class), subclasses);
     }
 
 }

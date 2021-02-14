@@ -5,7 +5,7 @@
  */
 package operazioni_xml;
 
-import java.util.ArrayList;
+import java.util.*;
 import struttura_sn.*;
 
 /**
@@ -13,20 +13,23 @@ import struttura_sn.*;
  * @author dell
  */
 public class DataParser {
-//    
-//    private static SN sn;
-//    
-//    public DataParser(SN sn){
-//        DataParser.sn = sn;
-//    }
-      
-      public void add_ColorClass(String class_name, int start, int end, boolean circular){
+    private static SN sn = new SN();
+    
+    public DataParser(){
+       
+    }
+    
+    public void add_ColorClass(String class_name, int start, int end, boolean circular){
         
-      }
+    }
       
-      public void add_ColorClass(String class_name, ArrayList token_names, boolean circular){
+    public void add_ColorClass(String class_name, ArrayList token_names, boolean circular){
           
-      }
+    }
+    
+    public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses){
+          
+    }
       
 //    public void add_colourClass(String class_name, String[] available_tokens, boolean circular){
 //        sn.add_colourClass(new ColourClass(class_name, available_tokens, circular));
