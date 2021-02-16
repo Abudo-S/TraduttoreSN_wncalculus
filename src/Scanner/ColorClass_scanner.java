@@ -5,7 +5,7 @@
  */
 package Scanner;
 
-import static Scanner.ElementScanner.dp;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.w3c.dom.Document;
@@ -33,7 +33,7 @@ public class ColorClass_scanner extends ElementScanner{
             this.scan_finiteenumeration(color_class);
             
         }else if(color_class.getElementsByTagName("partitionelement").getLength()>0){
-            this.scan_partionedclass(color_class);
+            this.scan_partitionedclass(color_class);
             
         }else{
             throw new NullPointerException("Can't find color class type: " + this.get_element_name(color_class));
@@ -78,7 +78,7 @@ public class ColorClass_scanner extends ElementScanner{
         dp.add_ColorClass(this.get_element_name(color_class), token_names, circular);
     }
     
-    private void scan_partionedclass(Element color_class) throws NullPointerException{ //partition tag
+    private void scan_partitionedclass(Element color_class) throws NullPointerException{ //partition tag
         NodeList partiel_list = color_class.getElementsByTagName("partitionelement");
         HashMap<String, ArrayList<String>> subclasses = new HashMap<>(); //subclass_name -> subclass elements
         

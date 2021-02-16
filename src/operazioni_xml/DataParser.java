@@ -30,7 +30,10 @@ public class DataParser {
     public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses){
           
     }
-      
+    
+    public void add_Variable(String variable_name, String variable_type){
+        
+    }      
 //    public void add_colourClass(String class_name, String[] available_tokens, boolean circular){
 //        sn.add_colourClass(new ColourClass(class_name, available_tokens, circular));
 //    }
