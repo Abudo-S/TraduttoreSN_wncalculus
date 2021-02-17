@@ -22,7 +22,7 @@ public class Variable_scanner extends ElementScanner{
     @Override
     public void scan_info(Element Variable_element){
         
-        if(Variable_element.getElementsByTagName("finiteintrange").getLength()>0){
+        if(Variable_element.getElementsByTagName("usersort").getLength()>0){
             this.scan_variable_type(Variable_element);
         }else{
             throw new NullPointerException("Can't find variable type: " + this.get_element_name(Variable_element));
