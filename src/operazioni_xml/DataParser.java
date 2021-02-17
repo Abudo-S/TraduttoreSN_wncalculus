@@ -45,13 +45,18 @@ public class DataParser {
         //to be completed
     }
     
+    public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type
+        //uses add_Marking_colorclass()
+        //uses add_Marking_domain()
+    }
+    
     //tokens parameter will have 1d colors with their multiplicity
-    public void add_Marking_colorclass(String place_name, HashMap<Integer, String> tokens){ //for place of color class type
+    private void add_Marking_colorclass(String place_name, HashMap<Integer, String> tokens){ //for place of color class type
         //to be completed
     }
     
     //tokens parameter will have (n)d colors with their multiplicity
-    public void add_Marking_domain(String place_name, HashMap<Integer, String[]> tokens){ //for place of domain type of n dimension
+    private void add_Marking_domain(String place_name, HashMap<Integer, String[]> tokens){ //for place of domain type of n dimension
         //to be completed
     }
     
