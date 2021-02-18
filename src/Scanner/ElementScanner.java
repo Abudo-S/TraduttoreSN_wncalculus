@@ -64,6 +64,10 @@ public abstract class ElementScanner {
         return e.getAttribute("id"); // id should have object's name
     }
     
+    public Document get_document(){
+        return doc;
+    }
+    
     public void scan_info(Element element_tag) throws NullPointerException{}
     
 }

@@ -9,6 +9,7 @@ package Scanner;
  *
  * @author dell
  */
-public class Predicate_scanner {
+public class Predicate_scanner{
+    
     
 }

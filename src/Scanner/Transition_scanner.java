@@ -22,7 +22,7 @@ public class Transition_scanner extends ElementScanner{
     
     @Override
     public void scan_info(Element Transition_element){   
-        HashMap<String, String> guard = null; //guard has predicates with separators
+        HashMap<Boolean,HashMap<String, String>> guard = null; //guard has predicates with separators and each predicate might be inverted
         boolean invert_guard = false;
         
         if(Transition_element.getElementsByTagName("condition").getLength()>0){
@@ -33,8 +33,9 @@ public class Transition_scanner extends ElementScanner{
                guard = new HashMap<>();
                
                //acquire guard data
-               guard = Guard_scanner.scan_guard(guard_element);
-               invert_guard = Guard_scanner.scan_invert_guard(guard_element);
+               Guard_scanner g_sc = new Guard_scanner(this.get_document());
+               guard = g_sc.scan_guard(guard_element);
+               invert_guard = g_sc.scan_invert_guard(guard_element);
             }   
         }
         //call DataParser function to create Transition of extracted data

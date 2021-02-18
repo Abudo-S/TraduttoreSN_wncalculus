@@ -6,23 +6,32 @@
 package Scanner;
 
 import java.util.HashMap;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  *
  * @author dell
  */
-public class Guard_scanner {
+public class Guard_scanner extends ElementScanner{
     
+    public Guard_scanner(final Document doc){
+        super(doc);
+    }
     
-    public static HashMap<String, String> scan_guard(Element Guard_element){
+    public HashMap<Boolean,HashMap<String, String>> scan_guard(Element Guard_element){
         //to be completed
         return null;
     }
     
-     public static boolean scan_invert_guard(Element Guard_element){
+    public boolean scan_invert_guard(Element Guard_element){
         //to be completed
         return false;
+    }
+    
+    public HashMap<Boolean,HashMap<String, String>> scan_guard(String Guard){
+        //to be completed
+        return null;
     }
     
 }
