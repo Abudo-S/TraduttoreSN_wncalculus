@@ -60,6 +60,10 @@ public class DataParser {
         //to be completed
     }
     
+    public void add_Transition(String Transition_name, HashMap<String, String> guard, boolean invert_guard){ //predicates describe guard
+        //to be completed
+    }
+    
     
     public SN get_sn(){
         return sn;
