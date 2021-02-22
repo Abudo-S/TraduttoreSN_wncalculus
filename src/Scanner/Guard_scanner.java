@@ -16,6 +16,17 @@ import org.w3c.dom.Node;
  * @author dell
  */
 public class Guard_scanner extends ElementScanner{
+    private static final String str_rx_guard = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*"
+                                             + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
+                                             + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)(\\s*(&amp;&amp;|[|]{2})(\\s*[(]*\\s*"
+                                             + "([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
+                                             + "([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*))*";
+    
+    private static final String str_rx_predicate = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*"
+                                                 + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
+                                                 + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)";
+
+    private static final String str_rx_separator = "(&amp;&amp;|[|]{2})";
     
     public Guard_scanner(final Document doc){
         super(doc);
@@ -57,19 +68,12 @@ public class Guard_scanner extends ElementScanner{
         LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = new LinkedHashMap<>();
         try{            
             // (inverted)predicates with their separators
-            String str_rx_guard = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
-                                + "([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*[)]*\\s*)(\\s*(&amp;&amp;|[|]{2})(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*"
-                                + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*[)]*\\s*))*";
             Pattern p = Pattern.compile(str_rx_guard);
             Matcher m = p.matcher(Guard);
 
             if(!m.find()){
                 throw new RuntimeException("Can't match guard: " + Guard);
             }
-            String str_rx_predicate = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
-                                   + "([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*[)]*\\s*)";
-
-            String str_rx_separator = "(&amp;&amp;|[|]{2})";
 
             p = Pattern.compile(str_rx_predicate);
             m = p.matcher(Guard);
