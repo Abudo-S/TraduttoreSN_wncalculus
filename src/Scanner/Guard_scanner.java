@@ -64,7 +64,7 @@ public class Guard_scanner extends ElementScanner{
             Matcher m = p.matcher(Guard);
 
             if(!m.find()){
-                throw new RuntimeException("Can't match guard:" + Guard);
+                throw new RuntimeException("Can't match guard: " + Guard);
             }
             String str_rx_predicate = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
                                    + "([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*[)]*\\s*)";
@@ -79,7 +79,8 @@ public class Guard_scanner extends ElementScanner{
             Predicate_scanner pd_sc = new Predicate_scanner();
             ArrayList<HashMap<ArrayList<String>, Boolean>> predicates= new ArrayList<>();
             ArrayList<String> separators = new ArrayList<>();
-
+            String separator;
+            
             while(m.find()){
 
                  if(m.find()){
@@ -88,10 +89,15 @@ public class Guard_scanner extends ElementScanner{
             }
 
             while(m1.find()){
-
-                 if(m1.find()){
-                    separators.add(m1.group(0));
-                 }
+                if(m1.find()){
+                    separator = m1.group(0);
+                    
+                    if(separator.equals("||")){
+                        separators.add("or");
+                    }else{
+                        separators.add("and");
+                    } 
+                }
             }
 
             for(int i = 0; i< predicates.size(); i++){
