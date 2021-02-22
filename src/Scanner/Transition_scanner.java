@@ -5,7 +5,9 @@
  */
 package Scanner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,7 +24,7 @@ public class Transition_scanner extends ElementScanner{
     
     @Override
     public void scan_info(Element Transition_element){   
-        HashMap<Boolean,HashMap<String, String>> guard = null; //guard has predicates with separators and each predicate might be inverted
+        LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = null; //guard has predicates with separators and each predicate might be inverted
         boolean invert_guard = false;
         
         if(Transition_element.getElementsByTagName("condition").getLength()>0){
@@ -30,7 +32,6 @@ public class Transition_scanner extends ElementScanner{
             
             if(cond_node.getNodeType() == Node.ELEMENT_NODE){
                Element guard_element = (Element) cond_node; 
-               guard = new HashMap<>();
                
                //acquire guard data
                Guard_scanner g_sc = new Guard_scanner(this.get_document());

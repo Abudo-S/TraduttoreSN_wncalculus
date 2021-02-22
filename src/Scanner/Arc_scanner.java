@@ -7,6 +7,7 @@ package Scanner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.regex.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,7 +37,7 @@ public class Arc_scanner extends ElementScanner{
     
     private void scan_arc(Element Arc_element){
         //arc expressions
-        ArrayList<HashMap<Boolean, HashMap<String, String>>> guards = new ArrayList<>();
+        ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards = new ArrayList<>();
         ArrayList<Boolean> invert_guards = new ArrayList<>();
         ArrayList<String[]> tuples_elements = new ArrayList<>();
         ArrayList<Integer> tuples_mult = new ArrayList<>();

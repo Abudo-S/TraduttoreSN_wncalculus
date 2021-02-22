@@ -5,9 +5,11 @@
  */
 package Scanner;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.regex.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -19,19 +21,112 @@ public class Guard_scanner extends ElementScanner{
         super(doc);
     }
     
-    public HashMap<Boolean,HashMap<String, String>> scan_guard(Element Guard_element){
-        //to be completed
-        return null;
+    public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(Element Guard_element){
+        String guard = this.get_guard_txt(Guard_element);           
+        guard = "[" + guard + "]";
+        //remove invert-guard
+        guard = guard.replaceFirst("\\s*[[]\\s*[!]\\s*[(]\\s*", "").replaceFirst("\\s*[)]\\s*[]]\\s*", guard);
+        
+        return this.scan_guard(guard);
     }
     
     public boolean scan_invert_guard(Element Guard_element){
-        //to be completed
+        String guard = this.get_guard_txt(Guard_element);  
+        guard = "[" + guard + "]";
+        Pattern p = Pattern.compile("\\s*[[]\\s*[!]\\s*[(]\\s*");
+        Matcher m = p.matcher(guard);
+        
+        if(m.find()){ //invert guard
+
+            return true;
+        }
+        
         return false;
     }
     
-    public HashMap<Boolean,HashMap<String, String>> scan_guard(String Guard){
-        //to be completed
-        return null;
+    public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(String Guard){  
+        if(Guard.isEmpty()){
+            throw new NullPointerException("Can't add an empty guard");
+        }
+        //predicates with their separators
+        return this.get_guard_map(Guard);
+    }
+    
+    //
+    private LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> get_guard_map(String Guard) throws RuntimeException{ //map of (not-)inverted predicates with their separators
+        LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = new LinkedHashMap<>();
+        try{            
+            // (inverted)predicates with their separators
+            String str_rx_guard = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
+                                + "([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*[)]*\\s*)(\\s*(&amp;&amp;|[|]{2})(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*"
+                                + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*[)]*\\s*))*";
+            Pattern p = Pattern.compile(str_rx_guard);
+            Matcher m = p.matcher(Guard);
+
+            if(!m.find()){
+                throw new RuntimeException("Can't match guard:" + Guard);
+            }
+            String str_rx_predicate = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
+                                   + "([_a-zA-Z]+[_a-zA-Z0-9]*)\\s*[)]*\\s*)";
+
+            String str_rx_separator = "(&amp;&amp;|[|]{2})";
+
+            p = Pattern.compile(str_rx_predicate);
+            m = p.matcher(Guard);
+            Pattern p1 = Pattern.compile(str_rx_separator);
+            Matcher m1 = p1.matcher(Guard);
+
+            Predicate_scanner pd_sc = new Predicate_scanner();
+            ArrayList<HashMap<ArrayList<String>, Boolean>> predicates= new ArrayList<>();
+            ArrayList<String> separators = new ArrayList<>();
+
+            while(m.find()){
+
+                 if(m.find()){
+                    predicates.add(pd_sc.scan_predicate(m.group(0)));
+                 }
+            }
+
+            while(m1.find()){
+
+                 if(m1.find()){
+                    separators.add(m1.group(0));
+                 }
+            }
+
+            for(int i = 0; i< predicates.size(); i++){
+                if(i != predicates.size()-1){
+                   guard.put(predicates.get(i), separators.get(i));
+                }else{
+                    guard.put(predicates.get(i), "");
+                }
+            }
+        }catch(Exception e){
+            System.out.println(e + " in Guard_scanner/get_guard_map()");
+        }    
+        
+        return guard;
+    }
+    
+    private String get_guard_txt(Element Guard_element){
+        Node guard_txt_n = Guard_element.getElementsByTagName("text").item(0);
+        
+        if(guard_txt_n.getNodeType() == Node.ELEMENT_NODE){
+           Element guard_txt = (Element) guard_txt_n;
+           return guard_txt.getTextContent();
+        }
+        
+        return "";
+    }
+    
+    @Override
+    public void scan_info(Element Guard_element){
+        LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String>  guardOfpredicates = this.scan_guard(Guard_element);
+        
+        for(Map.Entry ent : guardOfpredicates.entrySet()){
+          System.out.println("guard of predicates" + ent.getKey().toString() + "invert" + ent.getValue());
+        }
+        
     }
     
 }

@@ -60,15 +60,15 @@ public class DataParser {
         //to be completed
     }
     
-    //format: HashMap<Boolean,HashMap<String, String>> = HashMap<invert_predicate, HashMap<predicate, separator with next predicate if exists>>
+    //format: HashMap<HashMap<ArrayList, Boolean>, String> = HashMap<HashMap<(inverted)predicate with variables/operators, invert_predicate>, separator with next predicate if exists>
     //predicates describe guard and each predicate might be inverted
     //Note: last element in seperators will be null 
-    public void add_Transition(String Transition_name, HashMap<Boolean, HashMap<String, String>> guard, boolean invert_guard){
+    public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>  guard, boolean invert_guard){
         //to be completed
     }
     
     //an Arc can have array of guards related with tuples
-    public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<HashMap<Boolean, HashMap<String, String>>> guards,
+    public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         //to be completed
     }
