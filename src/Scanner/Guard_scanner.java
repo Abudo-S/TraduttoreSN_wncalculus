@@ -15,7 +15,10 @@ import org.w3c.dom.Node;
  *
  * @author dell
  */
+//singleton
 public class Guard_scanner extends ElementScanner{
+    private static Guard_scanner instance = null; 
+            
     private static final String str_rx_guard = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*"
                                              + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
                                              + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)(\\s*(&amp;&amp;|[|]{2})(\\s*[(]*\\s*"
@@ -28,7 +31,7 @@ public class Guard_scanner extends ElementScanner{
 
     private static final String str_rx_separator = "(&amp;&amp;|[|]{2})";
     
-    public Guard_scanner(final Document doc){
+    private Guard_scanner(final Document doc){
         super(doc);
     }
     
@@ -137,6 +140,15 @@ public class Guard_scanner extends ElementScanner{
           System.out.println("guard of predicates" + ent.getKey().toString() + "invert" + ent.getValue());
         }
         
+    }
+    
+    public static Guard_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new Guard_scanner(doc);
+        }
+        
+        return instance;
     }
     
 }
