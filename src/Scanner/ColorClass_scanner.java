@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
 public class ColorClass_scanner extends ElementScanner{
     private static ColorClass_scanner instance = null;
     
-    public ColorClass_scanner(final Document doc){
+    private ColorClass_scanner(final Document doc){
         super(doc);
     }
     

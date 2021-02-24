@@ -19,7 +19,7 @@ import org.w3c.dom.Node;
 public class Domain_scanner extends ElementScanner{
     private static Domain_scanner instance = null;
     
-    public Domain_scanner(final Document doc){
+    private Domain_scanner(final Document doc){
         super(doc);
     }
     

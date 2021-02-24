@@ -101,7 +101,7 @@ public class Arc_scanner extends ElementScanner{
                 
                 //guard of function/tuple
                 arc_expression_data[0] = arc_expression_data[0].replaceFirst("[[]", "");
-                Guard_scanner g_sc = new Guard_scanner(this.get_document()); 
+                Guard_scanner g_sc = Guard_scanner.get_instance(doc);
                 guards.add(g_sc.scan_guard(arc_expression_data[0])); 
                 
                 //extract tuple elements
