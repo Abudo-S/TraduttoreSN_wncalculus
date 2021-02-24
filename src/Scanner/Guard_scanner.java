@@ -83,7 +83,7 @@ public class Guard_scanner extends ElementScanner{
             Pattern p1 = Pattern.compile(str_rx_separator);
             Matcher m1 = p1.matcher(Guard);
 
-            Predicate_scanner pd_sc = new Predicate_scanner();
+            Predicate_scanner pd_sc = Predicate_scanner.get_instance();
             ArrayList<HashMap<ArrayList<String>, Boolean>> predicates= new ArrayList<>();
             ArrayList<String> separators = new ArrayList<>();
             String separator;

@@ -13,11 +13,18 @@ import java.util.regex.*;
  *
  * @author dell
  */
+//singleton
 public class Predicate_scanner{
+    private static Predicate_scanner instance = null;
     
     private static final String str_rx_predicate = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*"
                                                  + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
                                                  + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)";
+    
+    private Predicate_scanner(){
+        
+    }
+    
     //scans an/a (inverted)predicate as arraylist of operators and variables/constants
     public HashMap<ArrayList<String>,Boolean> scan_predicate(String predicate) throws RuntimeException{ //could be inverted
         if(!predicate.matches(str_rx_predicate)){
@@ -51,5 +58,14 @@ public class Predicate_scanner{
             return true;
         }
         return false;
+    }
+
+    public static Predicate_scanner get_instance(){
+        
+        if(instance == null){
+            instance = new Predicate_scanner();
+        }
+        
+        return instance;
     }
 } 
