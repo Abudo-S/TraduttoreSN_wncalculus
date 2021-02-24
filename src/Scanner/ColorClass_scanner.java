@@ -17,7 +17,9 @@ import org.w3c.dom.NodeList;
  *
  * @author dell
  */
+//singleton
 public class ColorClass_scanner extends ElementScanner{
+    private static ColorClass_scanner instance = null;
     
     public ColorClass_scanner(final Document doc){
         super(doc);
@@ -122,5 +124,13 @@ public class ColorClass_scanner extends ElementScanner{
         //call DataParser function to create color class of extracted data
         dp.add_ColorClass(this.get_element_name(color_class), subclasses);
     }
-
+    
+    public static ColorClass_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new ColorClass_scanner(doc);
+        }
+        
+        return instance;
+    }
 }
