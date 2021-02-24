@@ -16,7 +16,7 @@ import org.w3c.dom.*;
  */
 
 //parent
-public abstract class ElementScanner {
+public abstract class ElementScanner{
     
     protected static Document doc;
     protected ArrayList<Element> element_tags;
@@ -32,29 +32,31 @@ public abstract class ElementScanner {
         try {
             NodeList object_list = doc.getElementsByTagName(object_tag);
             
-             for(int i=0; i<object_list.getLength();i++){
+            for(int i=0; i<object_list.getLength();i++){
                 Node node_of_element  = object_list.item(i);
                 if(node_of_element.getNodeType() == Node.ELEMENT_NODE){
                     this.element_tags.add((Element) node_of_element);
                 }
-             }
-             if(this.element_tags.size() == 0){
+            }
+            
+            if(this.element_tags.size() == 0){
                 throw new NullPointerException("Can't found declaration of that type!");
-             } 
+            } 
+            
         }catch(Exception e){
             System.out.println(e + " in ElementScanner");
         }
     }
     
     public String[] get_element_names(){
-         int size = this.element_tags.size(); 
-         String[] names = new String[size]; 
+        int size = this.element_tags.size(); 
+        String[] names = new String[size]; 
  
-         for(var i = 0; i < size; i++){
+        for(var i = 0; i < size; i++){
             names[i] = element_tags.get(i).getAttribute("id"); // id should have object's name
-         }
+        }
          
-         return names;
+        return names;
     }
     
     public ArrayList<Element> get_element_tags(){

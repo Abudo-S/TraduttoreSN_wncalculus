@@ -17,9 +17,12 @@ import org.w3c.dom.Node;
  *
  * @author dell
  */
+//singleton
 public class Arc_scanner extends ElementScanner{
     
-    public Arc_scanner(final Document doc){
+    private static Arc_scanner instance = null;
+    
+    private Arc_scanner(final Document doc){
         super(doc);
     }
     
@@ -110,5 +113,14 @@ public class Arc_scanner extends ElementScanner{
         
         //call DataParser function to create Marking of extracted data
         dp.add_Arc(arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
+    }
+    
+    public static Arc_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new Arc_scanner(doc);
+        }
+        
+        return instance;
     }
 }
