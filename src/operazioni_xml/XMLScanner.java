@@ -61,6 +61,7 @@ public class XMLScanner {
         this.scan_variables();
         this.scan_places();
         this.scan_transitions();
+        this.scan_arcs();
     }
     
     private void scan_color_classes(){ //namesort && partition
@@ -117,7 +118,13 @@ public class XMLScanner {
     }
     
     private void scan_arcs(){ //arc
+        Arc_scanner a_scanner = Arc_scanner.get_instance(doc);
+        a_scanner.Scan_element("arc");
+        ArrayList<Element> elements = a_scanner.get_element_tags();
         
+        for(Element e : elements){
+            a_scanner.scan_info(e);
+        }
     }
     
     public void set_file_address(final String address){
