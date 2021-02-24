@@ -60,6 +60,7 @@ public class XMLScanner {
         this.scan_domains();
         this.scan_variables();
         this.scan_places();
+        this.scan_transitions();
     }
     
     private void scan_color_classes(){ //namesort && partition
@@ -106,7 +107,13 @@ public class XMLScanner {
     }
     
     private void scan_transitions(){ //transition
+        Transition_scanner t_scanner = Transition_scanner.get_instance(doc);
+        t_scanner.Scan_element("transition");
+        ArrayList<Element> elements = t_scanner.get_element_tags();
         
+        for(Element e : elements){
+            t_scanner.scan_info(e);
+        }
     }
     
     private void scan_arcs(){ //arc
