@@ -58,12 +58,14 @@ public class XMLScanner {
     public void scan_file_data(){
         this.scan_color_classes();
         this.scan_domains();
+        this.scan_variables();
     }
     
-    private void scan_color_classes(){ //namesort
+    private void scan_color_classes(){ //namesort && partition
         ColorClass_scanner cc_scanner = ColorClass_scanner.get_instance(doc);
         cc_scanner.Scan_element("namesort");
-        cc_scanner.remove_from_tags_list(); //reomve domains that have the same tag "namesort"
+        cc_scanner.remove_from_tags_list(); //remove domains that have the same tag "namesort"
+        cc_scanner.Scan_element("partition"); //add partitioned color classes
         ArrayList<Element> elements = cc_scanner.get_element_tags();
         
         for(Element e : elements){
@@ -74,7 +76,7 @@ public class XMLScanner {
     private void scan_domains(){ //namesort -> productsort
         Domain_scanner d_scanner = Domain_scanner.get_instance(doc);
         d_scanner.Scan_element("namesort");
-        d_scanner.remove_from_tags_list(); //reomve color classes that have the same tag "namesort"
+        d_scanner.remove_from_tags_list(); //remove color classes that have the same tag "namesort"
         ArrayList<Element> elements = d_scanner.get_element_tags();
         
         for(Element e : elements){
@@ -82,12 +84,14 @@ public class XMLScanner {
         }
     }
     
-    private void scan_partitioned_color_classes(){ //partition
-        
-    }
-    
     private void scan_variables(){ //variabledecl
+        Variable_scanner v_scanner = Variable_scanner.get_instance(doc);
+        v_scanner.Scan_element("variabledecl");
+        ArrayList<Element> elements = v_scanner.get_element_tags();
         
+        for(Element e : elements){
+            v_scanner.scan_info(e);
+        }
     }
     
     private void scan_places(){ //place
