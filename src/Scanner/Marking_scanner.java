@@ -15,10 +15,12 @@ import java.util.regex.*;
  *
  * @author dell
  */
+//singleton
 public class Marking_scanner extends ElementScanner{
     //marking tuple of tokens: (\d*)([_a-zA-Z0-9]+)([,]([_a-zA-Z0-9]+))*
+    private static Marking_scanner instance = null;
     
-    public Marking_scanner(final Document doc){
+    private Marking_scanner(final Document doc){
         super(doc);
     }
     
@@ -81,5 +83,14 @@ public class Marking_scanner extends ElementScanner{
         }
         // //call DataParser function to create Marking of extracted data
         dp.add_Marking(marking, tokens);
+    }
+    
+    public static Marking_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new Marking_scanner(doc);
+        }
+        
+        return instance;
     }
 }
