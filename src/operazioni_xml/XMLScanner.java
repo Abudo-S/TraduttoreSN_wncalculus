@@ -59,6 +59,7 @@ public class XMLScanner {
         this.scan_color_classes();
         this.scan_domains();
         this.scan_variables();
+        this.scan_places();
     }
     
     private void scan_color_classes(){ //namesort && partition
@@ -95,7 +96,13 @@ public class XMLScanner {
     }
     
     private void scan_places(){ //place
+        Place_scanner p_scanner = Place_scanner.get_instance(doc);
+        p_scanner.Scan_element("place");
+        ArrayList<Element> elements = p_scanner.get_element_tags();
         
+        for(Element e : elements){
+            p_scanner.scan_info(e);
+        }
     }
     
     private void scan_transitions(){ //transition
