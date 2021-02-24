@@ -15,7 +15,9 @@ import org.w3c.dom.Node;
  *
  * @author dell
  */
+//singleton
 public class Domain_scanner extends ElementScanner{
+    private static Domain_scanner instance = null;
     
     public Domain_scanner(final Document doc){
         super(doc);
@@ -44,5 +46,14 @@ public class Domain_scanner extends ElementScanner{
         }
         //call DataParser function to create Domain of extracted data
         dp.add_Domain(Domain_element.getAttribute("id"), classes);
+    }
+    
+    public static Domain_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new Domain_scanner(doc);
+        }
+        
+        return instance;
     }
 }
