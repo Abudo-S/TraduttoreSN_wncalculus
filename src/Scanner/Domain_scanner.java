@@ -48,6 +48,12 @@ public class Domain_scanner extends ElementScanner{
         dp.add_Domain(Domain_element.getAttribute("id"), classes);
     }
     
+    //remove color-class's declarations because they have the same tag "namesort" 
+    @Override
+    public void remove_from_tags_list(){
+        element_tags.removeIf(namesort -> namesort.getElementsByTagName("productsort").getLength() == 0); //remove from domain tags if it's a color class
+    }
+    
     public static Domain_scanner get_instance(Document doc){
         
         if(instance == null){

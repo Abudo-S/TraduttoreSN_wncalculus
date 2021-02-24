@@ -73,4 +73,6 @@ public abstract class ElementScanner{
     
     public void scan_info(Element element_tag) throws NullPointerException{}
     
+    public void remove_from_tags_list(){}
+    
 }

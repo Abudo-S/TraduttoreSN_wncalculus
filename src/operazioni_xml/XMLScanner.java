@@ -5,20 +5,17 @@
  */
 package operazioni_xml;
 
+import Scanner.*;
+import java.util.ArrayList;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
-import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.xml.sax.SAXException;
-import struttura_sn.SN;
 
 /**
  *
  * @author dell
  */
 
-//singleton class
+//singleton
 //will be a part of factory pattern
 public class XMLScanner {
 //    //Guard: \s*(!)?[(]*\s*[(]*predicate[)]*\s*[)]*(([&]{2}|[|]{2})[(]*\s*[(]*predicate[)]*\s*[)]*)*[)]*\s*
@@ -29,7 +26,7 @@ public class XMLScanner {
 //    ([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)(\s*(&amp;&amp;|[|]{2})(\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*
 //    (\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*(<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*))*
 //    */ 
-//    //tuple: //not used till now
+//    //tuple: //not used till now, combained in Arc_scanner
 //    /*
 //     [&lt;]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*
 //    ([,]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*)*[&gt;]
@@ -59,14 +56,43 @@ public class XMLScanner {
     }    
     
     public void scan_file_data(){
-        //namesort
+        this.scan_color_classes();
+
+    }
+    
+    private void scan_color_classes(){ //namesort
+        ColorClass_scanner cc_scanner = ColorClass_scanner.get_instance(doc);
+        cc_scanner.Scan_element("namesort");
+        cc_scanner.remove_from_tags_list();
+        ArrayList<Element> elements = cc_scanner.get_element_tags();
         
-        //namesort -> productsort
-        //partition
-        //variabledecl
-        //place
-        //transition
-        //arc
+        for(Element e : elements){
+            cc_scanner.scan_info(e);
+        }
+    }
+    
+    private void scan_domains(){ //namesort -> productsort
+        
+    }
+    
+    private void scan_partitioned_color_classes(){ //partition
+        
+    }
+    
+    private void scan_variables(){ //variabledecl
+        
+    }
+    
+    private void scan_places(){ //place
+        
+    }
+    
+    private void scan_transitions(){ //transition
+        
+    }
+    
+    private void scan_arcs(){ //arc
+        
     }
     
     public void set_file_address(final String address){
