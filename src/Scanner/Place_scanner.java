@@ -13,9 +13,11 @@ import org.w3c.dom.Node;
  *
  * @author dell
  */
+//singleton
 public class Place_scanner extends ElementScanner{
+    private static Place_scanner instance = null;
     
-    public Place_scanner(final Document doc){
+    private Place_scanner(final Document doc){
         super(doc);
     }
     
@@ -42,7 +44,7 @@ public class Place_scanner extends ElementScanner{
                 Node hlinscription = Place_element.getElementsByTagName("hlinscription").item(0);
                 
                 if(hlinscription.getNodeType() == Node.ELEMENT_NODE){
-                    Marking_scanner m = new Marking_scanner(doc);
+                    Marking_scanner m = Marking_scanner.get_instance(doc);
                     Element Marking_element = (Element) hlinscription;
                     m.scan_info(Marking_element);
                 }
@@ -50,5 +52,13 @@ public class Place_scanner extends ElementScanner{
             }
         }
     }
-    
+
+    public static Place_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new Place_scanner(doc);
+        }
+        
+        return instance;
+    }
 }
