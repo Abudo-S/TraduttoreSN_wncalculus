@@ -16,9 +16,11 @@ import org.w3c.dom.Node;
  *
  * @author dell
  */
+//singleton
 public class Transition_scanner extends ElementScanner{
+    private static Transition_scanner instance = null;
     
-    public Transition_scanner(final Document doc){
+    private Transition_scanner(final Document doc){
         super(doc);
     }
     
@@ -34,12 +36,21 @@ public class Transition_scanner extends ElementScanner{
                Element guard_element = (Element) cond_node; 
                
                //acquire guard data
-               Guard_scanner g_sc = new Guard_scanner(this.get_document());
+               Guard_scanner g_sc = Guard_scanner.get_instance(doc);
                guard = g_sc.scan_guard(guard_element);
                invert_guard = g_sc.scan_invert_guard(guard_element);
             }   
         }
         //call DataParser function to create Transition of extracted data
         dp.add_Transition(Transition_element.getAttribute("id"), guard, invert_guard);
+    }
+    
+    public static Transition_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new Transition_scanner(doc);
+        }
+        
+        return instance;
     }
 }
