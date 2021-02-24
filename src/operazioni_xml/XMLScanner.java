@@ -34,33 +34,36 @@ public class XMLScanner {
 //     [&lt;]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*
 //    ([,]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*)*[&gt;]
 //    */
-//    
-//    private static XMLScanner instance = null;
-//    private String file_address; 
-//    private DataParser dp;
-//    
-//    private XMLScanner() throws NullPointerException{ // xml file of pnml format
-//        this.dp = new DataParser(new SN());
-//        try{
-//            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder builder = factory.newDocumentBuilder();
-//            Document doc = builder.parse("CPN.pnml");
-//            if(this.file_address == null){
-//                throw new NullPointerException("pnml file address isn't acceptable!");
-//            }    
-//        }catch(Exception e){
-//            System.out.println(e + " in XMLScanner");
-//        }
-//    }
-//    
-//    public static XMLScanner get_instance(){
-//        if(instance == null){
-//            instance = new XMLScanner();
-//        }
-//        return instance;
-//    }
-//    
-//    public void set_file_address(final String address){
-//        this.file_address = address;
-//    }
+    
+    private static XMLScanner instance = null;
+    private String file_address; 
+    private DataParser dp;
+    
+    private XMLScanner() throws NullPointerException{ // xml file of pnml format
+        this.dp = DataParser.get_instance();
+        
+        try{
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("CPN.pnml");
+            if(this.file_address == null){
+                throw new NullPointerException("pnml file address isn't acceptable!");
+            }    
+        }catch(Exception e){
+            System.out.println(e + " in XMLScanner");
+        }
+    }
+    
+    public static XMLScanner get_instance(){
+        
+        if(instance == null){
+            instance = new XMLScanner();
+        }
+        
+        return instance;
+    }
+    
+    public void set_file_address(final String address){
+        this.file_address = address;
+    }
 }

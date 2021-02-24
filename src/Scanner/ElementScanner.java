@@ -20,11 +20,12 @@ public abstract class ElementScanner {
     
     protected static Document doc;
     protected ArrayList<Element> element_tags;
-    protected static DataParser dp = new DataParser();
+    protected static DataParser dp;
     
     public ElementScanner(final Document doc){
         ElementScanner.doc = doc;  
         this.element_tags = new ArrayList<>();
+        dp = DataParser.get_instance();
     }
     
     public void Scan_element(String object_tag)throws NullPointerException{

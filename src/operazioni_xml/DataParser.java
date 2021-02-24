@@ -15,10 +15,11 @@ import struttura_sn.*;
 //singleton class
 public class DataParser {
     
-    private static SN sn = new SN();
+    private static DataParser instance = null;
+    private static SN sn;
     
-    public DataParser(){
-       
+    private DataParser(){
+       sn = new SN();
     }
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){
@@ -73,8 +74,16 @@ public class DataParser {
         //to be completed
     }
     
-    
     public SN get_sn(){
         return sn;
+    }
+    
+    public static DataParser get_instance(){
+        
+        if(instance == null){
+            instance = new DataParser();
+        }
+        
+        return instance;
     }
 }
