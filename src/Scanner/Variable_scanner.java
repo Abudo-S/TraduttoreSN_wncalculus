@@ -13,9 +13,11 @@ import org.w3c.dom.Node;
  *
  * @author dell
  */
+//singleton
 public class Variable_scanner extends ElementScanner{
+    private static Variable_scanner instance = null;
     
-    public Variable_scanner(final Document doc){
+    private Variable_scanner(final Document doc){
         super(doc);
     }
     
@@ -38,5 +40,14 @@ public class Variable_scanner extends ElementScanner{
             //call DataParser function to create variable of extracted data
             dp.add_Variable(Variable_element.getAttribute("id"), var_type);
         }
+    }
+    
+    public static Variable_scanner get_instance(Document doc){
+        
+        if(instance == null){
+            instance = new Variable_scanner(doc);
+        }
+        
+        return instance;
     }
 }
