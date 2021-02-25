@@ -27,7 +27,6 @@ public class ColorClass_scanner extends ElementScanner{
     
     @Override
     public void scan_info(Element color_class){
-         
         if(color_class.getElementsByTagName("finiteintrange").getLength()>0){
             this.scan_finiterange(color_class);
             
@@ -37,12 +36,14 @@ public class ColorClass_scanner extends ElementScanner{
         }else if(color_class.getElementsByTagName("partitionelement").getLength()>0){
             this.scan_partitionedclass(color_class);
             
+        }else if(color_class.getElementsByTagName("usersort").getLength()>0){
+            //do nothing, will be handled by Domain_scanner
         }else{
             throw new NullPointerException("Can't find color class type: " + this.get_element_name(color_class));
         }
     }
     
-    private void scan_finiterange(Element color_class){ //namesort tag
+    private void scan_finiterange(Element color_class){ //namedsort tag
         int rangStart, rangEnd;
         boolean circular = false;
         Node fing = color_class.getElementsByTagName("finiteintrange").item(0);
@@ -60,7 +61,7 @@ public class ColorClass_scanner extends ElementScanner{
         }
     }
     
-    private void scan_finiteenumeration(Element color_class){ //namesort tag
+    private void scan_finiteenumeration(Element color_class){ //namedsort tag
         boolean circular = false;
         NodeList finco_list = color_class.getElementsByTagName("feconstant");
         ArrayList<String> token_names = new ArrayList<>();
