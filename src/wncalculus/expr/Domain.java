@@ -13,6 +13,8 @@ import wncalculus.util.Util;
  */
 public final class Domain {
     
+    private String name = "Undefined domain"; //added
+    
     private final Map<Sort,Integer > domain; 
     
     private String string; //cashing
@@ -180,5 +182,18 @@ public final class Domain {
         
         return s;
     }
-            
+    
+    /** 
+     * @param name of domain
+     */
+    public void set_name(String name){ //added
+        this.name = name;
+    }
+    
+    /** 
+     * @return domain name
+     */
+    public String name(){ //added
+        return this.name;
+    }
 }

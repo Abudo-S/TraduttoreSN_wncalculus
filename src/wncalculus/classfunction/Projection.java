@@ -12,7 +12,9 @@ import wncalculus.util.Util;
  * @author lorenzo capra
  */
 public final class Projection extends ElementaryFunction implements ProjectionBased {
-    
+     
+     private String name = "Undefined Variable/Projection";
+     
      private final int index, succ ;//index and successor "argument" of a projection
      
      private static final Interval CARD =  new Interval(1,1); // the cardinality
@@ -172,5 +174,18 @@ public final class Projection extends ElementaryFunction implements ProjectionBa
   	   return Collections.singleton(this.index);
      }
    
-
+    /** 
+     * @param name of variable/projection
+     */
+    public void set_name(String name){ //added
+        this.name = name;
+    }
+    
+    /** 
+     * @return variable/projection name
+     */
+    public String name(){ //added
+        return this.name;
+    }
+    
 }
