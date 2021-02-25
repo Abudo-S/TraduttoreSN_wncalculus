@@ -28,12 +28,13 @@ public abstract class ElementScanner{
         dp = DataParser.get_instance();
     }
     
-    public void Scan_element(String object_tag)throws NullPointerException{
+    public void Scan_element(String object_tag){
         try {
             NodeList object_list = doc.getElementsByTagName(object_tag);
             
-            for(int i=0; i<object_list.getLength();i++){
+            for(var i=0; i<object_list.getLength();i++){
                 Node node_of_element  = object_list.item(i);
+                
                 if(node_of_element.getNodeType() == Node.ELEMENT_NODE){
                     this.element_tags.add((Element) node_of_element);
                 }

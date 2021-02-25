@@ -17,7 +17,7 @@ public class TraduttoreSN_wncalculus {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        //test
         XMLScanner xml_sc = XMLScanner.get_instance("CPN 1.pnml");
         xml_sc.scan_file_data();
     }

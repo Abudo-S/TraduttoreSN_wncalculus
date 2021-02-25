@@ -28,6 +28,9 @@ public class Domain_scanner extends ElementScanner{
         
         if(Domain_element.getElementsByTagName("usersort").getLength()>0){
             this.scan_domain_classes(Domain_element);
+        }else if(Domain_element.getElementsByTagName("finiteintrange").getLength()>0 ||
+                 Domain_element.getElementsByTagName("finiteenumeration").getLength()>0){
+            //do nothing, will be handled by ColorClass_scanner
         }else{
             throw new NullPointerException("Can't find domain type: " + this.get_element_name(Domain_element));
         }

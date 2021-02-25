@@ -65,10 +65,10 @@ public class XMLScanner {
         this.scan_arcs();
     }
     
-    private void scan_color_classes(){ //namesort && partition
+    private void scan_color_classes(){ //namedsort && partition
         ColorClass_scanner cc_scanner = ColorClass_scanner.get_instance(doc);
-        cc_scanner.Scan_element("namesort");
-        cc_scanner.remove_from_tags_list(); //remove domains that have the same tag "namesort"
+        cc_scanner.Scan_element("namedsort");
+        //cc_scanner.remove_from_tags_list(); //remove domains that have the same tag "namesort"
         cc_scanner.Scan_element("partition"); //add partitioned color classes
         ArrayList<Element> elements = cc_scanner.get_element_tags();
         
@@ -77,10 +77,10 @@ public class XMLScanner {
         }
     }
     
-    private void scan_domains(){ //namesort -> productsort
+    private void scan_domains(){ //namedsort -> productsort
         Domain_scanner d_scanner = Domain_scanner.get_instance(doc);
-        d_scanner.Scan_element("namesort");
-        d_scanner.remove_from_tags_list(); //remove color classes that have the same tag "namesort"
+        d_scanner.Scan_element("namedsort");
+        //d_scanner.remove_from_tags_list(); //remove color classes that have the same tag "namesort"
         ArrayList<Element> elements = d_scanner.get_element_tags();
         
         for(Element e : elements){

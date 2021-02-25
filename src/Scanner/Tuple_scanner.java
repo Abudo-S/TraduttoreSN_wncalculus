@@ -5,8 +5,6 @@
  */
 package Scanner;
 
-import org.w3c.dom.Document;
-
 /**
  *
  * @author dell
