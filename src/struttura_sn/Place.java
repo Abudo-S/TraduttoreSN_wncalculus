@@ -9,6 +9,6 @@ package struttura_sn;
  *
  * @author dell
  */
-public class Place {
+public class Place extends Node{
     
 }

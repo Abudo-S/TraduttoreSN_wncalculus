@@ -19,7 +19,7 @@ public class DataParser {
     private static SN sn;
     
     private DataParser(){
-       sn = new SN();
+       sn = SN.get_instance();
     }
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){

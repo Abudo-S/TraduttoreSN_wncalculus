@@ -9,6 +9,6 @@ package struttura_sn;
  *
  * @author dell
  */
-public class Transition {
+public class Transition extends Node{
     
 }
