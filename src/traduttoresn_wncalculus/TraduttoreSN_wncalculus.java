@@ -5,6 +5,8 @@
  */
 package traduttoresn_wncalculus;
 
+import operazioni_xml.XMLScanner;
+
 /**
  *
  * @author dell
@@ -16,6 +18,8 @@ public class TraduttoreSN_wncalculus {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        XMLScanner xml_sc = XMLScanner.get_instance("CPN 1.pnml");
+        xml_sc.scan_file_data();
     }
     
 }

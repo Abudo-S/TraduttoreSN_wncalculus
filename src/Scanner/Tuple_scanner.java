@@ -21,7 +21,7 @@ public class Tuple_scanner {
     
     //returns a separated array of elements of tuple, using "," as separator
     public String[] scan_tuple(String tuple){
-        tuple = tuple.replaceAll("\\s*>\\s*", "").replaceAll("\\s*", "");
+        tuple = tuple.replaceAll("\\s*<\\s*", "").replaceAll("\\s*>\\s*", "").replaceAll("\\s*", "");
         return tuple.split(",");
     }
     

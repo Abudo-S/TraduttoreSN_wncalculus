@@ -39,10 +39,6 @@ public abstract class ElementScanner{
                 }
             }
             
-            if(this.element_tags.size() == 0){
-                throw new NullPointerException("Can't found declaration of that type!");
-            } 
-            
         }catch(Exception e){
             System.out.println(e + " in ElementScanner");
         }

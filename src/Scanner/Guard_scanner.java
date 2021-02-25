@@ -39,7 +39,7 @@ public class Guard_scanner extends ElementScanner{
         String guard = this.get_guard_txt(Guard_element);           
         guard = "[" + guard + "]";
         //remove invert-guard
-        guard = guard.replaceFirst("\\s*[[]\\s*[!]\\s*[(]\\s*", "").replaceFirst("\\s*[)]\\s*[]]\\s*", guard);
+        guard = guard.replaceFirst("\\s*[\\[]\\s*[!]\\s*[(]\\s*", "").replaceFirst("\\s*[)]\\s*[]]\\s*", guard);
         
         return this.scan_guard(guard);
     }
@@ -47,7 +47,7 @@ public class Guard_scanner extends ElementScanner{
     public boolean scan_invert_guard(Element Guard_element){
         String guard = this.get_guard_txt(Guard_element);  
         guard = "[" + guard + "]";
-        Pattern p = Pattern.compile("\\s*[[]\\s*[!]\\s*[(]\\s*");
+        Pattern p = Pattern.compile("\\s*[\\[]\\s*[!]\\s*[(]\\s*");
         Matcher m = p.matcher(guard);
         
         if(m.find()){ //invert guard
@@ -91,13 +91,13 @@ public class Guard_scanner extends ElementScanner{
             while(m.find()){
 
                  if(m.find()){
-                    predicates.add(pd_sc.scan_predicate(m.group(0)));
+                    predicates.add(pd_sc.scan_predicate(m.group(1)));
                  }
             }
 
             while(m1.find()){
                 if(m1.find()){
-                    separator = m1.group(0);
+                    separator = m1.group(1);
                     
                     if(separator.equals("||")){
                         separators.add("or");

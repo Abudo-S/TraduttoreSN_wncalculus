@@ -37,14 +37,15 @@ public class XMLScanner {
     private DataParser dp;
     private Document doc;
     
-    private XMLScanner() throws NullPointerException{ // xml file of pnml format
+    private XMLScanner(String file_address) throws NullPointerException{ // xml file of pnml format
         this.dp = DataParser.get_instance();
         
         try{
-
+            this.file_address = file_address;
+            
             if(this.file_address == null){
                 throw new NullPointerException("pnml file address isn't acceptable!");
-            }
+            }            
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -131,10 +132,10 @@ public class XMLScanner {
         this.file_address = address;
     }
     
-    public static XMLScanner get_instance(){
+    public static XMLScanner get_instance(final String address){
         
         if(instance == null){
-            instance = new XMLScanner();
+            instance = new XMLScanner(address);
         }
         
         return instance;
