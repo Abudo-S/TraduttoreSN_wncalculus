@@ -126,6 +126,31 @@ public class SN {
         }
     }
     
+    public void SN_all_data(){
+        try{
+            System.out.println("ColorClasses:");
+            SN.C.stream().forEach(x -> System.out.println(x.name())); 
+            
+            System.out.println("Domains:");
+            SN.DC.stream().forEach(x -> System.out.println(x.name()));
+            
+            System.out.println("Variables/Projections:");
+            SN.V.stream().forEach(x -> System.out.println(x.name()));
+            
+            System.out.println("Places:");
+            SN.P.stream().forEach(x -> System.out.println(x.get_name()));
+            
+            System.out.println("Transitions:");
+            SN.T.stream().forEach(x -> System.out.println(x.get_name()));
+            
+            System.out.println("initial Marking:");        
+            SN.m0.get_all_marked_Places().stream().forEach(x -> System.out.println(x.get_name()));
+            
+        }catch(Exception e){
+            System.out.println(e + " in SN");
+        }
+    }
+    
     public static SN get_instance(){
         
         if(instance == null){
