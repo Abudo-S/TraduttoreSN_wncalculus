@@ -12,9 +12,9 @@ import java.util.HashMap;
  *
  * @author dell
  */
-public class Inhibitor  extends Arc{
+public class TArc extends Arc{
     
-    public Inhibitor(String name, int lvl){
+    public TArc(String name, int lvl){
         this.name = name;
         //this.level = lvl;
         this.multiplied_tuple = new HashMap<>();
