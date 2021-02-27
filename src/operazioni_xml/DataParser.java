@@ -7,6 +7,10 @@ package operazioni_xml;
 
 import java.util.*;
 import struttura_sn.*;
+import wncalculus.expr.Interval;
+import wncalculus.color.ColorClass;
+import wncalculus.expr.Domain;
+import wncalculus.classfunction.Projection;
 
 /**
  *
@@ -24,8 +28,7 @@ public class DataParser {
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){
 //        System.out.println(class_name + "," + start + "," + end + "," + circular);
-
-        //to be completed
+        sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
     }
       
     public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){
@@ -46,6 +49,7 @@ public class DataParser {
         //to be completed
     }
     
+    //add Projection
     public void add_Variable(String variable_name, String variable_type){ //type = color class
 //        System.out.println(variable_name + "," + variable_type);
         

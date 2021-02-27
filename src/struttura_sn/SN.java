@@ -20,7 +20,7 @@ public class SN {
     
     private static ArrayList<Place> P = new ArrayList<>();
     private static ArrayList<Transition> T = new ArrayList<>();
-    private static ArrayList<ColorClass> C = new ArrayList<>(List.of(new ColorClass("neutral"))); //C.get(0) is the neutral colour
+    private static ArrayList<ColorClass> C = new ArrayList<>(List.of(new ColorClass("Neutral"))); //C.get(0) is the Neutral colour
     private static ArrayList<Domain> DC = new ArrayList<>();
     private static ArrayList<Projection> V = new ArrayList<>();
     private static Marking m0;
@@ -28,6 +28,7 @@ public class SN {
     private static SN instance = null;
     
     public SN(){
+        
     }
     
     public void add_place(Place p){
@@ -38,7 +39,7 @@ public class SN {
         SN.T.add(t);
     }
     
-    public void add_colourClass(ColorClass c){
+    public void add_colorClass(ColorClass c){
         SN.C.add(c);
     }
     

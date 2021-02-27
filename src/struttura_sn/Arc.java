@@ -18,7 +18,7 @@ public abstract class Arc {
     
     protected String name;
     protected ArrayList<Guard> guard_classORdomain; //[guard]<tuple_element> || [guard]<tuple_element,tuple_element,...> 
-    //tuple_element: sum of variable/constant
+    //tuple_element: sum of variable/constant, at least should have 1 variable or 1 constant 
     //<variable + const> case of colorClass|| <variable + const, ...> case of domain
     protected HashMap<WNtuple, Integer> multiplied_tuple; 
     //protected int level;
@@ -43,7 +43,7 @@ public abstract class Arc {
         return this.name;
     }
     
-    public String get_type(){
+    public String get_type(){ // TArc or Inhibitor
         return this.getClass().getName();
     }
 
