@@ -73,7 +73,14 @@ public class DataParser {
     
     public void add_Place(String place_name, String place_type){ //type = color class or domain
 //        System.out.println(place_name + "," + place_type);
-
+        ColorClass cc = sn.find_colorClass(place_type);
+        
+        if(cc != null){ //place of color class type
+            sn.add_place(new Place(place_name, cc));
+            
+        }else{ //place of domain type
+            sn.add_place(new Place(place_name, sn.find_domain(place_type)));
+        }
     }
     
     public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type
