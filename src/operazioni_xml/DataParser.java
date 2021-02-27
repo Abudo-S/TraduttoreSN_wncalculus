@@ -11,6 +11,7 @@ import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
 import wncalculus.classfunction.Projection;
+import wncalculus.expr.Sort;
 
 /**
  *
@@ -60,14 +61,19 @@ public class DataParser {
 //        System.out.println(domain_name + "...");
 //        colorclasses.stream().forEach(e -> System.out.print(e + "-"));
 //        System.out.println();
+        HashMap<ColorClass, Integer> product_sort = new HashMap<>();
+        colorclasses.stream().forEach( 
+                e -> product_sort.put(sn.find_colorClass(e), 1) //GreatSpn tool doesn't allow the 1+ color class muliplicity
+        );
         
-        //to be completed
+        Domain d = new Domain(product_sort);
+        d.set_name(domain_name);
+        sn.add_domain(d);
     }
     
     public void add_Place(String place_name, String place_type){ //type = color class or domain
 //        System.out.println(place_name + "," + place_type);
-        
-        //to be completed
+
     }
     
     public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type

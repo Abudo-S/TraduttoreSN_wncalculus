@@ -75,7 +75,7 @@ public class SN {
         return null;
     }
     
-    public ColorClass find_colourClass(String name){
+    public ColorClass find_colorClass(String name){
         
         for(ColorClass c : SN.C){
             if(c.name().equals(name)){
