@@ -50,10 +50,10 @@ public class Marking_scanner extends ElementScanner{
         
         //check token type (color class || domain)
         if(mult_tuples_token[0].contains(",")){ //domain
-          tokens = new HashMap<Integer, String[]>();
+          tokens = new HashMap<String[], Integer>();
           
         }else{ //color class
-          tokens = new HashMap<Integer, String>();
+          tokens = new HashMap<String, Integer>();
         }
         
         String mult;

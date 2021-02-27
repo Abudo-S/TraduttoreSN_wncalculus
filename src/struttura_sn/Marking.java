@@ -7,7 +7,6 @@ package struttura_sn;
 
 import java.util.HashMap;
 import java.util.Set;
-import operazioni_xml.XMLScanner;
 
 /**
  *
@@ -25,21 +24,18 @@ public class Marking {
         this.marking = new HashMap<>();
     }
     
-    public void mark_place(Place p, Token[] tokens, int[] multiplicity){ // mark a coloured place
+    public void mark_colored_place(Place p, HashMap<Token, Integer> multiplied_token){ // mark a coloured place
         HashMap<Token[], Integer> mark = new HashMap<>();
         
-        for(var i=0; i<multiplicity.length;i++ ){
-            mark.put(new Token[]{tokens[i]}, multiplicity[i]);
-        }
+        multiplied_token.keySet().stream().forEach(
+                token -> mark.put(new Token[]{token}, multiplied_token.get(token))
+        );
+        
         this.marking.put(p, mark);
     }
-    public void mark_place(Place p, Token[][] tokens, int[] multiplicity){ // mark a domained place
-        HashMap<Token[], Integer> mark = new HashMap<>();
-        
-        for(var i=0; i<multiplicity.length;i++ ){
-            mark.put(tokens[i], multiplicity[i]);
-        }
-        this.marking.put(p, mark);
+    
+    public void mark_domained_place(Place p, HashMap<Token[], Integer> multiplied_token){ // mark a domained place
+        this.marking.put(p, multiplied_token);
     }
     
     public Set<Place> get_all_marked_Places(){
