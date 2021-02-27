@@ -7,37 +7,35 @@ package struttura_sn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import wncalculus.classfunction.Projection;
 import wncalculus.guard.Guard;
+import wncalculus.wnbag.WNtuple;
 
 /**
  *
  * @author dell
  */
-public abstract class Arc { //will be updated with the ability of adding constants in tuple's elements
+public abstract class Arc {
     
     protected String name;
-    protected ArrayList<Guard> guard_classORdomain; //[guard]<variable> || [guard]<variable,variable,...> 
-    protected HashMap<Projection[], Integer> multiplied_tuple; //<variable> case of colourClass|| <variable,variable,...> case of domain
+    protected ArrayList<Guard> guard_classORdomain; //[guard]<tuple_element> || [guard]<tuple_element,tuple_element,...> 
+    //tuple_element: sum of variable/constant
+    //<variable + const> case of colorClass|| <variable + const, ...> case of domain
+    protected HashMap<WNtuple, Integer> multiplied_tuple; 
     //protected int level;
     
     public void add_guard_colourClassORdomain(Guard g){
         this.guard_classORdomain.add(g);
     }
     
-    public void add_mult_varOfcolourClass(Projection v, int mult){ //ex: 2<x>
-        this.multiplied_tuple.put(new Projection[]{v}, mult);
-    }
-    
-    public void add_mult_varsOfdomain(Projection[] vars, int mult){ //ex: 2<x,y>
-        this.multiplied_tuple.put(vars, mult);
+    public void add_mult_tupleOfcolourClass(WNtuple t, int mult){ //ex: 2<x>
+        this.multiplied_tuple.put(t, mult);
     }
     
     public ArrayList<Guard> get_guards(){
         return this.guard_classORdomain;
     }
     
-    public HashMap<Projection[], Integer> arc_multiplicity(){
+    public HashMap<WNtuple, Integer> arc_multiplicity(){
         return this.multiplied_tuple;
     }
     
@@ -45,6 +43,11 @@ public abstract class Arc { //will be updated with the ability of adding constan
         return this.name;
     }
     
+    public String get_type(){
+        return this.getClass().getName();
+    }
+
+//could be helpful then   
 //    public int get_level(){
 //        return this.level;
 //    }
