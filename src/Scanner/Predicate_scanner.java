@@ -15,6 +15,7 @@ import java.util.regex.*;
  */
 //singleton
 public class Predicate_scanner{
+    
     private static Predicate_scanner instance = null;
     
     private static final String str_rx_predicate = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*"

@@ -12,8 +12,10 @@ import java.util.HashMap;
  * @author dell
  */
 public abstract class Node {
-    protected HashMap<Arc,Node> Next;
-    protected HashMap<Arc,Node> previous;
+    
+    protected HashMap<Node, Arc> Next;
+    protected HashMap<Node, Arc> previous;
+    protected HashMap<Node, Arc> Inib; // will be a next arc of place and previous arc of transition 
     protected String name;
     
     /*public void add_next_Node(Arc arc, Node n){}
@@ -23,11 +25,11 @@ public abstract class Node {
         return this.name;
     }
     
-    public HashMap<Arc, Node> get_next_nodes(){
+    public HashMap<Node, Arc> get_next_nodes(){
         return this.Next;
     }
     
-    public HashMap<Arc, Node> get_previous_nodes(){
+    public HashMap<Node, Arc> get_previous_nodes(){
         return this.previous;
     }
 }

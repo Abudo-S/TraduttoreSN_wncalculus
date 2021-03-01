@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
  */
 //singleton
 public class Transition_scanner extends ElementScanner{
+    
     private static Transition_scanner instance = null;
     
     private Transition_scanner(final Document doc){

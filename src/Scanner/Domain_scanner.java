@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
  */
 //singleton
 public class Domain_scanner extends ElementScanner{
+    
     private static Domain_scanner instance = null;
     
     private Domain_scanner(final Document doc){

@@ -128,6 +128,7 @@ public class SN {
     }
     
     public void SN_all_data(){
+        
         try{
             System.out.println("ColorClasses:");
             SN.C.stream().forEach(x -> System.out.println(x.name())); 

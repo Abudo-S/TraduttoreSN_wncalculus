@@ -11,6 +11,7 @@ package Scanner;
  */
 //singleton
 public class Tuple_scanner {
+    
     private static Tuple_scanner instance = null;
     
     private Tuple_scanner(){

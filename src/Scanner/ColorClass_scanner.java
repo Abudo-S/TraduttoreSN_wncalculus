@@ -19,6 +19,7 @@ import org.w3c.dom.NodeList;
  */
 //singleton
 public class ColorClass_scanner extends ElementScanner{
+    
     private static ColorClass_scanner instance = null;
     
     private ColorClass_scanner(final Document doc){

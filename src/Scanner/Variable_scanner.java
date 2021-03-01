@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
  */
 //singleton
 public class Variable_scanner extends ElementScanner{
+    
     private static Variable_scanner instance = null;
     
     private Variable_scanner(final Document doc){

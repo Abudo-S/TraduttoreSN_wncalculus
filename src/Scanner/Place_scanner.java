@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
  */
 //singleton
 public class Place_scanner extends ElementScanner{
+    
     private static Place_scanner instance = null;
     
     private Place_scanner(final Document doc){

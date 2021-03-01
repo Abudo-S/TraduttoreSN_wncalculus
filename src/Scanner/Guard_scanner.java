@@ -17,11 +17,12 @@ import org.w3c.dom.Node;
  */
 //singleton
 public class Guard_scanner extends ElementScanner{
+    
     private static Guard_scanner instance = null; 
             
     private static final String str_rx_guard = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*"
                                              + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
-                                             + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)(\\s*(&amp;&amp;|[|]{2})(\\s*[(]*\\s*"
+                                             + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)(\\s*([&]{2}|[|]{2})(\\s*[(]*\\s*"
                                              + "([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
                                              + "([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*))*";
     
@@ -29,7 +30,7 @@ public class Guard_scanner extends ElementScanner{
                                                  + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
                                                  + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)";
 
-    private static final String str_rx_separator = "(&amp;&amp;|[|]{2})";
+    private static final String str_rx_separator = "([&]{2}|[|]{2})";
     
     private Guard_scanner(final Document doc){
         super(doc);

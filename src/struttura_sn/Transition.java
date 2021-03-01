@@ -25,23 +25,23 @@ public class Transition extends Node{
     
     //next/previous node of a transition is a place
     //next arc of a transition is a transitioning arc
-    public Place add_next_Node(TArc arc, Place p){
-        this.Next.put(arc, p);
+    public Place add_next_Node(Arc arc, Place p){
+        this.Next.put(p, arc);
         p.add_previous_Node(arc, this);
         return p;
     }
     
     //previous arc of a transition might be an inhibitor or a transitioning arc
     public void add_previous_Node(Arc arc, Place p){
-        this.previous.put(arc, p);
+        this.previous.put(p, arc);
     }
     
-    public Node get_next_by_Arc(TArc arc){
-        return this.Next.get(arc);
+    public Arc get_next_by_node(Node node){
+        return this.Next.get(node);
     }
     
-    public Node get_previous_by_Arc(Arc arc){
-        return this.previous.get(arc);
+    public Arc get_previous_by_node(Node node){
+        return this.previous.get(node);
     }
     
     public Guard get_guard(){

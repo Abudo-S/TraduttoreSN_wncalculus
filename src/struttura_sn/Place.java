@@ -35,22 +35,22 @@ public class Place extends Node{
     //next/previous node of a place is a transition
     //next arc of a place might be an inhibitor or a transitioning arc
     public Transition add_next_Node(Arc arc, Transition t){
-        this.Next.put(arc, t);
+        this.Next.put(t, arc);
         t.add_previous_Node(arc, this);
         return t;
     }
     
     //previous arc of a place is a transitioning arc
-    public void add_previous_Node(TArc arc, Transition t){
-        this.previous.put(arc, t);
+    public void add_previous_Node(Arc arc, Transition t){
+        this.previous.put(t, arc);
     }
     
-    public Node get_next_by_Arc(Arc arc){
-        return this.Next.get(arc);
+    public Arc get_next_by_node(Node node){
+        return this.Next.get(node);
     }
     
-    public Node get_previous_by_Arc(TArc arc){
-        return this.previous.get(arc);
+    public Arc get_previous_by_node(Node node){
+        return this.previous.get(node);
     }
     
     public String get_type(){
