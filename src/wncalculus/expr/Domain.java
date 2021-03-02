@@ -13,7 +13,7 @@ import wncalculus.util.Util;
  */
 public final class Domain {
     
-    private String name = "Undefined domain"; //added
+    private String name = "Undefined domain"; //added, could be "undefined domain" if it's not declared or a domain of transition for arc expression projections
     
     private final Map<Sort,Integer > domain; 
     

@@ -8,7 +8,6 @@ package struttura_sn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import wncalculus.classfunction.Projection;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
 
@@ -22,7 +21,7 @@ public class SN {
     private static ArrayList<Transition> T = new ArrayList<>();
     private static ArrayList<ColorClass> C = new ArrayList<>(List.of(new ColorClass("Neutral"))); //C.get(0) is the Neutral colour
     private static ArrayList<Domain> DC = new ArrayList<>();
-    private static ArrayList<Projection> V = new ArrayList<>();
+    private static ArrayList<Variable> V = new ArrayList<>();
     private static Marking m0;
     //single instance
     private static SN instance = null;
@@ -47,7 +46,7 @@ public class SN {
         SN.DC.add(d);
     }
     
-    public void add_variable(Projection v){
+    public void add_variable(Variable v){
         SN.V.add(v);
     }
     
@@ -95,10 +94,10 @@ public class SN {
         return null;
     }
     
-    public Projection find_variable(String variable_name){
+    public Variable find_variable(String variable_name){
         
-        for(Projection v : SN.V){
-            if(v.name().equals(variable_name)){
+        for(Variable v : SN.V){
+            if(v.get_name().equals(variable_name)){
                 return v;
             }
         }
@@ -137,7 +136,7 @@ public class SN {
             SN.DC.stream().forEach(x -> System.out.println(x.name()));
             
             System.out.println("Variables/Projections:");
-            SN.V.stream().forEach(x -> System.out.println(x.name()));
+            SN.V.stream().forEach(x -> System.out.println(x.get_name()));
             
             System.out.println("Places:");
             SN.P.stream().forEach(x -> System.out.println(x.get_name()));
