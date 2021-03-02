@@ -16,7 +16,7 @@ public class Variable { //a projection is a variable in arc expression
     
     private final String variable_name;
     private final ColorClass colour_type;
-    private Projection current_projection; //current assignment of projection
+    private Projection current_projection; //current assignment of projection, will be null while variable declaration
     
     public Variable(String variable_name, ColorClass colour_type){
         this.variable_name = variable_name;
