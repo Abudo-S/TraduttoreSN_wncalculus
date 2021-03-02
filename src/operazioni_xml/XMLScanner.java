@@ -23,13 +23,13 @@ public class XMLScanner {
 //    //Guard uses predicate:
 //    /* 
 //    (\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*(<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*
-//    ([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)(\s*(&amp;&amp;|[|]{2})(\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*
+//    ([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)(\s*([&]{2}|[|]{2})(\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*
 //    (\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*(<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*))*
 //    */ 
-//    //tuple: //not used till now, combained in Arc_scanner
+//    //tuple: //not used till now
 //    /*
-//     [&lt;]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*
-//    ([,]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*)*[&gt;]
+//     [<]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*
+//    ([,]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*)*[>]
 //    */
     
     private static XMLScanner instance = null;
