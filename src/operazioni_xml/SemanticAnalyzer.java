@@ -9,6 +9,7 @@ package operazioni_xml;
  *
  * @author dell
  */
+//singleton
 public class SemanticAnalyzer { //check/analyze the semantic of arc expressions & guards
     
 }

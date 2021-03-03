@@ -85,6 +85,7 @@ public class ColorClass_scanner extends ElementScanner{
     private void scan_partitionedclass(Element color_class) throws NullPointerException{ //partition tag
         NodeList partiel_list = color_class.getElementsByTagName("partitionelement");
         HashMap<String, ArrayList<String>> subclasses = new HashMap<>(); //subclass_name -> subclass elements
+        boolean circular = false;
         
         for(var i = 0; i< partiel_list.getLength(); i++){
             Node partiel = partiel_list.item(i);
@@ -123,8 +124,12 @@ public class ColorClass_scanner extends ElementScanner{
                 subclasses.put(subclass.getAttribute("id"), subclass_elements);
             }
         }
+        
+        if(color_class.getAttribute("ordered").equals("true")){
+          circular = true;
+        } 
         //call DataParser function to create color class of extracted data
-        dp.add_ColorClass(this.get_element_name(color_class), subclasses);
+        dp.add_ColorClass(this.get_element_name(color_class), subclasses, circular);
     }
     
     //remove domain's declarations because they have the same tag "namesort" 

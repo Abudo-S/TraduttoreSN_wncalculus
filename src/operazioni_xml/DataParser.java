@@ -32,7 +32,7 @@ public class DataParser { // will use SemanticAnalyzer
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
 //        System.out.println(class_name + "," + start + "," + end + "," + circular);
-        sn.add_colorClass(new ColourClass(class_name, new Interval(start, end), circular));
+        sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
     }
       
     public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){ //finite enumeration color class
@@ -40,25 +40,38 @@ public class DataParser { // will use SemanticAnalyzer
 //        token_names.stream().forEach(e -> System.out.print(e + "-"));
 //        System.out.println();
         
-        ColourClass cc = new ColourClass(class_name, new Interval(1, token_names.size()), circular);
-        Token[] available_tokens = new Token[token_names.size()];
-        
-        for(var i = 0; i < token_names.size(); i++){
-            available_tokens[i] = new Token(token_names.get(i), cc);
-        }
-        
-        cc.update_available_tokens_colorclass(available_tokens);
-        sn.add_colorClass(cc);
+        sn.add_colorClass(new ColorClass(class_name, new Interval(token_names.size(), token_names.size()), circular)); //takes an interval of Arraylist size exactly 
     }
     
-    public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses){ //partitioned color class
+    //HashMap<String, ArrayList<String>> : HashMap<subclass_name, ArrayList of available tokens>
+    public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses, boolean circular){ //partitioned color class
 //        System.out.println(class_name + ",...");
 //        subclasses.keySet().forEach(str -> {
 //            subclasses.get(str).stream().forEach(e -> System.out.print(e + "-"));
 //        });
 //        System.out.println();
+        Interval[] intervals = new Interval[subclasses.size()];
         
-        //to be completed
+        int i = 0;
+        for(String subclass_name : subclasses.keySet()){
+            ArrayList<String> subclass_tokens = subclasses.get(subclass_name);
+                    
+            if(subclass_tokens.get(0).contains("lb=")){ //range
+                String e_lb = subclass_tokens.get(0);
+                String e_ub = subclass_tokens.get(1);
+                intervals[i] = new Interval(
+                               Integer.parseInt(e_lb.substring(e_lb.indexOf("=")+1)),
+                               Integer.parseInt(e_ub.substring(e_ub.indexOf("=")+1))
+                );
+                
+            }else{ //finite enumeration(useroperator tag)
+                intervals[i] = new Interval(subclass_tokens.size(), subclass_tokens.size());
+            }
+        
+            i++;
+        }
+        
+        sn.add_colorClass(new ColorClass(class_name, intervals, circular));
     }
     
     //add Projection
