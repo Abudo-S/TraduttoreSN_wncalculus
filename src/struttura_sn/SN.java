@@ -15,6 +15,7 @@ import wncalculus.color.ColorClass;
  *
  * @author dell
  */
+//singleton
 public class SN {
     
     private static ArrayList<Place> P = new ArrayList<>();

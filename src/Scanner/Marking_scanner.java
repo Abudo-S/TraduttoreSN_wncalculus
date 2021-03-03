@@ -6,6 +6,7 @@
 package Scanner;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,7 +51,7 @@ public class Marking_scanner extends ElementScanner{
         
         //check token type (color class || domain)
         if(mult_tuples_token[0].contains(",")){ //domain
-          tokens = new HashMap<String[], Integer>();
+          tokens = new LinkedHashMap<String[], Integer>();
           
         }else{ //color class
           tokens = new HashMap<String, Integer>();

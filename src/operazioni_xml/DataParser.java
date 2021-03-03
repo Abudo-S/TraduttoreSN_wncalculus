@@ -10,10 +10,7 @@ import struttura_sn.*;
 import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
-import wncalculus.classfunction.Projection;
-import wncalculus.guard.And;
 import wncalculus.guard.Guard;
-import wncalculus.guard.Or;
 
 /**
  *
@@ -119,7 +116,7 @@ public class DataParser { // will use SemanticAnalyzer
             this.add_Marking_colorclass(place_name, new HashMap<>(tokens));
             
         }catch(Exception e){ // if it's not a place of color class type then it's of domain type 
-            this.add_Marking_domain(place_name, new HashMap<>(tokens));
+            this.add_Marking_domain(place_name, new LinkedHashMap<>(tokens));
         }
     }
     
@@ -130,8 +127,7 @@ public class DataParser { // will use SemanticAnalyzer
         
         //fill multiplied_token using tokens
         Place p = sn.find_place(place_name);
-        String type = p.get_type();
-        ColorClass cc = sn.find_colorClass(type);
+        ColorClass cc = sn.find_colorClass(p.get_type());
         
         tokens.keySet().stream().forEach(
                 t_name -> multiplied_token.put(new Token(t_name, cc), tokens.get(t_name))
@@ -141,12 +137,28 @@ public class DataParser { // will use SemanticAnalyzer
     }
     
     //tokens parameter will have (n)d colors with their multiplicity
-    private void add_Marking_domain(String place_name, HashMap<String[], Integer> tokens){ //for place of domain type of n dimension
+    private void add_Marking_domain(String place_name, LinkedHashMap<String[], Integer> tokens){ //for place of domain type of n dimension
         Marking m0 = Marking.get_instance();
         HashMap<Token[], Integer> multiplied_token = new HashMap<>();
         
         //fill multiplied_token using tokens
+        Place p = sn.find_place(place_name);
+        Domain d = sn.find_domain(p.get_type());
+        LinkedHashMap<ColorClass, Integer> product = (LinkedHashMap<ColorClass, Integer>) d.asMap();
         
+        Token[] tokens_tuple;
+        int i;
+        for(String[] tokens_mark : tokens.keySet()){
+            tokens_tuple = new Token[tokens_mark.length];
+                    
+            for(ColorClass cc : product.keySet()){
+                i = 0;
+                tokens_tuple[i] = new Token(tokens_mark[i], cc);
+                i++;
+            }
+            multiplied_token.put(tokens_tuple, tokens.get(tokens_mark));
+        }
+                
         m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
     }
     
@@ -186,10 +198,6 @@ public class DataParser { // will use SemanticAnalyzer
         //And.factory(Guard ... guards);
         //Or.factory(true, Guard ... guards);
         return null;
-    }
-    
-    public SN get_sn(){
-        return sn;
     }
     
     public static DataParser get_instance(){
