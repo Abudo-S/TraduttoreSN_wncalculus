@@ -11,36 +11,47 @@ import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
 import wncalculus.classfunction.Projection;
-import wncalculus.expr.Sort;
+import wncalculus.guard.And;
+import wncalculus.guard.Guard;
+import wncalculus.guard.Or;
 
 /**
  *
  * @author dell
  */
 //singleton
-public class DataParser {
+public class DataParser { // will use SemanticAnalyzer
     
-    private static DataParser instance = null;
     private static SN sn;
+    //single instance
+    private static DataParser instance = null;
     
     private DataParser(){
        sn = SN.get_instance();
     }
     
-    public void add_ColorClass(String class_name, int start, int end, boolean circular){
+    public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
 //        System.out.println(class_name + "," + start + "," + end + "," + circular);
-        sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
+        sn.add_colorClass(new ColourClass(class_name, new Interval(start, end), circular));
     }
       
-    public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){
+    public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){ //finite enumeration color class
 //        System.out.println(class_name + "," + circular + ",...");
 //        token_names.stream().forEach(e -> System.out.print(e + "-"));
 //        System.out.println();
-
-        //to be completed
+        
+        ColourClass cc = new ColourClass(class_name, new Interval(1, token_names.size()), circular);
+        Token[] available_tokens = new Token[token_names.size()];
+        
+        for(var i = 0; i < token_names.size(); i++){
+            available_tokens[i] = new Token(token_names.get(i), cc);
+        }
+        
+        cc.update_available_tokens_colorclass(available_tokens);
+        sn.add_colorClass(cc);
     }
     
-    public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses){
+    public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses){ //partitioned color class
 //        System.out.println(class_name + ",...");
 //        subclasses.keySet().forEach(str -> {
 //            subclasses.get(str).stream().forEach(e -> System.out.print(e + "-"));
@@ -54,7 +65,7 @@ public class DataParser {
     public void add_Variable(String variable_name, String variable_type){ //type = color class
 //        System.out.println(variable_name + "," + variable_type);
         
-        //to be completed
+        sn.add_variable(new Variable(variable_name, sn.find_colorClass(variable_type)));
     }    
     
     public void add_Domain(String domain_name, ArrayList<String> colorclasses){
@@ -62,8 +73,9 @@ public class DataParser {
 //        colorclasses.stream().forEach(e -> System.out.print(e + "-"));
 //        System.out.println();
         HashMap<ColorClass, Integer> product_sort = new HashMap<>();
+        
         colorclasses.stream().forEach( 
-                e -> product_sort.put(sn.find_colorClass(e), 1) //GreatSpn tool doesn't allow the 1+ color class muliplicity
+                e -> product_sort.put(sn.find_colorClass(e), 1) //GreatSpn tool doesn't allow the (1<) * color class muliplicity
         );
         
         Domain d = new Domain(product_sort);
@@ -83,31 +95,46 @@ public class DataParser {
         }
     }
     
+    //uses add_Marking_colorclass()
+    //uses add_Marking_domain()
     public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type
-        //uses add_Marking_colorclass()
-        //uses add_Marking_domain()
 //        System.out.println(place_name + "...");
 //        tokens.keySet().stream().forEach(e -> System.out.print(e + "-"));
 //        System.out.println();
-        
-        //to be completed
+
+        try{ //assume that the marking belongs to a place of color class type
+            this.add_Marking_colorclass(place_name, new HashMap<>(tokens));
+            
+        }catch(Exception e){ // if it's not a place of color class type then it's of domain type 
+            this.add_Marking_domain(place_name, new HashMap<>(tokens));
+        }
     }
     
     //tokens parameter will have 1d colors with their multiplicity
-    private void add_Marking_colorclass(String place_name, HashMap<Integer, String> tokens){ //for place of color class type
-        //to be completed
+    private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens){ //for place of color class type
+        Marking m0 = Marking.get_instance();
+        HashMap<Token, Integer> multiplied_token = new HashMap<>();
+        
+        //fill multiplied_token using tokens
+        sn.find_colorClass(place_name);
+        
+        m0.mark_colored_place(sn.find_place(place_name), multiplied_token);
     }
     
     //tokens parameter will have (n)d colors with their multiplicity
-    private void add_Marking_domain(String place_name, HashMap<Integer, String[]> tokens){ //for place of domain type of n dimension
-        //to be completed
+    private void add_Marking_domain(String place_name, HashMap<String[], Integer> tokens){ //for place of domain type of n dimension
+        Marking m0 = Marking.get_instance();
+        HashMap<Token[], Integer> multiplied_token = new HashMap<>();
+        
+        //fill multiplied_token using tokens
+        
+        m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
     }
     
     //format: HashMap<HashMap<ArrayList, Boolean>, String> = HashMap<HashMap<(inverted)predicate with variables/operators, invert_predicate>, separator with next predicate if exists>
     //predicates describe guard and each predicate might be inverted
-    //Note: last element in seperators will be null 
+    //Note: last element in separators will be null 
     public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>  guard, boolean invert_guard){
-
 //        System.out.println(Transition_name + "," + invert_guard + ",...");
 //        if(guard != null){
 //            guard.keySet().stream().forEach(e -> System.out.print(guard.get(e) + "-"));
@@ -134,6 +161,12 @@ public class DataParser {
 //        System.out.println();
         
         //to be completed
+    }
+    
+    private Guard get_guard_from_predicates(){ //In wncalculus a guard of predicates has 2 type of guards: guard with or between predicates, guard with and between predicates
+        //And.factory(Guard ... guards);
+        //Or.factory(true, Guard ... guards);
+        return null;
     }
     
     public SN get_sn(){
