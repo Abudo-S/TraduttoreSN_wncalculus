@@ -129,7 +129,13 @@ public class DataParser { // will use SemanticAnalyzer
         HashMap<Token, Integer> multiplied_token = new HashMap<>();
         
         //fill multiplied_token using tokens
-        sn.find_colorClass(place_name);
+        Place p = sn.find_place(place_name);
+        String type = p.get_type();
+        ColorClass cc = sn.find_colorClass(type);
+        
+        tokens.keySet().stream().forEach(
+                t_name -> multiplied_token.put(new Token(t_name, cc), tokens.get(t_name))
+        );
         
         m0.mark_colored_place(sn.find_place(place_name), multiplied_token);
     }
