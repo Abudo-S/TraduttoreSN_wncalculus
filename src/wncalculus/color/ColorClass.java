@@ -9,7 +9,7 @@ import wncalculus.expr.*;
  */
 
 
-public final class ColorClass extends Sort implements Color {
+public class ColorClass extends Sort implements Color {
 
     private final boolean    ordered;//default unordered, non split
     private final Interval[] constraints ;//the constraints associated to the class, default [[2,>]]

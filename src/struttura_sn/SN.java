@@ -8,7 +8,6 @@ package struttura_sn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
 
 /**
@@ -19,7 +18,7 @@ public class SN {
     
     private static ArrayList<Place> P = new ArrayList<>();
     private static ArrayList<Transition> T = new ArrayList<>();
-    private static ArrayList<ColorClass> C = new ArrayList<>(List.of(new ColorClass("Neutral"))); //C.get(0) is the Neutral colour
+    private static ArrayList<ColourClass> C = new ArrayList<>(List.of(new ColourClass("Neutral"))); //C.get(0) is the Neutral colour
     private static ArrayList<Domain> DC = new ArrayList<>();
     private static ArrayList<Variable> V = new ArrayList<>();
     private static Marking m0;
@@ -38,7 +37,7 @@ public class SN {
         SN.T.add(t);
     }
     
-    public void add_colorClass(ColorClass c){
+    public void add_colorClass(ColourClass c){
         SN.C.add(c);
     }
     
@@ -74,9 +73,9 @@ public class SN {
         return null;
     }
     
-    public ColorClass find_colorClass(String name){
+    public ColourClass find_colorClass(String name){
         
-        for(ColorClass c : SN.C){
+        for(ColourClass c : SN.C){
             if(c.name().equals(name)){
                 return c;
             }
@@ -129,7 +128,7 @@ public class SN {
     public void SN_all_data(){
         
         try{
-            System.out.println("ColorClasses:");
+            System.out.println("ColourClasses:");
             SN.C.stream().forEach(x -> System.out.println(x.name())); 
             
             System.out.println("Domains:");

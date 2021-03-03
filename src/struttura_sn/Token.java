@@ -15,16 +15,11 @@ public class Token {
     
     private final String value; //in case of domain token then it will be value1,value2,...
     private final ColorClass class_type ;
-    private Place current_place;
    
     //can't be token of colour domain and colour class at the same time
     public Token(String value, ColorClass type){
         this.value = value;
         this.class_type = type;
-    }
-    
-    public void set_current_place(Place p){
-        this.current_place = p;
     }
     
     public ColorClass get_type(){
@@ -33,10 +28,6 @@ public class Token {
     
     public String get_Token_value(){
         return this.value;
-    }
-    
-    public Place get_current_place(){
-        return this.current_place;
     }
     
     /*

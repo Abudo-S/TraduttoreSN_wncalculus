@@ -27,9 +27,9 @@ public class XMLScanner {
 //    (\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*(<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*))*
 //    */ 
 //    //tuple: //not used till now
-//    /*
-//     [<]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*
-//    ([,]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*)*[>]
+//    /* // [<][>] will be removed by Arc_scanner
+//     \s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*
+//    ([,]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*)*
 //    */
     
     private static XMLScanner instance = null;
