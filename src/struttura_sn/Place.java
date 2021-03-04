@@ -34,14 +34,16 @@ public class Place extends Node{
     
     //next/previous node of a place is a transition
     //next arc of a place might be an inhibitor or a transitioning arc
-    public Transition add_next_Node(Arc arc, Transition t){
+    @Override
+    public Node add_next_Node(Arc arc, Node t){
         this.Next.put(t, arc);
         t.add_previous_Node(arc, this);
         return t;
     }
     
     //previous arc of a place is a transitioning arc
-    public void add_previous_Node(Arc arc, Transition t){
+    @Override
+    public void add_previous_Node(Arc arc, Node t){
         this.previous.put(t, arc);
     }
     

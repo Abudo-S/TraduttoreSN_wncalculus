@@ -18,8 +18,11 @@ public abstract class Node {
     protected HashMap<Node, Arc> Inib; // will be a next arc of place and previous arc of transition 
     protected String name;
     
-    /*public void add_next_Node(Arc arc, Node n){}
-    public void add_previous_Node(Arc arc, Node n){}*/
+    public Node add_next_Node(Arc arc, Node n){
+        return null;
+    }
+    
+    public void add_previous_Node(Arc arc, Node n){}
     
     public String get_name(){
         return this.name;

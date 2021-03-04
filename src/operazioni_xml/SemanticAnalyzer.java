@@ -11,5 +11,19 @@ package operazioni_xml;
  */
 //singleton
 public class SemanticAnalyzer { //check/analyze the semantic of arc expressions & guards
+    //single instance
+    private static SemanticAnalyzer instance = null;
     
+    private SemanticAnalyzer(){
+        
+    }
+    
+    public static SemanticAnalyzer get_instance(){
+        
+        if(instance == null){
+            instance = new SemanticAnalyzer();
+        }
+        
+        return instance;
+    }
 }
