@@ -14,7 +14,7 @@ import wncalculus.color.ColorClass;
 public class Token {
     
     private final String value; //in case of domain token then it will be value1,value2,...
-    private final ColorClass class_type ;
+    private final ColorClass class_type;
    
     //can't be token of colour domain and colour class at the same time
     public Token(String value, ColorClass type){
