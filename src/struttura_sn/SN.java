@@ -18,17 +18,22 @@ import wncalculus.color.ColorClass;
 //singleton
 public class SN {
     
-    private static ArrayList<Place> P = new ArrayList<>();
-    private static ArrayList<Transition> T = new ArrayList<>();
-    private static ArrayList<ColorClass> C = new ArrayList<>(List.of(new ColorClass("Neutral"))); //C.get(0) is the Neutral colour
-    private static ArrayList<Domain> DC = new ArrayList<>();
-    private static ArrayList<Variable> V = new ArrayList<>();
+    private static ArrayList<Place> P;
+    private static ArrayList<Transition> T;
+    private static ArrayList<ColorClass> C;
+    private static ArrayList<Domain> DC;
+    private static ArrayList<Variable> V;
     private static Marking m0;
     //single instance
     private static SN instance = null;
     
-    public SN(){
-        
+    private SN(){
+        P = new ArrayList<>();
+        T = new ArrayList<>();
+        C = new ArrayList<>(List.of(new ColorClass("Neutral"))); //C.get(0) is the Neutral colour
+        DC = new ArrayList<>();
+        V = new ArrayList<>();
+        m0 = Marking.get_instance();
     }
     
     public void add_place(Place p){
@@ -50,7 +55,7 @@ public class SN {
     public void add_variable(Variable v){
         SN.V.add(v);
     }
-    
+      
     public void set_initial_marking(Marking m0){
         SN.m0 = m0;
     }
@@ -105,6 +110,26 @@ public class SN {
         return null;
     }
     
+    public ArrayList<Place> get_P(){
+        return P;
+    }
+    
+    public ArrayList<Transition> get_T(){
+        return T;
+    }
+     
+    public ArrayList<ColorClass> get_C(){
+        return C;
+    }
+    
+    public ArrayList<Domain> get_DC(){
+        return DC;
+    }
+     
+    public ArrayList<Variable> get_V(){
+        return V;
+    }
+    
     public Marking get_initial_marking(){
         return SN.m0;
     }
@@ -124,32 +149,6 @@ public class SN {
             
         }catch(Exception e){
             System.out.println(e + " while connecting arcs");
-        }
-    }
-    
-    public void SN_all_data(){
-        
-        try{
-            System.out.println("ColorClasses:");
-            SN.C.stream().forEach(x -> System.out.println(x.name())); 
-            
-            System.out.println("Domains:");
-            SN.DC.stream().forEach(x -> System.out.println(x.name()));
-            
-            System.out.println("Variables/Projections:");
-            SN.V.stream().forEach(x -> System.out.println(x.get_name()));
-            
-            System.out.println("Places:");
-            SN.P.stream().forEach(x -> System.out.println(x.get_name()));
-            
-            System.out.println("Transitions:");
-            SN.T.stream().forEach(x -> System.out.println(x.get_name()));
-            
-            System.out.println("initial Marking:");        
-            SN.m0.get_all_marked_Places().stream().forEach(x -> System.out.println(x.get_name()));
-            
-        }catch(Exception e){
-            System.out.println(e + " in SN");
         }
     }
     

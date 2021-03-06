@@ -5,6 +5,7 @@
  */
 package traduttoresn_wncalculus;
 
+import Test.SN_DataTester;
 import operazioni_xml.XMLScanner;
 import struttura_sn.SN;
 
@@ -21,8 +22,7 @@ public class TraduttoreSN_wncalculus {
         //test
         XMLScanner xml_sc = XMLScanner.get_instance("CPN 1.pnml");
         xml_sc.scan_file_data();
-        SN sn = SN.get_instance();
-        //sn.SN_all_data();
+        //SN_DataTester.get_instance().SN_all_data();
     }
     
 }
