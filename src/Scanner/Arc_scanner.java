@@ -20,6 +20,12 @@ import org.w3c.dom.Node;
 //singleton
 public class Arc_scanner extends ElementScanner{
     
+    private static final String str_multOftuple = "\\s*(\\d+)\\s*[\\[]\\s*";
+    
+    private static final String str_multOftuple2 = "\\s*(\\d+)\\s*<\\s*";
+    
+    private static final String str_invertOfguard = "\\s*[\\[]\\s*[!]\\s*[(]\\s*";
+    
     private static Arc_scanner instance = null;
     
     private Arc_scanner(final Document doc){
@@ -70,9 +76,6 @@ public class Arc_scanner extends ElementScanner{
             //System.out.println(Arrays.toString(arc_expressions));
             
             //extract arc_expression data
-            String str_multOftuple = "\\s*(\\d+)\\s*[\\[]\\s*";
-            String str_multOftuple2 = "\\s*(\\d+)\\s*<\\s*";
-            String str_invertOfguard = "\\s*[\\[]\\s*[!]\\s*[(]\\s*";
             Pattern p;
             Matcher m;
             int tuple_mult;

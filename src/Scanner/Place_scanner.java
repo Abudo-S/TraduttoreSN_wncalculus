@@ -39,15 +39,16 @@ public class Place_scanner extends ElementScanner{
             Element pt_tag = (Element) pt;
             String place_type = pt_tag.getElementsByTagName("text").item(0).getTextContent();
             //call DataParser function to create Place of extracted data
-            dp.add_Place(Place_element.getAttribute("id"), place_type);
+            String place_name = Place_element.getAttribute("id");
+            dp.add_Place(place_name, place_type);
             
-            if(Place_element.getElementsByTagName("hlinscription").getLength()>0){ //check for initial marking
-                Node hlinscription = Place_element.getElementsByTagName("hlinscription").item(0);
+            if(Place_element.getElementsByTagName("hlinitialMarking").getLength()>0){ //check for initial marking
+                Node hlinscription = Place_element.getElementsByTagName("hlinitialMarking").item(0);
                 
                 if(hlinscription.getNodeType() == Node.ELEMENT_NODE){
                     Marking_scanner m = Marking_scanner.get_instance(doc);
                     Element Marking_element = (Element) hlinscription;
-                    m.scan_info(Marking_element);
+                    m.scan_info(Marking_element, place_name);
                 }
                 
             }

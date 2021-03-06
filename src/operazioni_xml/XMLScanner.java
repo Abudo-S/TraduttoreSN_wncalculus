@@ -31,6 +31,7 @@ public class XMLScanner {
 //     \s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*
 //    ([,]\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+|-]\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\s*)*
 //    */
+//    marking tuple of tokens: (\d*)([_a-zA-Z0-9]+)([,]([_a-zA-Z0-9]+))*
     
     private static XMLScanner instance = null;
     private String file_address; 

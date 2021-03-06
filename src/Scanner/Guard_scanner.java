@@ -16,7 +16,7 @@ import org.w3c.dom.Node;
  * @author dell
  */
 //singleton
-public class Guard_scanner extends ElementScanner{
+public class Guard_scanner{
     
     private static Guard_scanner instance = null; 
             
@@ -32,8 +32,8 @@ public class Guard_scanner extends ElementScanner{
 
     private static final String str_rx_separator = "([&]{2}|[|]{2})";
     
-    private Guard_scanner(final Document doc){
-        super(doc);
+    private Guard_scanner(){
+        
     }
     
     public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(Element Guard_element){
@@ -133,20 +133,10 @@ public class Guard_scanner extends ElementScanner{
         return "";
     }
     
-    @Override
-    public void scan_info(Element Guard_element){
-        LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String>  guardOfpredicates = this.scan_guard(Guard_element);
-        
-        for(Map.Entry ent : guardOfpredicates.entrySet()){
-          System.out.println("guard of predicates" + ent.getKey().toString() + "invert" + ent.getValue());
-        }
-        
-    }
-    
     public static Guard_scanner get_instance(Document doc){
         
         if(instance == null){
-            instance = new Guard_scanner(doc);
+            instance = new Guard_scanner();
         }
         
         return instance;
