@@ -5,6 +5,7 @@
  */
 package operazioni_xml;
 
+import Test.XML_DataTester;
 import java.util.*;
 import struttura_sn.*;
 import wncalculus.expr.Interval;
@@ -20,33 +21,28 @@ import wncalculus.guard.Guard;
 public class DataParser { // will use SemanticAnalyzer
     
     private static SN sn;
+    private static SemanticAnalyzer sa;
     //single instance
     private static DataParser instance = null;
     
     private DataParser(){
        sn = SN.get_instance();
+       sa = SemanticAnalyzer.get_instance();
     }
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
-//        System.out.println(class_name + "," + start + "," + end + "," + circular);
+        //XML_DataTester.get_instance().test_add_ColorClass(class_name, start, end, circular);
         sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
     }
       
     public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){ //finite enumeration color class
-//        System.out.println(class_name + "," + circular + ",...");
-//        token_names.stream().forEach(e -> System.out.print(e + "-"));
-//        System.out.println();
-        
+        //XML_DataTester.get_instance().test_add_ColorClass(class_name, token_names, circular);
         sn.add_colorClass(new ColorClass(class_name, new Interval(token_names.size(), token_names.size()), circular)); //takes an interval of Arraylist size exactly 
     }
     
     //HashMap<String, ArrayList<String>> : HashMap<subclass_name, ArrayList of available tokens>
     public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses, boolean circular){ //partitioned color class
-//        System.out.println(class_name + ",...");
-//        subclasses.keySet().forEach(str -> {
-//            subclasses.get(str).stream().forEach(e -> System.out.print(e + "-"));
-//        });
-//        System.out.println();
+        //XML_DataTester.get_instance().test_add_ColorClass(class_name, subclasses, circular);
         Interval[] intervals = new Interval[subclasses.size()];
         
         int i = 0;
@@ -71,17 +67,13 @@ public class DataParser { // will use SemanticAnalyzer
         sn.add_colorClass(new ColorClass(class_name, intervals, circular));
     }
     
-    //add Projection
     public void add_Variable(String variable_name, String variable_type){ //type = color class
-//        System.out.println(variable_name + "," + variable_type);
-        
+        //XML_DataTester.get_instance().test_add_Variable(variable_name, variable_type);
         sn.add_variable(new Variable(variable_name, sn.find_colorClass(variable_type)));
     }    
     
     public void add_Domain(String domain_name, ArrayList<String> colorclasses){
-//        System.out.println(domain_name + "...");
-//        colorclasses.stream().forEach(e -> System.out.print(e + "-"));
-//        System.out.println();
+        //XML_DataTester.get_instance().test_add_Domain(domain_name, colorclasses);
         HashMap<ColorClass, Integer> product_sort = new HashMap<>();
         
         colorclasses.stream().forEach( 
@@ -94,7 +86,7 @@ public class DataParser { // will use SemanticAnalyzer
     }
     
     public void add_Place(String place_name, String place_type){ //type = color class or domain
-//        System.out.println(place_name + "," + place_type);
+        //XML_DataTester.get_instance().test_add_Place(place_name, place_type);
         ColorClass cc = sn.find_colorClass(place_type);
         
         if(cc != null){ //place of color class type
@@ -108,20 +100,16 @@ public class DataParser { // will use SemanticAnalyzer
     //uses add_Marking_colorclass()
     //uses add_Marking_domain()
     public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type
-//        System.out.println(place_name + "...");
-//        tokens.keySet().stream().forEach(e -> System.out.print(e + "-"));
-//        System.out.println();
-
         try{ //assume that the marking belongs to a place of color class type
-            this.add_Marking_colorclass(place_name, new HashMap<>(tokens));
-            
+            this.add_Marking_colorclass(place_name, new HashMap<String, Integer>(tokens));
         }catch(Exception e){ // if it's not a place of color class type then it's of domain type 
-            this.add_Marking_domain(place_name, new LinkedHashMap<>(tokens));
+            this.add_Marking_domain(place_name, new LinkedHashMap<String[], Integer>(tokens));
         }
     }
     
     //tokens parameter will have 1d colors with their multiplicity
     private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens){ //for place of color class type
+        //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
         Marking m0 = Marking.get_instance();
         HashMap<Token, Integer> multiplied_token = new HashMap<>();
         
@@ -138,26 +126,41 @@ public class DataParser { // will use SemanticAnalyzer
     
     //tokens parameter will have (n)d colors with their multiplicity
     private void add_Marking_domain(String place_name, LinkedHashMap<String[], Integer> tokens){ //for place of domain type of n dimension
+        XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
         Marking m0 = Marking.get_instance();
         HashMap<Token[], Integer> multiplied_token = new HashMap<>();
         
         //fill multiplied_token using tokens
         Place p = sn.find_place(place_name);
         Domain d = sn.find_domain(p.get_type());
-        LinkedHashMap<ColorClass, Integer> product = (LinkedHashMap<ColorClass, Integer>) d.asMap();
+        Map<ColorClass, Integer> product = (Map<ColorClass, Integer>) d.asMap();
         
-        Token[] tokens_tuple;
-        int i;
-        for(String[] tokens_mark : tokens.keySet()){
-            tokens_tuple = new Token[tokens_mark.length];
-                    
-            for(ColorClass cc : product.keySet()){
-                i = 0;
-                tokens_tuple[i] = new Token(tokens_mark[i], cc);
-                i++;
-            }
-            multiplied_token.put(tokens_tuple, tokens.get(tokens_mark));
-        }
+        Token[] tokens_tuple = new Token[d.asMap().keySet().size()];
+//        int i;
+//        for(String[] tokens_mark : tokens.keySet()){
+//            tokens_tuple;
+//            i = 0;
+//            
+//            for(ColorClass cc : product.keySet()){    
+//                tokens_tuple[i] = new Token(tokens_mark[i], cc);
+//                i++;
+//            }
+//            multiplied_token.put(tokens_tuple, tokens.get(tokens_mark));
+//        }
+//same solution of the next stream method:
+        
+        ArrayList<Token> tokens_t = new ArrayList<>();
+        
+        tokens.keySet().stream().forEach(
+                token_arr -> { 
+                               Iterator<ColorClass> cc_it = product.keySet().iterator();
+                               
+                               Arrays.stream(token_arr).forEach(
+                                       token_str -> tokens_t.add(new Token(token_str, cc_it.next()))
+                               );
+                               multiplied_token.put(tokens_t.toArray(tokens_tuple), tokens.get(token_arr));
+                             }
+        );
                 
         m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
     }
@@ -166,12 +169,7 @@ public class DataParser { // will use SemanticAnalyzer
     //predicates describe guard and each predicate might be inverted
     //Note: last element in separators will be null 
     public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>  guard, boolean invert_guard){
-//        System.out.println(Transition_name + "," + invert_guard + ",...");
-//        if(guard != null){
-//            guard.keySet().stream().forEach(e -> System.out.print(guard.get(e) + "-"));
-//            System.out.println();
-//        }
-        
+        //XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
         //to be completed
     }
     
@@ -179,18 +177,7 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
-//        System.out.println(Arc_name + "," + arc_type + "," + from + "," + to + ",...");
-//        if(guards != null){
-//            guards.stream().forEach(e -> e.keySet().stream().forEach(e1 -> System.out.print(e.get(e1) + "-")));
-//            System.out.println("cont. arc");
-//        }
-//        invert_guards.stream().forEach(e -> System.out.print(e + "-"));
-//        System.out.println();
-//        tuples_elements.stream().forEach(e -> Arrays.stream(e).forEach(e1 -> System.out.print(e1 + "-")));
-//        System.out.println();
-//        tuples_mult.stream().forEach(e -> System.out.print(e + "-"));
-//        System.out.println();
-        
+        //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
         //to be completed
     }
     

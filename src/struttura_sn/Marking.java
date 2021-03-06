@@ -16,7 +16,7 @@ import java.util.Set;
 public class Marking {
     
     // place -> token(s) of multiplicity n, a domained marking will have array of tokens with n multiplicity 
-    private HashMap<Place, HashMap<Token[], Integer>> marking; 
+    private static HashMap<Place, HashMap<Token[], Integer>> marking; 
     //single instance
     private static Marking instance = null;
     
@@ -31,19 +31,19 @@ public class Marking {
                 token -> mark.put(new Token[]{token}, multiplied_token.get(token))
         );
         
-        this.marking.put(p, mark);
+        marking.put(p, mark);
     }
     
     public void mark_domained_place(Place p, HashMap<Token[], Integer> multiplied_token){ // mark a domained place
-        this.marking.put(p, multiplied_token);
+        marking.put(p, multiplied_token);
     }
     
     public Set<Place> get_all_marked_Places(){
-        return this.marking.keySet();
+        return marking.keySet();
     }
     
     public HashMap<Token[], Integer> get_marking_of_place(Place p){
-        return this.marking.get(p);
+        return marking.get(p);
     }
     
     public void update_initial_marking(Marking m0){
