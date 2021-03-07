@@ -147,7 +147,7 @@ public class DataParser { // will use SemanticAnalyzer
 //            }
 //            multiplied_token.put(tokens_tuple, tokens.get(tokens_mark));
 //        }
-//same solution of the next stream method:
+//same solution of the following stream method:
         
         ArrayList<Token> tokens_t = new ArrayList<>();
         
@@ -165,26 +165,21 @@ public class DataParser { // will use SemanticAnalyzer
         m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
     }
     
-    //format: HashMap<HashMap<ArrayList, Boolean>, String> = HashMap<HashMap<(inverted)predicate with variables/operators, invert_predicate>, separator with next predicate if exists>
+    //format: LinkedHashMap<HashMap<ArrayList, Boolean>, String> = LinkedHashMap<HashMap<predicate with projections/constants, invert_predicate>, separator with next predicate if exists>
     //predicates describe guard and each predicate might be inverted
     //Note: last element in separators will be null 
-    public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>  guard, boolean invert_guard){
+    public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
         //XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
-        //to be completed
+        sn.add_transition(new Transition(Transition_name, sa.analyze_guard_of_predicates(guard, invert_guard)));
     }
     
     //an Arc can have array of guards related with tuples
+    //TupleBag contains WNtuples, each of them has a multiplicity and a guard
     public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
         //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
-        //to be completed
-    }
-    
-    private Guard get_guard_from_predicates(){ //In wncalculus a guard of predicates has 2 type of guards: guard with or between predicates, guard with and between predicates
-        //And.factory(Guard ... guards);
-        //Or.factory(true, Guard ... guards);
-        return null;
+        //create (multiplied)TupleBag object of WNtuples  
     }
     
     public static DataParser get_instance(){

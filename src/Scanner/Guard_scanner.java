@@ -71,7 +71,7 @@ public class Guard_scanner{
     private LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> get_guard_map(String Guard) throws RuntimeException{ //map of (not-)inverted predicates with their separators
         LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = new LinkedHashMap<>();
         try{            
-            // (inverted)predicates with their separators
+            //(inverted)predicates with their separators
             Pattern p = Pattern.compile(str_rx_guard);
             Matcher m = p.matcher(Guard);
 
