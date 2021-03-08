@@ -18,9 +18,9 @@ public class Predicate_scanner{
     
     private static Predicate_scanner instance = null;
     
-    private static final String str_rx_predicate = "(\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*"
-                                                 + "(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
-                                                 + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)";
+    private static final String str_rx_predicate = "((\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)"
+                                                 + "\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
+                                                 + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
     
     private Predicate_scanner(){
         
@@ -44,11 +44,17 @@ public class Predicate_scanner{
         Matcher m = p.matcher(predicate);
         
         if(m.find()){
-            predicate_op.add(m.group(2)); //op1
-            predicate_op.add(m.group(4)); //operation
-            predicate_op.add(m.group(5)); //op2
+            if(m.group(1).contains("True")){
+                predicate_op.add("True");
+            }else if(m.group(1).contains("False")){
+                predicate_op.add("False");
+            }else{
+                predicate_op.add(m.group(3)); //op1
+                predicate_op.add(m.group(5)); //operation
+                predicate_op.add(m.group(6)); //op2
+            }
         }
-        return null;
+        return predicate_op;
     }
     
     private Boolean get_invert_predicate(String predicate){
