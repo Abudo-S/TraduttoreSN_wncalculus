@@ -74,8 +74,16 @@ public class XML_DataTester {
     
     public void test_add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>  guard, boolean invert_guard){
         System.out.println(Transition_name + "," + invert_guard + ",...");
+        
         if(guard != null){
-            guard.keySet().stream().forEach(e -> System.out.print(guard.get(e) + "-"));
+            guard.keySet().stream().forEach(
+                    e -> e.keySet().stream().forEach(
+                            p -> { 
+                                    p.stream().forEach(op -> System.out.print(op + " "));
+                                    System.out.println("," + e.get(p) + "-");
+                            }
+                        )        
+                    );
             System.out.println();
         }
     }
@@ -83,8 +91,21 @@ public class XML_DataTester {
     public void test_add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){
         System.out.println(Arc_name + "," + arc_type + "," + from + "," + to + ",...");
+        
         if(guards != null){
-            guards.stream().forEach(e -> e.keySet().stream().forEach(e1 -> System.out.print(e.get(e1) + "-")));
+            guards.stream().forEach(
+                    guard -> {
+                        guard.keySet().stream().forEach(
+                        e -> e.keySet().stream().forEach(
+                                p -> { 
+                                        p.stream().forEach(op -> System.out.print(op + " "));
+                                        System.out.println(e.get(p) + "-");
+                                }
+                            )        
+                        );
+                        System.out.println();
+                    }
+                );
             System.out.println("cont. arc");
         }
         invert_guards.stream().forEach(e -> System.out.print(e + "-"));
