@@ -11,6 +11,9 @@ import struttura_sn.*;
 import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
+import wncalculus.wnbag.TupleBag;
+import wncalculus.wnbag.BagfunctionTuple;
+import wncalculus.wnbag.WNtuple;
 import wncalculus.guard.Guard;
 
 /**
@@ -169,7 +172,7 @@ public class DataParser { // will use SemanticAnalyzer
     //predicates describe guard and each predicate might be inverted
     //Note: last element in separators will be null 
     public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
-        XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
+        //XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
         sn.add_transition(new Transition(Transition_name, sa.analyze_guard_of_predicates(guard, invert_guard)));
     }
     
@@ -178,11 +181,45 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
-        //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
+        XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
         //create (multiplied)TupleBag object of WNtuples 
+        Map<WNtuple, Integer> multiplied_tuples = new HashMap<>();
+        
         for(var i = 0; i < tuples_elements.size(); i++){
-            
+            Guard g = sa.analyze_guard_of_predicates(guards.get(i), invert_guards.get(i));
+            WNtuple tuple = sa.analyze_arc_tuple(g, tuples_elements.get(i));
+            multiplied_tuples.put(tuple, tuples_mult.get(i));
         }
+        //fill multiplied tuple
+        Arc arc = new Arc(Arc_name, new TupleBag(multiplied_tuples));
+        Place p = sn.find_place(from); //assume that the starting node is a place
+        Transition t;
+        
+        if(arc_type.equals("inhibitor")){ //inhibitor arc starts from a place definitely
+            t = sn.find_transition(to);
+            
+        }else{
+
+            if(p == null){ //t -> p
+                t = sn.find_transition(from);
+                p = sn.find_place(to);
+                p = (Place) t.add_next_Node(arc, p);
+
+            }else{ //p -> t
+                t = sn.find_transition(to);
+                t = (Transition) p.add_next_Node(arc, t);
+            }
+        }
+        
+        if(p.get_node_domain() == null){
+           p.set_node_domain(sa.analyze_place_domain(p));
+        }
+        
+        //update node domain when a new arc is connected with it
+        t.set_node_domain(sa.analyze_transition_domain(t));
+        
+        //exchange sn nodes with connected nodes
+        sn.update_nodes_via_arc(p, t);
     }
     
     public static DataParser get_instance(){

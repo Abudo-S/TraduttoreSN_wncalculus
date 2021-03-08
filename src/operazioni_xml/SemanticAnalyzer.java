@@ -6,8 +6,11 @@
 package operazioni_xml;
 
 import java.util.*;
+import struttura_sn.Place;
+import struttura_sn.Transition;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
+import wncalculus.expr.Domain;
 import wncalculus.guard.*;
 import wncalculus.wnbag.WNtuple;
 import wncalculus.wnbag.LinearComb;
@@ -28,8 +31,12 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     //In wncalculus a guard of predicates has 2 type of guards: guard with or between predicates, guard with and between predicates
     //format: LinkedHashMap<HashMap<ArrayList, Boolean>, String> = LinkedHashMap<HashMap<predicate with projections/constants, invert_predicate>, separator with next predicate if exists>
     public Guard analyze_guard_of_predicates(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
-        //And.factory(Guard ... guards);
-        //Or.factory(true, Guard ... guards);
+        
+        if(guard == null || guard.size() == 0){
+            //create True guard
+            return null; 
+        }
+        
         Guard next_p = null, g, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
         
         try{
@@ -64,7 +71,7 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
                 res = Neg.factory(res);
             }
         }catch(Exception e){
-            System.out.println(e + " SemanticAnalyzer/in analyze_guard_of_predicates()");
+            System.out.println(e + " in SemanticAnalyzer/analyze_guard_of_predicates()");
         }
         return res;
     }
@@ -80,8 +87,13 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     //In wncalculus predicate is also a guard
     //predicate map has only one element which is associated with a separator
     private Guard analyze_predicate(HashMap<ArrayList<String>, Boolean> predicate){
-        //uses analyze_predicate()
-        return null;
+        ArrayList<String> predicate_txt = predicate.keySet().iterator().next();
+        Guard g = null;
+        
+        if(predicate.get(predicate_txt) == true){ //invert predicate
+            g = Neg.factory(g);
+        }
+        return g;
     }
     
     //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
@@ -101,7 +113,18 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
         return null;
     }
     
+    //constant, es: subclass name
     private Subcl analyze_constant_element(){
+        return null;
+    }
+    
+    public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
+        //to be completed
+        return null;
+    }
+    
+    public Domain analyze_transition_domain(Transition t){ //transition's domain will have all colorclasses of variables that exist on connected arcs to it even if variables exist on guards
+        //to be completed
         return null;
     }
         

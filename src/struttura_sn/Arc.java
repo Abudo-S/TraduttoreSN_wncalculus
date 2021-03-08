@@ -6,7 +6,6 @@
 package struttura_sn;
 
 import java.util.Map;
-import wncalculus.wnbag.BagfunctionTuple;
 import wncalculus.wnbag.TupleBag;
 
 /**
@@ -24,9 +23,9 @@ public class Arc {
     //protected ArrayList<Boolean> invert_guarded_tuples; //default = false if the tuple isn't guarded
     //protected int level;
             
-    public Arc(String name, Map<? extends BagfunctionTuple, Integer> multiplied_tuples){
+    public Arc(String name, TupleBag tb){
         this.name = name;
-        this.tb = new TupleBag(multiplied_tuples);
+        this.tb = tb;
         //this.level = lvl;
     }    
     

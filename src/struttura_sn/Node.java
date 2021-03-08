@@ -26,6 +26,10 @@ public abstract class Node {
     
     public void add_previous_Node(Arc arc, Node n){}
     
+    public void add_inib(Arc arc, Node n){
+        this.Inib.put(n, arc);
+    }
+    
     public String get_name(){
         return this.name;
     }
@@ -42,7 +46,7 @@ public abstract class Node {
         this.d = d;
     }
     
-    public Domain get_node_domain(Domain d){
+    public Domain get_node_domain(){
         return this.d;
     }
 }
