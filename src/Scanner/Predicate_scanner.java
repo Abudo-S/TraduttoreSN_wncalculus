@@ -22,6 +22,8 @@ public class Predicate_scanner{
                                                  + "\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
                                                  + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
     
+    private static final String str_rx_inverter = "\\s*[\\[]\\s*[!]\\s*[(]*\\s*[_a-zA-Z]+[_a-zA-Z0-9]*";
+    
     private Predicate_scanner(){
         
     }
@@ -34,7 +36,7 @@ public class Predicate_scanner{
         
         HashMap<ArrayList<String>,Boolean> predicates_with_invert = new HashMap<>();       
         predicates_with_invert.put(this.get_predicate_operators(predicate), this.get_invert_predicate(predicate));
-        
+
         return predicates_with_invert;
     }
     
@@ -44,6 +46,7 @@ public class Predicate_scanner{
         Matcher m = p.matcher(predicate);
         
         if(m.find()){
+            
             if(m.group(1).contains("True")){
                 predicate_op.add("True");
             }else if(m.group(1).contains("False")){
@@ -54,11 +57,12 @@ public class Predicate_scanner{
                 predicate_op.add(m.group(6)); //op2
             }
         }
+        
         return predicate_op;
     }
     
     private Boolean get_invert_predicate(String predicate){
-        Pattern p = Pattern.compile("\\s*!\\s*[(]\\s*");
+        Pattern p = Pattern.compile(str_rx_inverter);
         Matcher m = p.matcher(predicate);
         
         if(m.find()){

@@ -126,7 +126,7 @@ public class DataParser { // will use SemanticAnalyzer
     
     //tokens parameter will have (n)d colors with their multiplicity
     private void add_Marking_domain(String place_name, LinkedHashMap<String[], Integer> tokens){ //for place of domain type of n dimension
-        XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
+        //XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
         Marking m0 = Marking.get_instance();
         HashMap<Token[], Integer> multiplied_token = new HashMap<>();
         
@@ -169,7 +169,7 @@ public class DataParser { // will use SemanticAnalyzer
     //predicates describe guard and each predicate might be inverted
     //Note: last element in separators will be null 
     public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
-        //XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
+        XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
         sn.add_transition(new Transition(Transition_name, sa.analyze_guard_of_predicates(guard, invert_guard)));
     }
     
@@ -179,7 +179,10 @@ public class DataParser { // will use SemanticAnalyzer
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
         //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
-        //create (multiplied)TupleBag object of WNtuples  
+        //create (multiplied)TupleBag object of WNtuples 
+        for(var i = 0; i < tuples_elements.size(); i++){
+            
+        }
     }
     
     public static DataParser get_instance(){

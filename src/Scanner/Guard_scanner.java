@@ -29,6 +29,8 @@ public class Guard_scanner{
     private static final String str_rx_predicate = "((\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)"
                                                  + "\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
                                                  + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
+    
+    private static final String str_rx_inverter = "\\s*[\\[]\\s*[!]\\s*[(]*\\s*[_a-zA-Z]+[_a-zA-Z0-9]*";
 
     private static final String str_rx_separator = "([&]{2}|[|]{2})";
     
@@ -40,7 +42,7 @@ public class Guard_scanner{
         String guard = this.get_guard_txt(Guard_element);           
         guard = "[" + guard + "]";
         //remove invert-guard
-        guard = guard.replaceFirst("\\s*[\\[]\\s*[!]\\s*[(]\\s*", "").replaceFirst("\\s*[)]\\s*[]]\\s*", guard);
+        guard = guard.replaceFirst(str_rx_inverter, "").replaceFirst("\\s*[)]\\s*[]]\\s*", guard).replaceFirst("[\\[]", "").replaceFirst("[\\]]", "");
         
         return this.scan_guard(guard);
     }
@@ -48,11 +50,10 @@ public class Guard_scanner{
     public boolean scan_invert_guard(Element Guard_element){
         String guard = this.get_guard_txt(Guard_element);  
         guard = "[" + guard + "]";
-        Pattern p = Pattern.compile("\\s*[\\[]\\s*[!]\\s*[(]\\s*");
+        Pattern p = Pattern.compile(str_rx_inverter);
         Matcher m = p.matcher(guard);
         
         if(m.find()){ //invert guard
-
             return true;
         }
         
@@ -91,35 +92,30 @@ public class Guard_scanner{
             String separator;
             
             while(m.find()){
-
-                 if(m.find()){
-                    predicates.add(pd_sc.scan_predicate(m.group(1)));
-                 }
+                 predicates.add(pd_sc.scan_predicate(m.group(1)));   
             }
 
-            while(m1.find()){
-                if(m1.find()){
-                    separator = m1.group(1);
-                    
-                    if(separator.equals("||")){
-                        separators.add("or");
-                    }else{
-                        separators.add("and");
-                    } 
-                }
-            }
+            while(m1.find()){             
+                separator = m1.group(1);
 
-            for(int i = 0; i< predicates.size(); i++){
+                if(separator.equals("||")){
+                    separators.add("or");
+                }else{
+                    separators.add("and");
+                } 
+            }
+            
+            for(int i = 0; i < predicates.size(); i++){
                 if(i != predicates.size()-1){
                    guard.put(predicates.get(i), separators.get(i));
                 }else{
-                    guard.put(predicates.get(i), "");
+                    guard.put(predicates.get(i), null);
                 }
             }
         }catch(Exception e){
             System.out.println(e + " in Guard_scanner/get_guard_map()");
         }    
-        
+
         return guard;
     }
     
