@@ -12,7 +12,6 @@ import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
 import wncalculus.wnbag.TupleBag;
-import wncalculus.wnbag.BagfunctionTuple;
 import wncalculus.wnbag.WNtuple;
 import wncalculus.guard.Guard;
 
@@ -173,7 +172,7 @@ public class DataParser { // will use SemanticAnalyzer
     //Note: last element in separators will be null 
     public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
         //XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
-        sn.add_transition(new Transition(Transition_name, sa.analyze_guard_of_predicates(guard, invert_guard)));
+        sn.add_transition(new Transition(Transition_name, sa.analyze_guard_of_predicates(guard, invert_guard, Transition_name)));
     }
     
     //an Arc can have array of guards related with tuples
@@ -182,31 +181,28 @@ public class DataParser { // will use SemanticAnalyzer
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
         XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
-        //create (multiplied)TupleBag object of WNtuples 
-        Map<WNtuple, Integer> multiplied_tuples = new HashMap<>();
         
-        for(var i = 0; i < tuples_elements.size(); i++){
-            Guard g = sa.analyze_guard_of_predicates(guards.get(i), invert_guards.get(i));
-            WNtuple tuple = sa.analyze_arc_tuple(g, tuples_elements.get(i));
-            multiplied_tuples.put(tuple, tuples_mult.get(i));
-        }
-        //fill multiplied tuple
-        Arc arc = new Arc(Arc_name, new TupleBag(multiplied_tuples));
         Place p = sn.find_place(from); //assume that the starting node is a place
         Transition t;
+        Arc arc;
         
         if(arc_type.equals("inhibitor")){ //inhibitor arc starts from a place definitely
             t = sn.find_transition(to);
+            arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
+            t.add_inib(arc, t);
+            p.add_inib(arc, p);
             
         }else{
 
             if(p == null){ //t -> p
                 t = sn.find_transition(from);
                 p = sn.find_place(to);
+                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
                 p = (Place) t.add_next_Node(arc, p);
 
             }else{ //p -> t
                 t = sn.find_transition(to);
+                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
                 t = (Transition) p.add_next_Node(arc, t);
             }
         }
@@ -214,12 +210,27 @@ public class DataParser { // will use SemanticAnalyzer
         if(p.get_node_domain() == null){
            p.set_node_domain(sa.analyze_place_domain(p));
         }
+        //analyze transition domain ....
         
         //update node domain when a new arc is connected with it
         t.set_node_domain(sa.analyze_transition_domain(t));
         
         //exchange sn nodes with connected nodes
         sn.update_nodes_via_arc(p, t);
+    }
+    
+    private Map<WNtuple, Integer> fill_TupleBag_map(ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
+    ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult, String transition_name){
+        //create (multiplied)TupleBag object of WNtuples 
+        Map<WNtuple, Integer> multiplied_tuples = new HashMap<>();
+        
+        for(var i = 0; i < tuples_elements.size(); i++){
+            Guard g = sa.analyze_guard_of_predicates(guards.get(i), invert_guards.get(i), transition_name);
+            WNtuple tuple = sa.analyze_arc_tuple(g, tuples_elements.get(i));
+            multiplied_tuples.put(tuple, tuples_mult.get(i));
+        }
+        
+        return multiplied_tuples;
     }
     
     public static DataParser get_instance(){
