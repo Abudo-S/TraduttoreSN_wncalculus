@@ -17,8 +17,8 @@ public class Tuple_scanner {
     
     private static Tuple_scanner instance = null;
     
-    private static final String str_rx_tuple = "\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+-]\\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\\s*"
-                                             + "([,]\\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+-]\\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\\s*)*"; //[<][>] were removed by Arc_scanner
+    private static final String str_rx_tuple = "\\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\\s*[+-]\\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\\s*"
+                                             + "([,]\\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\\s*[+-]\\s*([_a-zA-Z]+[_a-zA-Z0-9]*))*)\\s*)*"; //[<][>] were removed by Arc_scanner
     
     private Tuple_scanner(){
         
