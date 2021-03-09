@@ -6,9 +6,12 @@
 package operazioni_xml;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import struttura_sn.Place;
 import struttura_sn.SN;
 import struttura_sn.Transition;
+import struttura_sn.Variable;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
 import wncalculus.expr.Domain;
@@ -33,9 +36,9 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     
     //In wncalculus a guard of predicates has 2 type of guards: guard with or between predicates, guard with and between predicates
     //format: LinkedHashMap<HashMap<ArrayList, Boolean>, String> = LinkedHashMap<HashMap<predicate with projections/constants, invert_predicate>, separator with next predicate if exists>
-    public Guard analyze_guard_of_predicates(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
+    public Guard analyze_guard_of_predicates(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard, String transition_name){
         
-        if(guard == null || guard.size() == 0){
+        if(guard == null || guard.isEmpty()){
             //create True guard
             return null; 
         }
@@ -49,10 +52,10 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
             for(HashMap<ArrayList<String>, Boolean> predicate : guard.keySet()){
 
                 if(next_p == null){ //first cycle
-                    g = this.analyze_predicate(predicate);
+                    g = this.analyze_predicate(predicate, transition_name);
                     
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next());
+                        next_p = this.analyze_predicate(it.next(), transition_name);
                     }else{
                         res = g;
                         break;
@@ -61,7 +64,7 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
                     g = next_p;
                     
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next());
+                        next_p = this.analyze_predicate(it.next(), transition_name);
                     }else{
                         res = this.analyze_and_or_guard(res, g, guard.get(predicate));
                         break;
@@ -88,20 +91,65 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     }
     
     //In wncalculus predicate is also a guard
-    //predicate map has only one element which is associated with a separator
-    private Guard analyze_predicate(HashMap<ArrayList<String>, Boolean> predicate){
+    //predicate map has only one element which is associated with a separator if exists
+    private Guard analyze_predicate(HashMap<ArrayList<String>, Boolean> predicate, String transition_name){
         ArrayList<String> predicate_txt = predicate.keySet().iterator().next();
         Guard g = null;
         
-        if(predicate.get(predicate_txt) == true){ //invert predicate
-            g = Neg.factory(g);
+        try{
+            String p_txt = predicate_txt.get(0);
+            
+            if(predicate_txt.size() == 1) {
+
+                if(p_txt.contains("True")){
+                    //create True guard
+                }else if(p_txt.contains("False")){
+                    //create False guard
+                }
+             //equality || membership
+            }else{ //3 elements predicate -> projection, operation, projection/constant 
+                //1st element
+                Projection p1 = this.analyze_projection_element(p_txt, transition_name);
+                //2nd element
+                String operation = predicate_txt.get(1);
+                //3rd element
+                String op3 = predicate_txt.get(2);
+                
+                if(operation.equals("=")){
+                    g = this.analyze_equality_guard(p1, p1, true);
+                    
+                }else if(operation.equals("!=")){
+                    g = this.analyze_equality_guard(p1, this.analyze_projection_element(op3, transition_name), false);
+                    
+                }else if(operation.equals("in")){
+                    g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), true);
+                }else{// !in
+                    g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), false);
+                }
+            }
+
+            if(predicate.get(predicate_txt) == true){ //invert predicate
+                g = Neg.factory(g);
+            }
+        }catch(Exception e){
+            System.out.println(e + " in SemanticAnalyzer/analyze_predicate()");
         }
         return g;
     }
     
+    private Guard analyze_equality_guard(Projection g1, Projection g2, boolean operation){
+        //to be completed
+        return null;
+    }
+    
+    private Guard analyze_membership_guard(Projection g1, Subcl constant, boolean operation){
+        //to be completed
+        return null;
+    }
+    
     //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
     //tuples_elements list contains linearcombs
-    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements){
+    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements /*, Domain domain*/){
         //uses analyze_tuple_elements()
         return null;
     }
@@ -112,21 +160,30 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
         return null;
     }
     
-    private Projection analyze_projection_element(){
-        return null;
+    private Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException{
+        
+        Pattern p = Pattern.compile("([_a-zA-Z]+[_a-zA-Z0-9]*)(([+]{2}|[-]{2})?)");
+        Matcher m = p.matcher(proj.replaceAll("\\s*", ""));
+        Projection pro = null;
+        
+        return pro;
     }
     
     //constant, es: subclass name
-    private Subcl analyze_constant_element(){
+    private Subcl analyze_constant_element(String const_name){
         return null;
     }
     
     public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
-        String place_type = p.get_type();
-        Domain d = sn.find_domain(place_type); //assume that the place type is domain
+        Domain d = p.get_node_domain();
         
-        if(d == null){ //if the place type isn't domain then it's colorclass
-            d = new Domain(sn.find_colorClass(place_type));
+        if(d == null){
+            String place_type = p.get_type();
+            d = sn.find_domain(place_type); //assume that the place type is domain
+
+            if(d == null){ //if the place type isn't domain then it's colorclass
+                d = new Domain(sn.find_colorClass(place_type));
+            }
         }
         
         return d;
@@ -135,6 +192,12 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     public Domain analyze_transition_domain(Transition t){ //transition's domain will have all colorclasses of variables that exist on connected arcs to it even if variables exist on guards
         //to be completed
         return null;
+    }
+    
+    //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
+    public int generate_projection_index(String transition_name, String variable_name, int successor_flag){
+        //to be completed
+        return 0;
     }
         
     public static SemanticAnalyzer get_instance(){
