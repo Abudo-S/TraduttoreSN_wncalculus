@@ -166,6 +166,32 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
         Matcher m = p.matcher(proj.replaceAll("\\s*", ""));
         Projection pro = null;
         
+        if(m.find()){
+            Variable v = sn.find_variable(m.group(1));
+            String circ_op = m.group(2);
+
+            if(circ_op.equals("")){
+                pro  = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 0), 0, v.get_colourClass());
+            }else{
+
+                if(circ_op.contains("++")){
+                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 1), 1, v.get_colourClass());
+
+                }else if(circ_op.contains("--")){
+                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), -1), -1, v.get_colourClass());
+
+                }else{
+                    throw new NullPointerException("can't find successor in " + proj);
+                }       
+            }
+            
+            v.add_available_projection(sn.find_transition(transition_name), pro);
+            sn.update_variable_via_projection(v);
+                            
+        }else{
+            throw new NullPointerException("can't find first projection in " + proj);
+        }
+        
         return pro;
     }
     
