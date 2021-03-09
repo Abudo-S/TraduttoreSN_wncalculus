@@ -7,6 +7,7 @@ package operazioni_xml;
 
 import java.util.*;
 import struttura_sn.Place;
+import struttura_sn.SN;
 import struttura_sn.Transition;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
@@ -21,11 +22,13 @@ import wncalculus.wnbag.LinearComb;
  */
 //singleton
 public class SemanticAnalyzer { //check/analyze the semantic of arc expressions & guards/tuples
+    
+    private static SN sn;
     //single instance
     private static SemanticAnalyzer instance = null;
     
     private SemanticAnalyzer(){
-        
+        sn = SN.get_instance();
     }
     
     //In wncalculus a guard of predicates has 2 type of guards: guard with or between predicates, guard with and between predicates
@@ -119,8 +122,14 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     }
     
     public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
-        //to be completed
-        return null;
+        String place_type = p.get_type();
+        Domain d = sn.find_domain(place_type); //assume that the place type is domain
+        
+        if(d == null){ //if the place type isn't domain then it's colorclass
+            d = new Domain(sn.find_colorClass(place_type));
+        }
+        
+        return d;
     }
     
     public Domain analyze_transition_domain(Transition t){ //transition's domain will have all colorclasses of variables that exist on connected arcs to it even if variables exist on guards
