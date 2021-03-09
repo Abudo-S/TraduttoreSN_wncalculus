@@ -152,6 +152,18 @@ public class SN {
         }
     }
     
+    public void update_variable_via_projection(Variable v){
+        try{
+            V = (ArrayList<Variable>) V.stream()
+                    .filter(variable -> variable.get_name().equals(v.get_name()))
+                    .map(variable -> v)
+                    .collect(Collectors.toList());
+            
+        }catch(Exception e){
+            System.out.println(e + " while updating variable!");
+        }
+    }
+    
     public static SN get_instance(){
         
         if(instance == null){
