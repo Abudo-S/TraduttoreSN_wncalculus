@@ -164,6 +164,30 @@ public class SN {
         }
     }
     
+    public void update_place(Place p){
+        try{
+            P = (ArrayList<Place>) P.stream()
+                    .filter(place -> place.get_name().equals(p.get_name()))
+                    .map(place -> p)
+                    .collect(Collectors.toList());
+            
+        }catch(Exception e){
+            System.out.println(e + " while update place: " + p.get_name());
+        }
+    }
+    
+    public void update_transition(Transition t){
+        try{
+            T = (ArrayList<Transition>) T.stream()
+                    .filter(transition -> transition.get_name().equals(t.get_name()))
+                    .map(transition -> t)
+                    .collect(Collectors.toList());
+            
+        }catch(Exception e){
+            System.out.println(e + " while update transition: " + t.get_name());
+        }
+    }
+    
     public static SN get_instance(){
         
         if(instance == null){

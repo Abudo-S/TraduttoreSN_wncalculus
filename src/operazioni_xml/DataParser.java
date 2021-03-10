@@ -208,9 +208,8 @@ public class DataParser { // will use SemanticAnalyzer
             }
         }
         
-        if(p.get_node_domain() == null){
-           p.set_node_domain(sa.analyze_place_domain(p));
-        }
+        //analyze place domain
+        p.set_node_domain(sa.analyze_place_domain(p));
         //analyze transition domain ....
         
         //update node domain when a new arc is connected with it
