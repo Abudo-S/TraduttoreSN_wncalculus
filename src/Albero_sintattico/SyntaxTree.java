@@ -11,19 +11,23 @@ package Albero_sintattico;
  */
 public class SyntaxTree {
     
-    
+    private final Syntactic_place root;
     //single instance
     private static SyntaxTree instance = null;
     
-    private SyntaxTree(){
-        
+    private SyntaxTree(final Syntactic_place root){
+        this.root = root;
     }
     
-    public static SyntaxTree get_instance(){
-
-    if(instance == null){
-        instance = new SyntaxTree();
+    public Syntactic_place get_root(){
+        return this.root;
     }
+    
+    public static SyntaxTree get_instance(final Syntactic_place root){
+
+        if(instance == null){
+            instance = new SyntaxTree(root);
+        }
         
         return instance;
     }

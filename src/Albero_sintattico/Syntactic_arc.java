@@ -9,9 +9,9 @@ package Albero_sintattico;
  *
  * @author dell
  */
-public class Syntactic_Arc extends SyntacticElement{
+public class Syntactic_arc extends SyntacticElement{
     
-    public Syntactic_Arc(String name){
+    public Syntactic_arc(String name){
         super(name);
     }
     

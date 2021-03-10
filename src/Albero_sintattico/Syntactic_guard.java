@@ -9,6 +9,6 @@ package Albero_sintattico;
  *
  * @author dell
  */
-public class Syntactic_guard {
+public class Syntactic_guard { //could be element of Syntactic_arc or Syntactic_transition
     
 }

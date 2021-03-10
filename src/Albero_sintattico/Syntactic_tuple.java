@@ -9,6 +9,6 @@ package Albero_sintattico;
  *
  * @author dell
  */
-public class Syntactic_tuple {
+public class Syntactic_tuple { //element of Syntactic_arc
     
 }
