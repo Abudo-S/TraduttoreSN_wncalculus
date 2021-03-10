@@ -11,7 +11,17 @@ package Albero_sintattico;
  */
 public class Syntactic_transition extends SyntacticElement{
     
+    private Syntactic_guard sg;
+    
     public Syntactic_transition(String name){
         super(name);
+    }
+    
+    public void set_syntactic_guard(Syntactic_guard sg){
+        this.sg = sg;
+    }
+    
+    public Syntactic_guard get_syntactic_guard(){
+        return this.sg;
     }
 }
