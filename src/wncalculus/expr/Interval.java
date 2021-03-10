@@ -6,6 +6,9 @@ package wncalculus.expr;
   intervals are implemented as "data-objects"
  */
   public final class Interval implements Comparable<Interval> {
+        
+        private String name = "Undefined Interval"; //added, could be "undefined interval" if it's not declared or interval set hasn't set yet
+       
         private final int lb, ub;//interval bounds
         
      /**
@@ -208,5 +211,19 @@ package wncalculus.expr;
         
         return o.unbounded() ? -1 : this.ub < o.ub ? -1 : 1;
     }
-  
+    
+    /** 
+     * @param name of domain
+     */
+    public void set_name(String name){ //added
+        this.name = name;
+    }
+    
+    /** 
+     * @return domain name
+     */
+    public String name(){ //added
+        return this.name;
+    }
+    
   }

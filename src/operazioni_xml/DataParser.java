@@ -62,7 +62,8 @@ public class DataParser { // will use SemanticAnalyzer
             }else{ //finite enumeration(useroperator tag)
                 intervals[i] = new Interval(subclass_tokens.size(), subclass_tokens.size());
             }
-        
+            
+            intervals[i].set_name(subclass_name);
             i++;
         }
         

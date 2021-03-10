@@ -18,6 +18,8 @@ import wncalculus.expr.Domain;
 import wncalculus.guard.*;
 import wncalculus.wnbag.WNtuple;
 import wncalculus.wnbag.LinearComb;
+import wncalculus.color.ColorClass;
+import wncalculus.expr.Interval;
 
 /**
  *
@@ -197,7 +199,25 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     
     //constant, es: subclass name
     private Subcl analyze_constant_element(String const_name){
-        return null;
+        Subcl con = null;
+        
+        for(ColorClass cc : sn.get_C()){
+            
+            if(cc.name().equals(const_name)){ //search in colorclasses' names
+                con = Subcl.factory(this.generate_subcl_index(const_name), cc);
+                 break;
+            }else{ //search in subclasses of colorclass
+                Interval interval = Arrays.stream(cc.getConstraints()).filter(
+                                                 sub_interval -> sub_interval.name().equals(const_name)
+                                                 ).findFirst().orElse(null);
+                if(interval != null){
+                    con = Subcl.factory(this.generate_subcl_index(const_name), cc); //should we pass the sub-interval in which we have found the constant?
+                    break;        
+                }
+            }
+        }
+                
+        return con;
     }
     
     public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
@@ -220,8 +240,12 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
         return null;
     }
     
+    private int generate_subcl_index(String const_name){
+        return this.generate_projection_index(const_name, "", 0);
+    }
+    
     //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
-    public int generate_projection_index(String transition_name, String variable_name, int successor_flag){
+    private int generate_projection_index(String transition_name, String variable_name, int successor_flag){
         //to be completed
         return 0;
     }
