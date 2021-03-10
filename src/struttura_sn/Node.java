@@ -42,6 +42,10 @@ public abstract class Node {
         return this.previous;
     }
     
+    public HashMap<Node, Arc> get_inib_nodes(){
+        return this.Inib;
+    }
+    
     public void set_node_domain(Domain d){
         this.d = d;
     }
