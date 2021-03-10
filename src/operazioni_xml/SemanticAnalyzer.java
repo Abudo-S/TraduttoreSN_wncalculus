@@ -20,6 +20,7 @@ import wncalculus.wnbag.WNtuple;
 import wncalculus.wnbag.LinearComb;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Interval;
+import wncalculus.util.ComplexKey;
 
 /**
  *
@@ -246,8 +247,8 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
     
     //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
     private int generate_projection_index(String transition_name, String variable_name, int successor_flag){
-        //to be completed
-        return 0;
+        ComplexKey ck = new ComplexKey(transition_name, variable_name, successor_flag);
+        return ck.hashCode();
     }
         
     public static SemanticAnalyzer get_instance(){
