@@ -9,6 +9,9 @@ package Albero_sintattico;
  *
  * @author dell
  */
-public class Syntax_tree {
+public class Syntactic_place extends SyntacticElement{
     
+    public Syntactic_place(String name){
+        super(name);
+    }
 }
