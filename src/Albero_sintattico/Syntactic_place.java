@@ -12,7 +12,7 @@ import struttura_sn.SN;
  *
  * @author dell
  */
-public class Syntactic_place extends SyntacticElement{
+public class Syntactic_place extends SyntacticNode{
     
     public Syntactic_place(String name){
         super(name);

@@ -10,12 +10,13 @@ import java.util.HashMap;
  *
  * @author dell
  */
-public class Syntactic_arc extends SyntacticElement{
+public class Syntactic_arc{
     
+    private final String name;
     private HashMap<Syntactic_tuple, Integer> multiplied_tuples;
     
     public Syntactic_arc(String name){
-        super(name);
+        this.name = name;
     }
     
     public void add_multiplied_tuple(Syntactic_tuple st, int multiplicity){

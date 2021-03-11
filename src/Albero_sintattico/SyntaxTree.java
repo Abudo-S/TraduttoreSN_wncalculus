@@ -5,28 +5,38 @@
  */
 package Albero_sintattico;
 
+import struttura_sn.SN;
+
 /**
  *
  * @author dell
  */
 public class SyntaxTree {
     
-    private final Syntactic_place root;
+    private SyntacticNode root;
     //single instance
     private static SyntaxTree instance = null;
     
-    private SyntaxTree(final Syntactic_place root){
+    private SyntaxTree(){
+
+    }
+    
+    public void set_root(Syntactic_place root){
         this.root = root;
     }
     
-    public Syntactic_place get_root(){
+    public SyntacticNode get_root(){
         return this.root;
     }
     
-    public static SyntaxTree get_instance(final Syntactic_place root){
+    public static void update_instance(SyntaxTree ins){
+        instance = ins;
+    }
+    
+    public static SyntaxTree get_instance(){
 
         if(instance == null){
-            instance = new SyntaxTree(root);
+            instance = new SyntaxTree();
         }
         
         return instance;

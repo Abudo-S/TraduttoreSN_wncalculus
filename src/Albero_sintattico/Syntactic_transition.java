@@ -9,7 +9,7 @@ package Albero_sintattico;
  *
  * @author dell
  */
-public class Syntactic_transition extends SyntacticElement{
+public class Syntactic_transition extends SyntacticNode{
     
     private Syntactic_guard sg;
     

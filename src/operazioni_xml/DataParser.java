@@ -5,6 +5,7 @@
  */
 package operazioni_xml;
 
+import Albero_sintattico.*;
 import Test.XML_DataTester;
 import java.util.*;
 import struttura_sn.*;
@@ -24,12 +25,15 @@ public class DataParser { // will use SemanticAnalyzer
     
     private static SN sn;
     private static SemanticAnalyzer sa;
+    private static ArrayList<Syntactic_transition> all_st;
+    private static SyntaxTree snt;
     //single instance
     private static DataParser instance = null;
     
     private DataParser(){
        sn = SN.get_instance();
        sa = SemanticAnalyzer.get_instance();
+       snt = SyntaxTree.get_instance();
     }
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
@@ -173,7 +177,24 @@ public class DataParser { // will use SemanticAnalyzer
     //Note: last element in separators will be null 
     public void add_Transition(String Transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
         //XML_DataTester.get_instance().test_add_Transition(Transition_name, guard, invert_guard);        
-        sn.add_transition(new Transition(Transition_name, sa.analyze_guard_of_predicates(guard, invert_guard, Transition_name)));
+        //sn.add_transition(new Transition(Transition_name, sa.analyze_guard_of_predicates(guard, invert_guard, Transition_name)));
+        Syntactic_transition st = new Syntactic_transition(Transition_name);
+        
+        if(guard != null){
+            LinkedHashMap<Syntactic_predicate, String> separated_predicates = new LinkedHashMap<>();
+            
+            guard.keySet().stream().forEach(
+                    syntactic_p -> {
+                        ArrayList<String> pe = syntactic_p.keySet().stream().findFirst().orElse(null);
+                        Syntactic_predicate sp = new Syntactic_predicate(syntactic_p.get(pe), pe);
+                        separated_predicates.put(sp, guard.get(syntactic_p));
+                    }    
+            );
+            
+            st.set_syntactic_guard(new Syntactic_guard(invert_guard, separated_predicates));
+        }
+        //add to syntactic transition list
+        all_st.add(st);
     }
     
     //an Arc can have array of guards related with tuples
@@ -181,42 +202,43 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
-        XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
+        //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
         
-        Place p = sn.find_place(from); //assume that the starting node is a place
-        Transition t;
-        Arc arc;
         
-        if(arc_type.equals("inhibitor")){ //inhibitor arc starts from a place definitely
-            t = sn.find_transition(to);
-            arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
-            t.add_inib(arc, t);
-            p.add_inib(arc, p);
-            
-        }else{
-
-            if(p == null){ //t -> p
-                t = sn.find_transition(from);
-                p = sn.find_place(to);
-                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
-                p = (Place) t.add_next_Node(arc, p);
-
-            }else{ //p -> t
-                t = sn.find_transition(to);
-                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
-                t = (Transition) p.add_next_Node(arc, t);
-            }
-        }
-        
-        //analyze place domain
-        p.set_node_domain(sa.analyze_place_domain(p));
-        //analyze transition domain ....
-        
-        //update node domain when a new arc is connected with it
-        t.set_node_domain(sa.analyze_transition_domain(t));
-        
-        //exchange sn nodes with connected nodes
-        sn.update_nodes_via_arc(p, t);
+//        Place p = sn.find_place(from); //assume that the starting node is a place
+//        Transition t;
+//        Arc arc;
+//        
+//        if(arc_type.equals("inhibitor")){ //inhibitor arc starts from a place definitely
+//            t = sn.find_transition(to);
+//            arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
+//            t.add_inib(arc, t);
+//            p.add_inib(arc, p);
+//            
+//        }else{
+//
+//            if(p == null){ //t -> p
+//                t = sn.find_transition(from);
+//                p = sn.find_place(to);
+//                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
+//                p = (Place) t.add_next_Node(arc, p);
+//
+//            }else{ //p -> t
+//                t = sn.find_transition(to);
+//                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
+//                t = (Transition) p.add_next_Node(arc, t);
+//            }
+//        }
+//        
+//        //analyze place domain
+//        p.set_node_domain(sa.analyze_place_domain(p));
+//        //analyze transition domain ....
+//        
+//        //update node domain when a new arc is connected with it
+//        t.set_node_domain(sa.analyze_transition_domain(t));
+//        
+//        //exchange sn nodes with connected nodes
+//        sn.update_nodes_via_arc(p, t);
     }
     
     private Map<WNtuple, Integer> fill_TupleBag_map(ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
