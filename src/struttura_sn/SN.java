@@ -188,6 +188,10 @@ public class SN {
         }
     }
     
+    public static void update_instance(SN ins){
+        instance = ins;
+    }
+    
     public static SN get_instance(){
         
         if(instance == null){

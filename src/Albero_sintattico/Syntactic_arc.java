@@ -13,10 +13,12 @@ import java.util.HashMap;
 public class Syntactic_arc{
     
     private final String name;
+    private boolean inhibitor;
     private HashMap<Syntactic_tuple, Integer> multiplied_tuples;
     
     public Syntactic_arc(String name){
         this.name = name;
+        this.inhibitor = inhibitor;
     }
     
     public void add_multiplied_tuple(Syntactic_tuple st, int multiplicity){
@@ -29,5 +31,17 @@ public class Syntactic_arc{
     
     public int get_tuple_multiplicity(Syntactic_tuple st){
         return this.multiplied_tuples.get(st);
+    }
+    
+    public void set_type(boolean inhibitor){
+        this.inhibitor = inhibitor;
+    }
+    
+    public boolean get_type(){
+        return this.inhibitor;
+    }
+    
+    public String get_name(){
+        return this.name;
     }
 }

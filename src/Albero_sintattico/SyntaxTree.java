@@ -29,9 +29,9 @@ public class SyntaxTree {
         return this.root;
     }
     
-    public static void update_instance(SyntaxTree ins){
-        instance = ins;
-    }
+//    public static void update_instance(SyntaxTree ins){
+//        instance = ins;
+//    }
     
     public static SyntaxTree get_instance(){
 

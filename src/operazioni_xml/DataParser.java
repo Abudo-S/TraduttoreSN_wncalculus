@@ -8,13 +8,11 @@ package operazioni_xml;
 import Albero_sintattico.*;
 import Test.XML_DataTester;
 import java.util.*;
+import java.util.stream.Collectors;
 import struttura_sn.*;
 import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
-import wncalculus.wnbag.TupleBag;
-import wncalculus.wnbag.WNtuple;
-import wncalculus.guard.Guard;
 
 /**
  *
@@ -25,6 +23,7 @@ public class DataParser { // will use SemanticAnalyzer
     
     private static SN sn;
     private static SemanticAnalyzer sa;
+    private static ArrayList<Syntactic_place> all_pl;
     private static ArrayList<Syntactic_transition> all_st;
     private static SyntaxTree snt;
     //single instance
@@ -95,13 +94,18 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_Place(String place_name, String place_type){ //type = color class or domain
         //XML_DataTester.get_instance().test_add_Place(place_name, place_type);
         ColorClass cc = sn.find_colorClass(place_type);
+        Place p;
         
         if(cc != null){ //place of color class type
-            sn.add_place(new Place(place_name, cc));
+            p = new Place(place_name, cc);
             
         }else{ //place of domain type
-            sn.add_place(new Place(place_name, sn.find_domain(place_type)));
+            p = new Place(place_name, sn.find_domain(place_type));
         }
+        all_pl.add(new Syntactic_place(place_name));
+        //analyze place domain
+        p.set_node_domain(sa.analyze_place_domain(p));
+        sn.add_place(p);
     }
     
     //uses add_Marking_colorclass()
@@ -181,17 +185,7 @@ public class DataParser { // will use SemanticAnalyzer
         Syntactic_transition st = new Syntactic_transition(Transition_name);
         
         if(guard != null){
-            LinkedHashMap<Syntactic_predicate, String> separated_predicates = new LinkedHashMap<>();
-            
-            guard.keySet().stream().forEach(
-                    syntactic_p -> {
-                        ArrayList<String> pe = syntactic_p.keySet().stream().findFirst().orElse(null);
-                        Syntactic_predicate sp = new Syntactic_predicate(syntactic_p.get(pe), pe);
-                        separated_predicates.put(sp, guard.get(syntactic_p));
-                    }    
-            );
-            
-            st.set_syntactic_guard(new Syntactic_guard(invert_guard, separated_predicates));
+            st.set_syntactic_guard(this.get_synt_guard(guard, invert_guard));
         }
         //add to syntactic transition list
         all_st.add(st);
@@ -203,56 +197,85 @@ public class DataParser { // will use SemanticAnalyzer
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
         //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
-        
-        
-//        Place p = sn.find_place(from); //assume that the starting node is a place
-//        Transition t;
-//        Arc arc;
-//        
-//        if(arc_type.equals("inhibitor")){ //inhibitor arc starts from a place definitely
-//            t = sn.find_transition(to);
-//            arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
-//            t.add_inib(arc, t);
-//            p.add_inib(arc, p);
-//            
-//        }else{
-//
-//            if(p == null){ //t -> p
-//                t = sn.find_transition(from);
-//                p = sn.find_place(to);
-//                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
-//                p = (Place) t.add_next_Node(arc, p);
-//
-//            }else{ //p -> t
-//                t = sn.find_transition(to);
-//                arc = new Arc(Arc_name, new TupleBag(this.fill_TupleBag_map(guards, invert_guards, tuples_elements, tuples_mult, t.get_name())));
-//                t = (Transition) p.add_next_Node(arc, t);
-//            }
-//        }
-//        
-//        //analyze place domain
-//        p.set_node_domain(sa.analyze_place_domain(p));
-//        //analyze transition domain ....
-//        
-//        //update node domain when a new arc is connected with it
-//        t.set_node_domain(sa.analyze_transition_domain(t));
-//        
-//        //exchange sn nodes with connected nodes
-//        sn.update_nodes_via_arc(p, t);
-    }
-    
-    private Map<WNtuple, Integer> fill_TupleBag_map(ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
-    ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult, String transition_name){
-        //create (multiplied)TupleBag object of WNtuples 
-        Map<WNtuple, Integer> multiplied_tuples = new HashMap<>();
+        Syntactic_place synt_p = all_pl.stream().filter( sp -> sp.get_name().equals(from)).findFirst().orElse(null);
+        Syntactic_transition synt_t;        
+        Syntactic_arc synt_arc = new Syntactic_arc(Arc_name);
         
         for(var i = 0; i < tuples_elements.size(); i++){
-            Guard g = sa.analyze_guard_of_predicates(guards.get(i), invert_guards.get(i), transition_name);
-            WNtuple tuple = sa.analyze_arc_tuple(g, tuples_elements.get(i));
-            multiplied_tuples.put(tuple, tuples_mult.get(i));
+            Syntactic_tuple syntc_tuple = new Syntactic_tuple(tuples_elements.get(i));
+            syntc_tuple.set_syntactic_guard(this.get_synt_guard(guards.get(i), invert_guards.get(i)));
+            synt_arc.add_multiplied_tuple(syntc_tuple, tuples_mult.get(i));
+        } 
+                
+        if(arc_type.equals("inhibitor")){
+            synt_arc.set_type(true);
+            synt_t = all_st.stream().filter(st -> st.get_name().equals(from)).findFirst().orElse(null);
+            synt_p.add_next(synt_t, synt_arc);
+        }else{
+            synt_arc.set_type(false);
+            
+            if(synt_p == null){ //t->p
+                synt_t = all_st.stream().filter(st -> st.get_name().equals(from)).findFirst().orElse(null);
+                synt_p = all_pl.stream().filter( sp -> sp.get_name().equals(to)).findFirst().orElse(null);
+            }else{ //p->t
+                synt_t = all_st.stream().filter(st -> st.get_name().equals(to)).findFirst().orElse(null);
+            }
         }
+         
+        final Syntactic_place s = synt_p;
+        //update syntactic place/transition list
+        all_pl = (ArrayList<Syntactic_place>) all_pl.stream()
+                    .filter(place -> place.get_name().equals(s.get_name()))
+                    .map(place -> s)
+                    .collect(Collectors.toList());
         
-        return multiplied_tuples;
+        all_st = (ArrayList<Syntactic_transition>) all_st.stream()
+                .filter(synt_transition -> synt_transition.get_name().equals(synt_t.get_name()))
+                .map(transition -> synt_t)
+                .collect(Collectors.toList());
+    }
+    
+    private Syntactic_guard get_synt_guard(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
+        Syntactic_guard synt_guard = null;
+        
+        if(guard != null){
+            LinkedHashMap<Syntactic_predicate, String> separated_predicates = new LinkedHashMap<>();
+            
+            guard.keySet().stream().forEach(
+                    syntactic_p -> {
+                        ArrayList<String> pe = syntactic_p.keySet().stream().findFirst().orElse(null);
+                        Syntactic_predicate sp = new Syntactic_predicate(syntactic_p.get(pe), pe);
+                        separated_predicates.put(sp, guard.get(syntactic_p));
+                    }    
+            );
+            
+           synt_guard = new Syntactic_guard(invert_guard, separated_predicates);
+        }
+        return synt_guard;
+    }
+     
+//    private Map<WNtuple, Integer> fill_TupleBag_map(ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
+//    ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult, String transition_name){
+//        //create (multiplied)TupleBag object of WNtuples 
+//        Map<WNtuple, Integer> multiplied_tuples = new HashMap<>();
+//        
+//        for(var i = 0; i < tuples_elements.size(); i++){
+//            Guard g = sa.analyze_guard_of_predicates(guards.get(i), invert_guards.get(i), transition_name);
+//            WNtuple tuple = sa.analyze_arc_tuple(g, tuples_elements.get(i));
+//            multiplied_tuples.put(tuple, tuples_mult.get(i));
+//        }
+//        
+//        return multiplied_tuples;
+//    }
+    
+    public SyntaxTree build_syntax_tree(){
+        //build tree
+        return this.get_syntax_tree();
+    }
+    
+    public SyntaxTree get_syntax_tree(){
+        SN.update_instance(sn);
+        return snt;
     }
     
     public static DataParser get_instance(){

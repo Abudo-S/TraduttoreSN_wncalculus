@@ -12,7 +12,7 @@ package Albero_sintattico;
 public class Syntactic_tuple { //element of Syntactic_arc
     
     private Syntactic_guard sg;
-    private String[] tuple_elements;
+    private final String[] tuple_elements;
     
     public Syntactic_tuple(String[] tuple_elements){
         this.tuple_elements = tuple_elements;
