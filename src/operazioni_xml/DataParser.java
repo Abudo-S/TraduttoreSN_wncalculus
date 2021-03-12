@@ -23,8 +23,8 @@ public class DataParser { // will use SemanticAnalyzer
     
     private static SN sn;
     private static SemanticAnalyzer sa;
-    private static ArrayList<Syntactic_place> all_pl;
-    private static ArrayList<Syntactic_transition> all_st;
+//    private static ArrayList<Syntactic_place> all_pl;
+//    private static ArrayList<Syntactic_transition> all_st;
     private static SyntaxTree snt;
     //single instance
     private static DataParser instance = null;
@@ -102,7 +102,7 @@ public class DataParser { // will use SemanticAnalyzer
         }else{ //place of domain type
             p = new Place(place_name, sn.find_domain(place_type));
         }
-        all_pl.add(new Syntactic_place(place_name));
+        snt.add_synt_place(new Syntactic_place(place_name));
         //analyze place domain
         p.set_node_domain(sa.analyze_place_domain(p));
         sn.add_place(p);
@@ -187,8 +187,8 @@ public class DataParser { // will use SemanticAnalyzer
         if(guard != null){
             st.set_syntactic_guard(this.get_synt_guard(guard, invert_guard));
         }
-        //add to syntactic transition list
-        all_st.add(st);
+        //add to syntax tree
+        snt.add_synt_transition(st);
     }
     
     //an Arc can have array of guards related with tuples
@@ -197,7 +197,7 @@ public class DataParser { // will use SemanticAnalyzer
     ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
         
         //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
-        Syntactic_place synt_p = all_pl.stream().filter( sp -> sp.get_name().equals(from)).findFirst().orElse(null);
+        Syntactic_place synt_p = snt.find_synt_place(from);
         Syntactic_transition synt_t;        
         Syntactic_arc synt_arc = new Syntactic_arc(Arc_name);
         
@@ -209,30 +209,23 @@ public class DataParser { // will use SemanticAnalyzer
                 
         if(arc_type.equals("inhibitor")){
             synt_arc.set_type(true);
-            synt_t = all_st.stream().filter(st -> st.get_name().equals(from)).findFirst().orElse(null);
+            synt_t = snt.find_synt_transition(to);
             synt_p.add_next(synt_t, synt_arc);
         }else{
             synt_arc.set_type(false);
             
             if(synt_p == null){ //t->p
-                synt_t = all_st.stream().filter(st -> st.get_name().equals(from)).findFirst().orElse(null);
-                synt_p = all_pl.stream().filter( sp -> sp.get_name().equals(to)).findFirst().orElse(null);
+                synt_t = snt.find_synt_transition(from);
+                synt_p = snt.find_synt_place(to);
+                synt_t.add_next(synt_p, synt_arc);   
+                
             }else{ //p->t
-                synt_t = all_st.stream().filter(st -> st.get_name().equals(to)).findFirst().orElse(null);
+                synt_t = snt.find_synt_transition(to);
+                synt_p.add_next(synt_t, synt_arc);
             }
         }
-         
-        final Syntactic_place s = synt_p;
         //update syntactic place/transition list
-        all_pl = (ArrayList<Syntactic_place>) all_pl.stream()
-                    .filter(place -> place.get_name().equals(s.get_name()))
-                    .map(place -> s)
-                    .collect(Collectors.toList());
-        
-        all_st = (ArrayList<Syntactic_transition>) all_st.stream()
-                .filter(synt_transition -> synt_transition.get_name().equals(synt_t.get_name()))
-                .map(transition -> synt_t)
-                .collect(Collectors.toList());
+        snt.update_synt_p_t(synt_p, synt_t);
     }
     
     private Syntactic_guard get_synt_guard(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
@@ -268,11 +261,7 @@ public class DataParser { // will use SemanticAnalyzer
 //        return multiplied_tuples;
 //    }
     
-    public SyntaxTree build_syntax_tree(){
-        //build tree
-        return this.get_syntax_tree();
-    }
-    
+    //will be called after finishing all file data scanning    
     public SyntaxTree get_syntax_tree(){
         SN.update_instance(sn);
         return snt;
