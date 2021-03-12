@@ -6,7 +6,7 @@
 package traduttoresn_wncalculus;
 
 import Test.SN_DataTester;
-import operazioni_xml.XMLScanner;
+import operazioni_xml.*;
 import struttura_sn.SN;
 
 /**
@@ -23,6 +23,9 @@ public class TraduttoreSN_wncalculus {
         XMLScanner xml_sc = XMLScanner.get_instance("CPN 1.pnml");
         xml_sc.scan_file_data();
         //SN_DataTester.get_instance().SN_all_data();
+        SemanticAnalyzer sa = SemanticAnalyzer.get_instance();
+        sa.set_syntax_tree(DataParser.get_syntax_tree());
+        sa.analyze_syntax_tree();
     }
     
 }

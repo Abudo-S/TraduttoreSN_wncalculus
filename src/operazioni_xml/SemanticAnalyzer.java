@@ -8,28 +8,27 @@ package operazioni_xml;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import struttura_sn.Place;
-import struttura_sn.SN;
-import struttura_sn.Transition;
-import struttura_sn.Variable;
+import Albero_sintattico.*;
+import struttura_sn.*;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
-import wncalculus.expr.Domain;
-import wncalculus.guard.*;
-import wncalculus.wnbag.WNtuple;
-import wncalculus.wnbag.LinearComb;
 import wncalculus.color.ColorClass;
+import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
+import wncalculus.guard.*;
 import wncalculus.util.ComplexKey;
+import wncalculus.wnbag.LinearComb;
+import wncalculus.wnbag.WNtuple;
 
 /**
  *
  * @author dell
  */
 //singleton
-public class SemanticAnalyzer { //check/analyze the semantic of arc expressions & guards/tuples
+public class SemanticAnalyzer {
     
     private static SN sn;
+    private static SyntaxTree snt;
     //single instance
     private static SemanticAnalyzer instance = null;
     
@@ -37,167 +36,102 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
         sn = SN.get_instance();
     }
     
-    //In wncalculus a guard of predicates has 2 type of guards: guard with or between predicates, guard with and between predicates
-    //format: LinkedHashMap<HashMap<ArrayList, Boolean>, String> = LinkedHashMap<HashMap<predicate with projections/constants, invert_predicate>, separator with next predicate if exists>
-    public Guard analyze_guard_of_predicates(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard, String transition_name){
+    public void set_syntax_tree(final SyntaxTree synt_tree){
+        snt = synt_tree;
+    }
+    
+    public SyntaxTree get_syntax_tree(){
+        return snt;
+    }     
+    
+    public void analyze_syntax_tree() throws NullPointerException{
         
-        if(guard == null || guard.isEmpty()){
-            //create True guard
-            return null; 
+        if(snt == null){
+            throw new NullPointerException("Can't analyze the syntax tree!");
         }
         
-        Guard next_p = null, g, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
+        ArrayList<Syntactic_transition> all_transitions = snt.get_synt_transition();
+        ArrayList<Syntactic_place> all_places = snt.get_synt_places();
+        ArrayList<Syntactic_arc> around_transition = new ArrayList<>();
+        Domain[] wrapper = new Domain[1]; //to wrap transition's domain because lambda expression doesn't allow modifing non final variable
         
-        try{
-            Iterator<HashMap<ArrayList<String>, Boolean>> it = guard.keySet().iterator(); //iterate predicates after and/or operation
-            it.next(); //ignore first predicate
-            
-            for(HashMap<ArrayList<String>, Boolean> predicate : guard.keySet()){
-
-                if(next_p == null){ //first cycle
-                    g = this.analyze_predicate(predicate, transition_name);
+        all_transitions.stream().forEach(
+                synt_transition -> {
+                    HashMap<SyntacticNode, Syntactic_arc> next = synt_transition.get_all_next();
                     
-                    if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), transition_name);
-                    }else{
-                        res = g;
-                        break;
-                    }                    
-                }else{
-                    g = next_p;
+                    //add all next arcs of transition
+                    next.keySet().stream().forEach(
+                            syntactic_place -> around_transition.add(next.get(syntactic_place))
+                    );
                     
-                    if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), transition_name);
-                    }else{
-                        res = this.analyze_and_or_guard(res, g, guard.get(predicate));
-                        break;
-                    }
+                    //add arcs that deliver to the same transition
+                    all_places.stream().forEach(
+                            synt_place -> {
+                                HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_place.get_all_next();
+                                
+                                next_of_synt_place.keySet().stream().filter(
+                                        syntactic_tansition -> syntactic_tansition.get_name().equals(synt_transition.get_name())
+                                ).forEach(
+                                        syntactic_tansition -> around_transition.add(next_of_synt_place.get(syntactic_tansition))
+                                );                                 
+                            }                            
+                    );
+                    
+                    //add domained_transition
+                    wrapper[0] = this.analyze_transition_domain(around_transition, synt_transition.get_syntactic_guard());
+                    sn.add_transition(
+                            this.create_analyzed_transition(synt_transition.get_name(), this.analyze_guard_of_predicates(synt_transition, wrapper[0]), wrapper[0])
+                    );
+                    //reset around for the next transition
+                    around_transition.removeAll(around_transition);
                 }
-                res = this.analyze_and_or_guard(g, next_p, guard.get(predicate));
-            }            
-            //uses analyze_predicates()
-            if(!invert_guard){
-                res = Neg.factory(res);
-            }
-        }catch(Exception e){
-            System.out.println(e + " in SemanticAnalyzer/analyze_guard_of_predicates()");
-        }
-        return res;
+        );
+        
+    }
+    
+    private Transition create_analyzed_transition(String name, Guard g, Domain d){
+        Transition t = new Transition(name, g);
+        t.set_node_domain(d);
+        return t;
+    }
+    
+    private Guard analyze_guard_of_predicates(Syntactic_transition synt_t, Domain d){
+        Guard g = null;
+        //to be completed
+        return g;
+    }
+    
+    private Guard analyze_predicate(){
+        Guard p = null;
+        //to be completed
+        return null;
     }
     
     private Guard analyze_and_or_guard(Guard g1, Guard g2, String operation){
-        
+
         if(operation.equals("and")){
             return And.factory(g1, g2); 
         }
         return Or.factory(false, g1, g2); 
     }
     
-    //In wncalculus predicate is also a guard
-    //predicate map has only one element which is associated with a separator if exists
-    private Guard analyze_predicate(HashMap<ArrayList<String>, Boolean> predicate, String transition_name){
-        ArrayList<String> predicate_txt = predicate.keySet().iterator().next();
-        Guard g = null;
-        
-        try{
-            String p_txt = predicate_txt.get(0);
-            
-            if(predicate_txt.size() == 1) {
-
-                if(p_txt.contains("True")){
-                    //create True guard
-                }else if(p_txt.contains("False")){
-                    //create False guard
-                }
-             //equality || membership
-            }else{ //3 elements predicate -> projection, operation, projection/constant 
-                //1st element
-                Projection p1 = this.analyze_projection_element(p_txt, transition_name);
-                //2nd element
-                String operation = predicate_txt.get(1);
-                //3rd element
-                String op3 = predicate_txt.get(2);
-                
-                if(operation.equals("=")){
-                    g = this.analyze_equality_guard(p1, p1, true);
-                    
-                }else if(operation.equals("!=")){
-                    g = this.analyze_equality_guard(p1, this.analyze_projection_element(op3, transition_name), false);
-                    
-                }else if(operation.equals("in")){
-                    g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), true);
-                }else{// !in
-                    g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), false);
-                }
-            }
-
-            if(predicate.get(predicate_txt) == true){ //invert predicate
-                g = Neg.factory(g);
-            }
-        }catch(Exception e){
-            System.out.println(e + " in SemanticAnalyzer/analyze_predicate()");
-        }
-        return g;
-    }
-    
-    private Guard analyze_equality_guard(Projection g1, Projection g2, boolean operation){
+    private Guard analyze_equality_guard(Projection g1, Projection g2, boolean operation, Domain d){
         //to be completed
         return null;
     }
     
-    private Guard analyze_membership_guard(Projection g1, Subcl constant, boolean operation){
+    private Guard analyze_membership_guard(Projection g1, Subcl constant, boolean operation, Domain d){
         //to be completed
-        return null;
-    }
-    
-    //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
-    //tuples_elements list contains linearcombs
-    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements /*, Domain domain*/){
-        //uses analyze_tuple_elements()
-        return null;
-    }
-    
-    private LinearComb analyze_tuple_elements(String[] tuple_elements){
-        //uses analyze_projection_element()
-        //uses analyze_constant_element()
         return null;
     }
     
     private Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException{
-        
         Pattern p = Pattern.compile("([_a-zA-Z]+[_a-zA-Z0-9]*)(([+]{2}|[-]{2})?)");
         Matcher m = p.matcher(proj.replaceAll("\\s*", ""));
         Projection pro = null;
-        
-        if(m.find()){
-            Variable v = sn.find_variable(m.group(1));
-            String circ_op = m.group(2);
-
-            if(circ_op.equals("")){
-                pro  = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 0), 0, v.get_colourClass());
-            }else{
-
-                if(circ_op.contains("++")){
-                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 1), 1, v.get_colourClass());
-
-                }else if(circ_op.contains("--")){
-                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), -1), -1, v.get_colourClass());
-
-                }else{
-                    throw new NullPointerException("can't find successor in " + proj);
-                }       
-            }
-            
-            v.add_available_projection(sn.find_transition(transition_name), pro);
-            sn.update_variable_via_projection(v);
-                            
-        }else{
-            throw new NullPointerException("can't find first projection in " + proj);
-        }
-        
+        //to be completed
         return pro;
     }
-    
     //constant, es: subclass name
     private Subcl analyze_constant_element(String const_name){
         Subcl con = null;
@@ -221,6 +155,12 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
         return con;
     }
     
+    private Domain analyze_transition_domain(ArrayList<Syntactic_arc> around_transition, Syntactic_guard transition_guard){
+        Domain d = null;
+        //to be completed
+        return d;
+    }
+    
     public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
         Domain d = p.get_node_domain();
         
@@ -231,13 +171,25 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
             if(d == null){ //if the place type isn't domain then it's colorclass
                 d = new Domain(sn.find_colorClass(place_type));
             }
+            
+            p.set_node_domain(d);
+            //update sn
+            sn.update_place(p);
         }
         
         return d;
     }
     
-    public Domain analyze_transition_domain(Transition t){ //transition's domain will have all colorclasses of variables that exist on connected arcs to it even if variables exist on guards
-        //to be completed
+    //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
+    //tuples_elements list contains linearcombs
+    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements , Domain domain){
+        //uses analyze_tuple_elements()
+        return null;
+    }
+    
+    private LinearComb analyze_tuple_elements(String[] tuple_elements){
+        //uses analyze_projection_element()
+        //uses analyze_constant_element()
         return null;
     }
     
@@ -250,13 +202,18 @@ public class SemanticAnalyzer { //check/analyze the semantic of arc expressions 
         ComplexKey ck = new ComplexKey(transition_name, variable_name, successor_flag);
         return ck.hashCode();
     }
-        
+    
+    private void connect_nodes_via_arcs(){
+        //to be completed
+        //update sn instance
+    }
+    
     public static SemanticAnalyzer get_instance(){
-        
+
         if(instance == null){
             instance = new SemanticAnalyzer();
         }
-        
+
         return instance;
     }
 }

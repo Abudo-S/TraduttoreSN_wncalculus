@@ -231,7 +231,7 @@ public class DataParser { // will use SemanticAnalyzer
     private Syntactic_guard get_synt_guard(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
         Syntactic_guard synt_guard = null;
         
-        if(guard != null){
+        if(guard != null || !guard.isEmpty()){
             LinkedHashMap<Syntactic_predicate, String> separated_predicates = new LinkedHashMap<>();
             
             guard.keySet().stream().forEach(
@@ -262,7 +262,7 @@ public class DataParser { // will use SemanticAnalyzer
 //    }
     
     //will be called after finishing all file data scanning    
-    public SyntaxTree get_syntax_tree(){
+    public static SyntaxTree get_syntax_tree(){
         SN.update_instance(sn);
         return snt;
     }

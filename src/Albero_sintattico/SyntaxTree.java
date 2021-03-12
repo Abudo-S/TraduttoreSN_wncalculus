@@ -22,7 +22,8 @@ public class SyntaxTree {
     private static SyntaxTree instance = null;
     
     private SyntaxTree(){
-
+        all_pl = new ArrayList<>();
+        all_st = new ArrayList<>();
     }
     
     public void add_synt_place(Syntactic_place synt_p){
@@ -43,28 +44,35 @@ public class SyntaxTree {
     
     public Syntactic_place find_synt_place(String name){
         return all_pl.stream().filter(
-                    sp -> sp.get_name().equals(name)
+                    sp -> name.equals(sp.get_name())
                ).findFirst().orElse(null);
     }
     
     public Syntactic_transition find_synt_transition(String name){
         return all_st.stream().filter(
-                    st -> st.get_name().equals(name)
+                    st -> name.equals(st.get_name())
                ).findFirst().orElse(null);
     }
     
     public void update_synt_p_t(Syntactic_place synt_p, Syntactic_transition synt_t){
-        
         try{
-            all_pl = (ArrayList<Syntactic_place>) all_pl.stream()
-                .filter(synt_place -> synt_place.get_name().equals(synt_p.get_name()))
-                .map(synt_place -> synt_p)
-                .collect(Collectors.toList());
+            
+            for(var i = 0; i < all_pl.size(); i++){
+                
+                if(all_pl.get(i).get_name().equals(synt_p)){
+                    all_pl.set(i, synt_p);
+                    break;
+                }
+            }
 
-            all_st = (ArrayList<Syntactic_transition>) all_st.stream()
-                    .filter(synt_transition -> synt_transition.get_name().equals(synt_t.get_name()))
-                    .map(transition -> synt_t)
-                    .collect(Collectors.toList());
+            for(var i = 0; i < all_st.size(); i++){
+                
+                if(all_st.get(i).get_name().equals(synt_p)){
+                    all_st.set(i, synt_t);
+                    break;
+                }
+            }
+                        
         }catch(Exception e){
             System.err.println(e + " in SyntaxTree/update_synt_p_t");
         }

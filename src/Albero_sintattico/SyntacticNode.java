@@ -18,6 +18,7 @@ public abstract class SyntacticNode {
     
     public SyntacticNode(String name){
         this.name = name;
+        this.next = new HashMap<>();
     }
     
     public String get_name(){

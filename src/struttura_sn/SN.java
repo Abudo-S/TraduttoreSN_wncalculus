@@ -136,56 +136,56 @@ public class SN {
     
     public void update_nodes_via_arc(Place p, Transition t){
         
-        try{
-            P = (ArrayList<Place>) P.stream()
-                    .filter(place -> place.get_name().equals(p.get_name()))
-                    .map(place -> p)
-                    .collect(Collectors.toList());
-
-            T = (ArrayList<Transition>) T.stream()
-                    .filter(transition -> transition.get_name().equals(t.get_name()))
-                    .map(transition -> t)
-                    .collect(Collectors.toList());
-            
-        }catch(Exception e){
-            System.out.println(e + " while connecting arcs");
-        }
+//        try{
+//            P = (ArrayList<Place>) P.stream()
+//                    .filter(place -> place.get_name().equals(p.get_name()))
+//                    .map(place -> p)
+//                    .collect(Collectors.toList());
+//
+//            T = (ArrayList<Transition>) T.stream()
+//                    .filter(transition -> transition.get_name().equals(t.get_name()))
+//                    .map(transition -> t)
+//                    .collect(Collectors.toList());
+//            
+//        }catch(Exception e){
+//            System.out.println(e + " while connecting arcs");
+//        }
     }
     
     public void update_variable_via_projection(Variable v){
-        try{
-            V = (ArrayList<Variable>) V.stream()
-                    .filter(variable -> variable.get_name().equals(v.get_name()))
-                    .map(variable -> v)
-                    .collect(Collectors.toList());
-            
-        }catch(Exception e){
-            System.out.println(e + " while updating variable!");
-        }
+//        try{
+//            V = (ArrayList<Variable>) V.stream()
+//                    .filter(variable -> variable.get_name().equals(v.get_name()))
+//                    .map(variable -> v)
+//                    .collect(Collectors.toList());
+//            
+//        }catch(Exception e){
+//            System.out.println(e + " while updating variable!");
+//        }
     }
     
     public void update_place(Place p){
-        try{
-            P = (ArrayList<Place>) P.stream()
-                    .filter(place -> place.get_name().equals(p.get_name()))
-                    .map(place -> p)
-                    .collect(Collectors.toList());
-            
-        }catch(Exception e){
-            System.out.println(e + " while update place: " + p.get_name());
-        }
+//        try{
+//            P = (ArrayList<Place>) P.stream()
+//                    .filter(place -> place.get_name().equals(p.get_name()))
+//                    .map(place -> p)
+//                    .collect(Collectors.toList());
+//            
+//        }catch(Exception e){
+//            System.out.println(e + " while update place: " + p.get_name());
+//        }
     }
     
     public void update_transition(Transition t){
-        try{
-            T = (ArrayList<Transition>) T.stream()
-                    .filter(transition -> transition.get_name().equals(t.get_name()))
-                    .map(transition -> t)
-                    .collect(Collectors.toList());
-            
-        }catch(Exception e){
-            System.out.println(e + " while update transition: " + t.get_name());
-        }
+//        try{
+//            T = (ArrayList<Transition>) T.stream()
+//                    .filter(transition -> transition.get_name().equals(t.get_name()))
+//                    .map(transition -> t)
+//                    .collect(Collectors.toList());
+//            
+//        }catch(Exception e){
+//            System.out.println(e + " while update transition: " + t.get_name());
+//        }
     }
     
     public static void update_instance(SN ins){

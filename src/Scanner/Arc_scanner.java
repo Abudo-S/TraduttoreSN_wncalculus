@@ -100,6 +100,9 @@ public class Arc_scanner extends ElementScanner{
                     Tuple_scanner t_sc = Tuple_scanner.get_instance();
                     String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[0]);
                     tuples_elements.add(tuple_elements);
+                    tuples_mult.add(tuple_mult);
+                    guards.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
+                    invert_guards.add(Boolean.FALSE);
                     
                 }else{ //case of guarded tuple
                     p = Pattern.compile(str_multOftuple);
