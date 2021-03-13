@@ -77,7 +77,7 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
                 }
                 res = this.analyze_and_or_guard(res, next_p, guard.get(predicate));
             }            
-            //uses analyze_predicates()
+            //check if inverted
             if(invert_guard){
                 res = Neg.factory(res);
             }

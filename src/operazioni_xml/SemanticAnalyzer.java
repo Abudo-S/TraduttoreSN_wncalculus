@@ -96,6 +96,7 @@ public class SemanticAnalyzer {
     }
     
     private Guard analyze_guard_of_predicates(Syntactic_transition synt_t, Domain d){
+        String transition_name = synt_t.get_name();
         Syntactic_guard guard = synt_t.get_syntactic_guard();
         LinkedHashMap<Syntactic_predicate,String> separated_predicates = guard.get_separated_predicates();
         
@@ -111,10 +112,10 @@ public class SemanticAnalyzer {
             for(Syntactic_predicate predicate : separated_predicates.keySet()){
 
                 if(next_p == null){ //first cycle
-                    g = this.analyze_predicate(predicate, d);
+                    g = this.analyze_predicate(predicate, transition_name, d);
 
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), d);
+                        next_p = this.analyze_predicate(it.next(), transition_name, d);
                     }else{
                         res = g;
                         break;
@@ -123,7 +124,7 @@ public class SemanticAnalyzer {
                     g = next_p;
 
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), d);
+                        next_p = this.analyze_predicate(it.next(), transition_name, d);
                     }else{
                         res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
                         break;
@@ -131,7 +132,7 @@ public class SemanticAnalyzer {
                 }
                 res = this.analyze_and_or_guard(res, next_p, separated_predicates.get(predicate));
             }            
-            //uses analyze_predicates()
+            //check if inverted
             if(guard.get_invert_guard()){
                 res = Neg.factory(res);
             }
@@ -142,10 +143,56 @@ public class SemanticAnalyzer {
         return res;    
     }
     
-    private Guard analyze_predicate(Syntactic_predicate synt_pr, Domain d){
-        Guard p = null;
-        //to be completed
-        return null;
+    private Guard analyze_predicate(Syntactic_predicate synt_pr, String transition_name, Domain d) throws RuntimeException{
+        ArrayList<String> predicate_txt = synt_pr.get_predicate_elements();
+        Guard g = null;
+        
+        try{
+            String p_txt = predicate_txt.get(0);
+            
+            if(predicate_txt.size() == 1) { 
+
+                if(p_txt.contains("True")){
+                    this.analyze_true_false_guard(true, d);
+                }else if(p_txt.contains("False")){
+                    this.analyze_true_false_guard(false, d);
+                }else{
+                    throw new RuntimeException("can't analyze predicates 1 element!");
+                }
+             //equality || membership
+            }else{ //3 elements predicate -> projection, operation, projection/constant 
+                //1st element
+                Projection p1 = this.analyze_projection_element(p_txt, transition_name);
+                //2nd element
+                String operation = predicate_txt.get(1);
+                //3rd element
+                String op3 = predicate_txt.get(2);
+                
+                switch (operation){
+                    case "=":
+                        g = this.analyze_equality_guard(p1, p1, true, d);
+                        break;
+                    case "!=":
+                        g = this.analyze_equality_guard(p1, this.analyze_projection_element(op3, transition_name), false, d);
+                        break;
+                    case "in":
+                        g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), true, d);
+                        break;
+                    case "!in":
+                        g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), false, d);
+                        break;
+                    default:
+                        throw new RuntimeException("can't analyze predicate of 3 elements!");
+                }
+            }
+            //check if inverted
+            if(synt_pr.get_invert_guard()){ 
+                g = Neg.factory(g);
+            }
+        }catch(Exception e){
+            System.out.println(e + " in SemanticAnalyzer/analyze_predicate()");
+        }
+        return g;
     }
     
     private Guard analyze_and_or_guard(Guard g1, Guard g2, String operation){
@@ -164,6 +211,7 @@ public class SemanticAnalyzer {
         return False.getInstance(d);
     }
     
+    //operation: true = in
     private Guard analyze_equality_guard(Projection g1, Projection g2, boolean operation, Domain d){
         //to be completed
         return null;
