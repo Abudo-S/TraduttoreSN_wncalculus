@@ -96,12 +96,53 @@ public class SemanticAnalyzer {
     }
     
     private Guard analyze_guard_of_predicates(Syntactic_transition synt_t, Domain d){
-        Guard g = null;
-        //to be completed
-        return g;
+        Syntactic_guard guard = synt_t.get_syntactic_guard();
+        LinkedHashMap<Syntactic_predicate,String> separated_predicates = guard.get_separated_predicates();
+        
+        if(separated_predicates.isEmpty()){
+            return this.analyze_true_false_guard(true, d);
+        }
+        Guard next_p = null, g, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
+
+        try{
+            Iterator<Syntactic_predicate> it = separated_predicates.keySet().iterator(); //iterate predicates after and/or operation
+            it.next(); //ignore first predicate
+
+            for(Syntactic_predicate predicate : separated_predicates.keySet()){
+
+                if(next_p == null){ //first cycle
+                    g = this.analyze_predicate(predicate, d);
+
+                    if(it.hasNext()){
+                        next_p = this.analyze_predicate(it.next(), d);
+                    }else{
+                        res = g;
+                        break;
+                    }                    
+                }else{
+                    g = next_p;
+
+                    if(it.hasNext()){
+                        next_p = this.analyze_predicate(it.next(), d);
+                    }else{
+                        res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
+                        break;
+                    }
+                }
+                res = this.analyze_and_or_guard(res, next_p, separated_predicates.get(predicate));
+            }            
+            //uses analyze_predicates()
+            if(guard.get_invert_guard()){
+                res = Neg.factory(res);
+            }
+        }catch(Exception e){
+            System.out.println(e + " in SemanticAnalyzer/analyze_guard_of_predicates()");
+        }
+        
+        return res;    
     }
     
-    private Guard analyze_predicate(){
+    private Guard analyze_predicate(Syntactic_predicate synt_pr, Domain d){
         Guard p = null;
         //to be completed
         return null;
@@ -113,6 +154,14 @@ public class SemanticAnalyzer {
             return And.factory(g1, g2); 
         }
         return Or.factory(false, g1, g2); 
+    }
+    
+    private Guard analyze_true_false_guard(boolean TF, Domain d){
+        
+        if(TF){ //create true guard
+            True.getInstance(d);
+        }
+        return False.getInstance(d);
     }
     
     private Guard analyze_equality_guard(Projection g1, Projection g2, boolean operation, Domain d){

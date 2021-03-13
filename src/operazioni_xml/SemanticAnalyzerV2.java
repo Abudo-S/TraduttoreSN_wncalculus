@@ -75,10 +75,10 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
                         break;
                     }
                 }
-                res = this.analyze_and_or_guard(g, next_p, guard.get(predicate));
+                res = this.analyze_and_or_guard(res, next_p, guard.get(predicate));
             }            
             //uses analyze_predicates()
-            if(!invert_guard){
+            if(invert_guard){
                 res = Neg.factory(res);
             }
         }catch(Exception e){
