@@ -211,15 +211,14 @@ public class SemanticAnalyzer {
         return False.getInstance(d);
     }
     
-    //operation: true = in
-    private Guard analyze_equality_guard(Projection g1, Projection g2, boolean operation, Domain d){
-        //to be completed
-        return null;
+    //operation: true = in, false = !in
+    private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation, Domain d){
+        return Equality.builder(p1, p2, operation, d);
     }
     
+    //operation: true = belongs to, false = doesn't belongs to
     private Guard analyze_membership_guard(Projection g1, Subcl constant, boolean operation, Domain d){
-        //to be completed
-        return null;
+        return Membership.build(g1, constant, operation, d);
     }
     
     private Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException{
