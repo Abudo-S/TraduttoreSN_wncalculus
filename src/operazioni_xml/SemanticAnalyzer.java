@@ -297,22 +297,21 @@ public class SemanticAnalyzer {
         
     private Place create_connected_place(Syntactic_place synt_place){
         Place p = sn.find_place(synt_place.get_name());
-        HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_place.get_all_next();
+        HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_place.get_all_next(); //arcs from place to transitions
         
         for(SyntacticNode synt_t : next_of_synt_place.keySet()){
             
             Syntactic_arc synt_arc = next_of_synt_place.get(synt_t);
-            //pass transition domain
-            Arc arc = this.create_analyzed_arc(synt_arc, sn.find_transition(synt_t.get_name()).get_node_domain());
             Transition t = sn.find_transition(synt_t.get_name());
+            //pass transition domain
+            Arc arc = this.create_analyzed_arc(synt_arc, t.get_node_domain());
             
             if(synt_arc.get_type()){ //inhibitor
                 p.add_inib(arc, t);
                 t.add_inib(arc, p);
             }else{
                 t = (Transition) p.add_next_Node(arc, p);
-            }
-            
+            }         
             //update connected transition
             sn.update_transition(t);
         }
@@ -322,6 +321,25 @@ public class SemanticAnalyzer {
     
     private Transition create_connected_transition(Syntactic_transition synt_transition){
         Transition t = sn.find_transition(synt_transition.get_name());
+        HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_transition.get_all_next(); //arcs from transition to places
+        
+        for(SyntacticNode synt_p : next_of_synt_place.keySet()){
+            
+            Syntactic_arc synt_arc = next_of_synt_place.get(synt_p);
+            Place p = sn.find_place(synt_p.get_name());
+            //pass place domain
+            Arc arc = this.create_analyzed_arc(synt_arc, p.get_node_domain());
+            
+            if(synt_arc.get_type()){ //inhibitor
+                p.add_inib(arc, t);
+                t.add_inib(arc, p);
+            }else{
+                p = (Place) t.add_next_Node(arc, p);
+            }         
+            //update connected transition
+            sn.update_place(p);
+        }
+        
         return t;
     }
     
