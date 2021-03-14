@@ -6,21 +6,16 @@
 package operazioni_xml;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import Albero_sintattico.*;
 import Analyzer.*;
 import struttura_sn.*;
-import wncalculus.classfunction.Projection;
-import wncalculus.classfunction.Subcl;
-import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
-import wncalculus.expr.Interval;
 import wncalculus.guard.*;
-import wncalculus.util.ComplexKey;
 import wncalculus.wnbag.WNtuple;
 import wncalculus.wnbag.TupleBag;
-
+import wncalculus.color.ColorClass;
+import wncalculus.expr.Sort;
+        
 /**
  *
  * @author dell
@@ -109,9 +104,32 @@ public class SemanticAnalyzer {
     }
     
     private Domain analyze_transition_domain(ArrayList<Syntactic_arc> around_transition, Syntactic_guard transition_guard){
-        Domain d = null;
+        //analyze transition guard
+        Map<ColorClass,Integer> domain_elements = this.analyze_guard_colorclasses(new HashMap<ColorClass,Integer>(), transition_guard);
+        
+        //analyze all arcs that exist around transition 
+        for(Syntactic_arc synt_arc : around_transition){
+            HashMap<Syntactic_tuple,Integer> arc_tuples = synt_arc.get_all_tuples();
+            
+            for(Syntactic_tuple synt_tuple : arc_tuples.keySet()){
+                domain_elements = this.analyze_tuple_colorclasses(domain_elements, synt_tuple);
+                domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_guard());
+            }
+        }
+ 
+        return new Domain((HashMap<? extends Sort, Integer>) domain_elements);
+    }
+    
+    private Map<ColorClass,Integer> analyze_guard_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_guard guard){
+        //update domain_elements with new data
         //to be completed
-        return d;
+        return domain_elements;
+    }
+    
+    private Map<ColorClass,Integer> analyze_tuple_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_tuple tuple){
+        //update domain_elements with new data
+        //to be completed
+        return domain_elements;
     }
     
     public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
