@@ -134,8 +134,8 @@ public class SN {
         return SN.m0;
     }
     
-    public void update_nodes_via_arc(Place p, Transition t){
-        
+//    public void update_nodes_via_arc(Place p, Transition t){
+//        
 //        try{
 //            P = (ArrayList<Place>) P.stream()
 //                    .filter(place -> place.get_name().equals(p.get_name()))
@@ -150,7 +150,7 @@ public class SN {
 //        }catch(Exception e){
 //            System.out.println(e + " while connecting arcs");
 //        }
-    }
+//    }
     
     public void update_variable_via_projection(Variable v){
 //        try{
@@ -165,32 +165,38 @@ public class SN {
     }
     
     public void update_place(Place p){
-//        try{
-//            P = (ArrayList<Place>) P.stream()
-//                    .filter(place -> place.get_name().equals(p.get_name()))
-//                    .map(place -> p)
-//                    .collect(Collectors.toList());
-//            
-//        }catch(Exception e){
-//            System.out.println(e + " while update place: " + p.get_name());
-//        }
+        try{
+            for(var i = 0; i < P.size(); i++){
+                
+                if(P.get(i).get_name().equals(p.get_name())){
+                    P.set(i, p);
+                    break;
+                }
+            }
+            
+        }catch(Exception e){
+            System.out.println(e + " while update place: " + p.get_name());
+        }
     }
     
     public void update_transition(Transition t){
-//        try{
-//            T = (ArrayList<Transition>) T.stream()
-//                    .filter(transition -> transition.get_name().equals(t.get_name()))
-//                    .map(transition -> t)
-//                    .collect(Collectors.toList());
-//            
-//        }catch(Exception e){
-//            System.out.println(e + " while update transition: " + t.get_name());
-//        }
+        try{
+            for(var i = 0; i < T.size(); i++){
+                
+                if(T.get(i).get_name().equals(t.get_name())){
+                    T.set(i, t);
+                    break;
+                }
+            }
+            
+        }catch(Exception e){
+            System.out.println(e + " while update place: " + t.get_name());
+        }
     }
     
-    public static void update_instance(SN ins){
-        instance = ins;
-    }
+//    public static void update_instance(SN ins){
+//        instance = ins;
+//    }
     
     public static SN get_instance(){
         

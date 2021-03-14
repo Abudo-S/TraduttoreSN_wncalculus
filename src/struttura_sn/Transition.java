@@ -23,6 +23,16 @@ public class Transition extends Node{
         this.guard = g;
     }
     
+//    public Transition(String name){
+//        this.name = name;
+//        this.Next = new HashMap<>();
+//        this.previous = new HashMap<>();
+//    }
+//    
+//    public void set_guard(Guard g){
+//        this.guard = g ;
+//    }
+    
     //next/previous node of a transition is a place
     //next arc of a transition is a transitioning arc
     @Override
