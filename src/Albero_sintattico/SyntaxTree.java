@@ -16,8 +16,8 @@ import struttura_sn.SN;
 public class SyntaxTree {
     
     //private SyntacticNode root; //undeterminated
-    private ArrayList<Syntactic_place> all_pl;
-    private ArrayList<Syntactic_transition> all_st;
+    private static ArrayList<Syntactic_place> all_pl;
+    private static ArrayList<Syntactic_transition> all_st;
     //single instance
     private static SyntaxTree instance = null;
     
@@ -27,19 +27,19 @@ public class SyntaxTree {
     }
     
     public void add_synt_place(Syntactic_place synt_p){
-        this.all_pl.add(synt_p);
+        all_pl.add(synt_p);
     }
     
     public void add_synt_transition(Syntactic_transition synt_t){
-        this.all_st.add(synt_t);
+        all_st.add(synt_t);
     }
     
     public ArrayList<Syntactic_place> get_synt_places(){
-        return this.all_pl;
+        return all_pl;
     }
     
     public ArrayList<Syntactic_transition> get_synt_transition(){
-        return this.all_st;
+        return all_st;
     }
     
     public Syntactic_place find_synt_place(String name){

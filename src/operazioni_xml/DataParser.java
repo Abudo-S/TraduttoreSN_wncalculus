@@ -263,7 +263,6 @@ public class DataParser { // will use SemanticAnalyzer
     
     //will be called after finishing all file data scanning    
     public static SyntaxTree get_syntax_tree(){
-        SN.update_instance(sn);
         return snt;
     }
     

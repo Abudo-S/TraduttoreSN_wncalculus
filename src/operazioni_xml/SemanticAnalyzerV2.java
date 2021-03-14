@@ -142,12 +142,12 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
         return g;
     }
     
-    private Guard analyze_equality_guard(Projection g1, Projection g2, boolean operation){
+    private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation){
         //to be completed
         return null;
     }
     
-    private Guard analyze_membership_guard(Projection g1, Subcl constant, boolean operation){
+    private Guard analyze_membership_guard(Projection p1, Subcl constant, boolean operation){
         //to be completed
         return null;
     }
@@ -268,10 +268,12 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
     }
     
     private ArrayList<ColorClass> search_arc_projection(Arc arc){
+        //to be completed
         return null;
     }
     
     private ArrayList<ColorClass> seach_tuple_projection(WNtuple t){
+        //to be completed
         return null;
     }
     

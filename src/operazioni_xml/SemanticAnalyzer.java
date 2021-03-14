@@ -53,7 +53,7 @@ public class SemanticAnalyzer {
         ArrayList<Syntactic_transition> all_transitions = snt.get_synt_transition();
         ArrayList<Syntactic_place> all_places = snt.get_synt_places();
         ArrayList<Syntactic_arc> around_transition = new ArrayList<>();
-        Domain[] wrapper = new Domain[1]; //to wrap transition's domain because lambda expression doesn't allow modifing non final variable
+        //Domain[] wrapper = new Domain[1]; //to wrap transition's domain because lambda expression doesn't allow modifing non final variable
         
         all_transitions.stream().forEach(
                 synt_transition -> {
@@ -78,13 +78,18 @@ public class SemanticAnalyzer {
                     );
                     
                     //add domained_transition
-                    wrapper[0] = this.analyze_transition_domain(around_transition, synt_transition.get_syntactic_guard());
-                    sn.add_transition(
-                            this.create_analyzed_transition(synt_transition.get_name(), this.analyze_guard_of_predicates(synt_transition, wrapper[0]), wrapper[0])
-                    );
-                    //reset around for the next transition
+                    Domain d = this.analyze_transition_domain(around_transition, synt_transition.get_syntactic_guard());
+                    Transition t = this.create_analyzed_transition(synt_transition.get_name(), this.analyze_guard_of_predicates(synt_transition, d), d);
+                    sn.add_transition(t);
+                    //connect transition by arcs
+                    sn.update_transition(this.create_connected_transition(synt_transition));
+                    //reset list "around_transition" for the next transition
                     around_transition.removeAll(around_transition);
                 }
+        );
+        
+        all_places.stream().forEach(
+                synt_place -> sn.update_place(this.create_connected_place(synt_place))
         );
         
     }
@@ -289,6 +294,43 @@ public class SemanticAnalyzer {
         return null;
     }
     
+        
+    private Place create_connected_place(Syntactic_place synt_place){
+        Place p = sn.find_place(synt_place.get_name());
+        HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_place.get_all_next();
+        
+        for(SyntacticNode synt_t : next_of_synt_place.keySet()){
+            
+            Syntactic_arc synt_arc = next_of_synt_place.get(synt_t);
+            //pass transition domain
+            Arc arc = this.create_analyzed_arc(synt_arc, sn.find_transition(synt_t.get_name()).get_node_domain());
+            Transition t = sn.find_transition(synt_t.get_name());
+            
+            if(synt_arc.get_type()){ //inhibitor
+                p.add_inib(arc, t);
+                t.add_inib(arc, p);
+            }else{
+                t = (Transition) p.add_next_Node(arc, p);
+            }
+            
+            //update connected transition
+            sn.update_transition(t);
+        }
+        
+        return p;
+    }
+    
+    private Transition create_connected_transition(Syntactic_transition synt_transition){
+        Transition t = sn.find_transition(synt_transition.get_name());
+        return t;
+    }
+    
+    private Arc create_analyzed_arc(Syntactic_arc synt_arc, Domain d){
+        Arc arc = null;
+        //to be completed
+        return arc;
+    }
+    
     private int generate_subcl_index(String const_name){
         return this.generate_projection_index(const_name, "", 0);
     }
@@ -299,10 +341,6 @@ public class SemanticAnalyzer {
         return ck.hashCode();
     }
     
-    private void connect_nodes_via_arcs(){
-        //to be completed
-        //update sn instance
-    }
     
     public static SemanticAnalyzer get_instance(){
 
