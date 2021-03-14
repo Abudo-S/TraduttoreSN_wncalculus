@@ -19,6 +19,7 @@ import wncalculus.guard.*;
 import wncalculus.util.ComplexKey;
 import wncalculus.wnbag.LinearComb;
 import wncalculus.wnbag.WNtuple;
+import wncalculus.wnbag.TupleBag;
 
 /**
  *
@@ -79,7 +80,9 @@ public class SemanticAnalyzer {
                     
                     //add domained_transition
                     Domain d = this.analyze_transition_domain(around_transition, synt_transition.get_syntactic_guard());
-                    Transition t = this.create_analyzed_transition(synt_transition.get_name(), this.analyze_guard_of_predicates(synt_transition, d), d);
+                    Transition t = this.create_analyzed_transition(
+                            synt_transition.get_name(), this.analyze_guard_of_predicates(synt_transition.get_syntactic_guard(), synt_transition.get_name(), d), d
+                    );
                     sn.add_transition(t);
                     //connect transition by arcs
                     sn.update_transition(this.create_connected_transition(synt_transition));
@@ -100,9 +103,7 @@ public class SemanticAnalyzer {
         return t;
     }
     
-    private Guard analyze_guard_of_predicates(Syntactic_transition synt_t, Domain d){
-        String transition_name = synt_t.get_name();
-        Syntactic_guard guard = synt_t.get_syntactic_guard();
+    private Guard analyze_guard_of_predicates(Syntactic_guard guard, String name,  Domain d){
         LinkedHashMap<Syntactic_predicate,String> separated_predicates = guard.get_separated_predicates();
         
         if(separated_predicates.isEmpty()){
@@ -117,10 +118,10 @@ public class SemanticAnalyzer {
             for(Syntactic_predicate predicate : separated_predicates.keySet()){
 
                 if(next_p == null){ //first cycle
-                    g = this.analyze_predicate(predicate, transition_name, d);
+                    g = this.analyze_predicate(predicate, name, d);
 
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), transition_name, d);
+                        next_p = this.analyze_predicate(it.next(), name, d);
                     }else{
                         res = g;
                         break;
@@ -129,7 +130,7 @@ public class SemanticAnalyzer {
                     g = next_p;
 
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), transition_name, d);
+                        next_p = this.analyze_predicate(it.next(), name, d);
                     }else{
                         res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
                         break;
@@ -279,21 +280,7 @@ public class SemanticAnalyzer {
         }
         
         return d;
-    }
-    
-    //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
-    //tuples_elements list contains linearcombs
-    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements , Domain domain){
-        //uses analyze_tuple_elements()
-        return null;
-    }
-    
-    private LinearComb analyze_tuple_elements(String[] tuple_elements){
-        //uses analyze_projection_element()
-        //uses analyze_constant_element()
-        return null;
-    }
-    
+    }    
         
     private Place create_connected_place(Syntactic_place synt_place){
         Place p = sn.find_place(synt_place.get_name());
@@ -345,9 +332,32 @@ public class SemanticAnalyzer {
     
     private Arc create_analyzed_arc(Syntactic_arc synt_arc, Domain d){
         Arc arc = null;
-        //to be completed
+        HashMap<Syntactic_tuple, Integer> multiplied_tuples = synt_arc.get_all_tuples();
+        Map<WNtuple, Integer> tuple_bag_map =  new HashMap<>();
+        
+        multiplied_tuples.keySet().stream().forEach(
+                synt_tuple -> tuple_bag_map.put(
+                        this.analyze_arc_tuple(
+                                this.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d), synt_tuple.get_tuple_elements(), d
+                        ), multiplied_tuples.get(synt_tuple)
+                )
+        );
+        
         return arc;
     }
+    
+    //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
+    //tuples_elements list contains linearcombs
+    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements , Domain domain){
+        //uses analyze_tuple_elements()
+        return null;
+    }
+    
+    private LinearComb analyze_tuple_elements(String[] tuple_elements){
+        //uses analyze_projection_element()
+        //uses analyze_constant_element()
+        return null;
+    }   
     
     private int generate_subcl_index(String const_name){
         return this.generate_projection_index(const_name, "", 0);
