@@ -331,10 +331,10 @@ public class SemanticAnalyzer {
     }
     
     private Arc create_analyzed_arc(Syntactic_arc synt_arc, Domain d){
-        Arc arc = null;
         HashMap<Syntactic_tuple, Integer> multiplied_tuples = synt_arc.get_all_tuples();
         Map<WNtuple, Integer> tuple_bag_map =  new HashMap<>();
         
+        //fill tuple_bag_map
         multiplied_tuples.keySet().stream().forEach(
                 synt_tuple -> tuple_bag_map.put(
                         this.analyze_arc_tuple(
@@ -343,17 +343,23 @@ public class SemanticAnalyzer {
                 )
         );
         
-        return arc;
+        return new Arc(synt_arc.get_name(), new TupleBag(tuple_bag_map));
     }
     
     //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
     //tuples_elements list contains linearcombs
-    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements , Domain domain){
-        //uses analyze_tuple_elements()
-        return null;
+    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements , Domain d){
+        ArrayList<LinearComb> tuple_combs = new ArrayList<>();
+        
+        //fill tuple_combs
+        Arrays.stream(tuple_elements).forEach(
+                tuple_e -> tuple_combs.add(this.analyze_tuple_elements(tuple_e))
+        );
+        
+        return new WNtuple(null, tuple_combs, g, d, true);
     }
     
-    private LinearComb analyze_tuple_elements(String[] tuple_elements){
+    private LinearComb analyze_tuple_elements(String tuple_element){
         //uses analyze_projection_element()
         //uses analyze_constant_element()
         return null;
