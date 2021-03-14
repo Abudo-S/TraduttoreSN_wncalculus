@@ -8,6 +8,7 @@ package Analyzer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import struttura_sn.SN;
+import struttura_sn.Variable;
 import wncalculus.classfunction.Projection;
 
 /**
@@ -26,9 +27,35 @@ public class Projection_analyzer extends ElementAnalyzer{
     public Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException{
         Pattern p = Pattern.compile(str_rx_element);
         Matcher m = p.matcher(proj.replaceAll("\\s+", ""));
-        Projection pro = null;
-        //to be completed
-        //add projection to sn variable
+        Projection pro;
+        
+        if(m.find()){
+            Variable v = sn.find_variable(m.group(1));
+            String circ_op = m.group(2);
+
+            if(circ_op.equals("")){
+                pro  = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 0), 0, v.get_colourClass());
+            }else{
+
+                if(circ_op.contains("++")){
+                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 1), 1, v.get_colourClass());
+
+                }else if(circ_op.contains("--")){
+                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), -1), -1, v.get_colourClass());
+
+                }else{
+                    throw new NullPointerException("can't find successor in " + proj);
+                }       
+            }
+            
+            v.add_available_projection(pro);
+            sn.update_variable_via_projection(v);
+                            
+        }else{
+            throw new NullPointerException("can't find first projection in " + proj);
+        }
+        
+        
         return pro;
     }
     

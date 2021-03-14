@@ -5,7 +5,7 @@
  */
 package struttura_sn;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import wncalculus.classfunction.Projection;
 import wncalculus.color.ColorClass;
 
@@ -18,7 +18,7 @@ public class Variable { //a projection is a variable in arc expression
     private final String variable_name;
     private final ColorClass colour_type;
     //private HashMap<Arc, Projection> available_projections_a; //all projections of variable that are written on arcs, will be empty while variable declaration
-    private HashMap<Transition, Projection> available_projections_t; //all projections of variable that are written on transitions, will be empty while variable declaration
+    private ArrayList<Projection> available_projections_t; //all projections of variable that are written on transitions, will be empty while variable declaration
     
     public Variable(String variable_name, ColorClass colour_type){
         this.variable_name = variable_name;
@@ -37,16 +37,26 @@ public class Variable { //a projection is a variable in arc expression
 //        this.available_projections_a.put(arc, p);
 //    }
     
-    public void add_available_projection(Transition t, Projection p){
-        this.available_projections_t.put(t, p);
+    public void add_available_projection(Projection p){
+        this.available_projections_t.add(p);
     }
     
 //    public Projection get_available_projection(Arc arc){
 //        return this.available_projections_a.get(arc);
 //    }
     
-    public Projection get_available_projection(Transition t){
-        return this.available_projections_t.get(t);
+    public Projection get_available_projection(int index){
+        Projection p = null;
+        
+        for(var i = 0; i < this.available_projections_t.size(); i++){
+            
+            if(this.available_projections_t.get(i).getIndex() == index){
+                p = this.available_projections_t.get(i);
+                break;
+            }
+        }
+        
+        return p;
     }
     
 }

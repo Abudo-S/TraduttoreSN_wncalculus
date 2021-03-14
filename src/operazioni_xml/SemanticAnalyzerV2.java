@@ -190,7 +190,7 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
                 }       
             }
             
-            v.add_available_projection(sn.find_transition(transition_name), pro);
+            v.add_available_projection(pro);
             sn.update_variable_via_projection(v);
                             
         }else{

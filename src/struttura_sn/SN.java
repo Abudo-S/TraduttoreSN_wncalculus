@@ -153,15 +153,18 @@ public class SN {
 //    }
     
     public void update_variable_via_projection(Variable v){
-//        try{
-//            V = (ArrayList<Variable>) V.stream()
-//                    .filter(variable -> variable.get_name().equals(v.get_name()))
-//                    .map(variable -> v)
-//                    .collect(Collectors.toList());
-//            
-//        }catch(Exception e){
-//            System.out.println(e + " while updating variable!");
-//        }
+        try{
+            for(var i = 0; i < V.size(); i++){
+                
+                if(V.get(i).get_name().equals(v.get_name())){
+                    V.set(i, v);
+                    break;
+                }
+            }
+            
+        }catch(Exception e){
+            System.out.println(e + " while update place: " + v.get_name());
+        }
     }
     
     public void update_place(Place p){
