@@ -13,6 +13,8 @@ import struttura_sn.SN;
  *
  * @author dell
  */
+//part of factory pattern
+//singleton
 public class SyntaxTree {
     
     //private SyntacticNode root; //undeterminated

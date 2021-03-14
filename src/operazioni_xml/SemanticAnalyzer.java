@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import Albero_sintattico.*;
+import Analyzer.*;
 import struttura_sn.*;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
@@ -17,7 +18,6 @@ import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
 import wncalculus.guard.*;
 import wncalculus.util.ComplexKey;
-import wncalculus.wnbag.LinearComb;
 import wncalculus.wnbag.WNtuple;
 import wncalculus.wnbag.TupleBag;
 
@@ -25,16 +25,21 @@ import wncalculus.wnbag.TupleBag;
  *
  * @author dell
  */
+//part of 2 factory patterns (Albero_sintattico & Analyzer) 
 //singleton
 public class SemanticAnalyzer {
     
     private static SN sn;
     private static SyntaxTree snt;
+    private Guard_analyzer ga;
+    private Tuple_analyzer ta;
     //single instance
     private static SemanticAnalyzer instance = null;
     
     private SemanticAnalyzer(){
         sn = SN.get_instance();
+        ga = Guard_analyzer.get_instance();
+        ta = Tuple_analyzer.get_instance();
     }
     
     public void set_syntax_tree(final SyntaxTree synt_tree){
@@ -81,7 +86,7 @@ public class SemanticAnalyzer {
                     //add domained_transition
                     Domain d = this.analyze_transition_domain(around_transition, synt_transition.get_syntactic_guard());
                     Transition t = this.create_analyzed_transition(
-                            synt_transition.get_name(), this.analyze_guard_of_predicates(synt_transition.get_syntactic_guard(), synt_transition.get_name(), d), d
+                            synt_transition.get_name(), ga.analyze_guard_of_predicates(synt_transition.get_syntactic_guard(), synt_transition.get_name(), d), d
                     );
                     sn.add_transition(t);
                     //connect transition by arcs
@@ -101,160 +106,6 @@ public class SemanticAnalyzer {
         Transition t = new Transition(name, g);
         t.set_node_domain(d);
         return t;
-    }
-    
-    private Guard analyze_guard_of_predicates(Syntactic_guard guard, String name,  Domain d){
-        LinkedHashMap<Syntactic_predicate,String> separated_predicates = guard.get_separated_predicates();
-        
-        if(separated_predicates.isEmpty()){
-            return this.analyze_true_false_guard(true, d);
-        }
-        Guard next_p = null, g, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
-
-        try{
-            Iterator<Syntactic_predicate> it = separated_predicates.keySet().iterator(); //iterate predicates after and/or operation
-            it.next(); //ignore first predicate
-
-            for(Syntactic_predicate predicate : separated_predicates.keySet()){
-
-                if(next_p == null){ //first cycle
-                    g = this.analyze_predicate(predicate, name, d);
-
-                    if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), name, d);
-                    }else{
-                        res = g;
-                        break;
-                    }                    
-                }else{
-                    g = next_p;
-
-                    if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), name, d);
-                    }else{
-                        res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
-                        break;
-                    }
-                }
-                res = this.analyze_and_or_guard(res, next_p, separated_predicates.get(predicate));
-            }            
-            //check if inverted
-            if(guard.get_invert_guard()){
-                res = Neg.factory(res);
-            }
-        }catch(Exception e){
-            System.out.println(e + " in SemanticAnalyzer/analyze_guard_of_predicates()");
-        }
-        
-        return res;    
-    }
-    
-    private Guard analyze_predicate(Syntactic_predicate synt_pr, String transition_name, Domain d) throws RuntimeException{
-        ArrayList<String> predicate_txt = synt_pr.get_predicate_elements();
-        Guard g = null;
-        
-        try{
-            String p_txt = predicate_txt.get(0);
-            
-            if(predicate_txt.size() == 1) { 
-
-                if(p_txt.contains("True")){
-                    this.analyze_true_false_guard(true, d);
-                }else if(p_txt.contains("False")){
-                    this.analyze_true_false_guard(false, d);
-                }else{
-                    throw new RuntimeException("can't analyze predicates 1 element!");
-                }
-             //equality || membership
-            }else{ //3 elements predicate -> projection, operation, projection/constant 
-                //1st element
-                Projection p1 = this.analyze_projection_element(p_txt, transition_name);
-                //2nd element
-                String operation = predicate_txt.get(1);
-                //3rd element
-                String op3 = predicate_txt.get(2);
-                
-                switch (operation){
-                    case "=":
-                        g = this.analyze_equality_guard(p1, p1, true, d);
-                        break;
-                    case "!=":
-                        g = this.analyze_equality_guard(p1, this.analyze_projection_element(op3, transition_name), false, d);
-                        break;
-                    case "in":
-                        g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), true, d);
-                        break;
-                    case "!in":
-                        g = this.analyze_membership_guard(p1, this.analyze_constant_element(op3), false, d);
-                        break;
-                    default:
-                        throw new RuntimeException("can't analyze predicate of 3 elements!");
-                }
-            }
-            //check if inverted
-            if(synt_pr.get_invert_guard()){ 
-                g = Neg.factory(g);
-            }
-        }catch(Exception e){
-            System.out.println(e + " in SemanticAnalyzer/analyze_predicate()");
-        }
-        return g;
-    }
-    
-    private Guard analyze_and_or_guard(Guard g1, Guard g2, String operation){
-
-        if(operation.equals("and")){
-            return And.factory(g1, g2); 
-        }
-        return Or.factory(false, g1, g2); 
-    }
-    
-    private Guard analyze_true_false_guard(boolean TF, Domain d){
-        
-        if(TF){ //create true guard
-            True.getInstance(d);
-        }
-        return False.getInstance(d);
-    }
-    
-    //operation: true = in, false = !in
-    private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation, Domain d){
-        return Equality.builder(p1, p2, operation, d);
-    }
-    
-    //operation: true = belongs to, false = doesn't belongs to
-    private Guard analyze_membership_guard(Projection g1, Subcl constant, boolean operation, Domain d){
-        return Membership.build(g1, constant, operation, d);
-    }
-    
-    private Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException{
-        Pattern p = Pattern.compile("([_a-zA-Z]+[_a-zA-Z0-9]*)(([+]{2}|[-]{2})?)");
-        Matcher m = p.matcher(proj.replaceAll("\\s*", ""));
-        Projection pro = null;
-        //to be completed
-        return pro;
-    }
-    //constant, es: subclass name
-    private Subcl analyze_constant_element(String const_name){
-        Subcl con = null;
-        
-        for(ColorClass cc : sn.get_C()){
-            
-            if(cc.name().equals(const_name)){ //search in colorclasses' names
-                con = Subcl.factory(this.generate_subcl_index(const_name), cc);
-                 break;
-            }else{ //search in subclasses of colorclass
-                Interval interval = Arrays.stream(cc.getConstraints()).filter(
-                                                 sub_interval -> sub_interval.name().equals(const_name)
-                                                 ).findFirst().orElse(null);
-                if(interval != null){
-                    con = Subcl.factory(this.generate_subcl_index(const_name), cc); //should we pass the sub-interval in which we have found the constant?
-                    break;        
-                }
-            }
-        }
-                
-        return con;
     }
     
     private Domain analyze_transition_domain(ArrayList<Syntactic_arc> around_transition, Syntactic_guard transition_guard){
@@ -337,44 +188,14 @@ public class SemanticAnalyzer {
         //fill tuple_bag_map
         multiplied_tuples.keySet().stream().forEach(
                 synt_tuple -> tuple_bag_map.put(
-                        this.analyze_arc_tuple(
-                                this.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d), synt_tuple.get_tuple_elements(), d
+                        ta.analyze_arc_tuple(
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d), synt_tuple.get_tuple_elements(), d
                         ), multiplied_tuples.get(synt_tuple)
                 )
         );
         
         return new Arc(synt_arc.get_name(), new TupleBag(tuple_bag_map));
     }
-    
-    //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
-    //tuples_elements list contains linearcombs
-    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements , Domain d){
-        ArrayList<LinearComb> tuple_combs = new ArrayList<>();
-        
-        //fill tuple_combs
-        Arrays.stream(tuple_elements).forEach(
-                tuple_e -> tuple_combs.add(this.analyze_tuple_elements(tuple_e))
-        );
-        
-        return new WNtuple(null, tuple_combs, g, d, true);
-    }
-    
-    private LinearComb analyze_tuple_elements(String tuple_element){
-        //uses analyze_projection_element()
-        //uses analyze_constant_element()
-        return null;
-    }   
-    
-    private int generate_subcl_index(String const_name){
-        return this.generate_projection_index(const_name, "", 0);
-    }
-    
-    //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
-    private int generate_projection_index(String transition_name, String variable_name, int successor_flag){
-        ComplexKey ck = new ComplexKey(transition_name, variable_name, successor_flag);
-        return ck.hashCode();
-    }
-    
     
     public static SemanticAnalyzer get_instance(){
 

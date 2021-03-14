@@ -32,7 +32,7 @@ public class Tuple_scanner {
         if(! m.find()){
             throw new RuntimeException("Can't match tuple: " + tuple);
         }
-        tuple = tuple.replaceAll("\\s*<\\s*", "").replaceAll("\\s*>\\s*", "").replaceAll("\\s*", "");
+        tuple = tuple.replaceAll("\\s*<\\s*", "").replaceAll("\\s*>\\s*", "").replaceAll("\\s+", "");
         
         return tuple.split(",");
     }
