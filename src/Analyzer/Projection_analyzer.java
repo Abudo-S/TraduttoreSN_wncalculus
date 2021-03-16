@@ -28,41 +28,62 @@ public class Projection_analyzer extends ElementAnalyzer{
         Pattern p = Pattern.compile(str_rx_element);
         Matcher m = p.matcher(proj.replaceAll("\\s+", ""));
         Projection pro;
+        int index;
         
         if(m.find()){
             Variable v = sn.find_variable(m.group(1));
             String circ_op = m.group(2);
 
             if(circ_op.equals("")){
-                pro  = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 0), 0, v.get_colourClass());
+                index = this.generate_projection_index(transition_name, v.get_name(), 0);
+                //check if projection already exists
+                if(v.check_if_index_exists(index, transition_name)){
+                    return v.get_available_projection(index, transition_name);
+                }
+                
+                pro = Projection.builder(index, 0, v.get_colourClass());
             }else{
 
                 if(circ_op.contains("++")){
-                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), 1), 1, v.get_colourClass());
+                    index = this.generate_projection_index(transition_name, v.get_name(), 1);
+                    //check if projection already exists
+                    if(v.check_if_index_exists(index, transition_name)){
+                        return v.get_available_projection(index, transition_name);
+                    }
+
+                    pro = Projection.builder(index, 1, v.get_colourClass());
 
                 }else if(circ_op.contains("--")){
-                    pro = Projection.builder(this.generate_projection_index(transition_name, v.get_name(), -1), -1, v.get_colourClass());
+                    index = this.generate_projection_index(transition_name, v.get_name(), -1);
+                    //check if projection already exists
+                    if(v.check_if_index_exists(index, transition_name)){
+                        return v.get_available_projection(index, transition_name);
+                    }
+                    
+                    pro = Projection.builder(index, -1, v.get_colourClass());
 
                 }else{
                     throw new NullPointerException("can't find successor in " + proj);
                 }       
             }
             
-            v.add_available_projection(pro);
+            v.add_available_projection(pro, transition_name);
             sn.update_variable_via_projection(v);
                             
         }else{
             throw new NullPointerException("can't find first projection in " + proj);
         }
         
-        
         return pro;
     }
     
     //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
     private int generate_projection_index(String transition_name, String variable_name, int successor_flag){
-        return this.generate_index(transition_name, variable_name, successor_flag);
-    }   
+        //return this.generate_index(transition_name, variable_name, successor_flag);
+        //to be completed
+        return 0;
+    }
+    
     
     public static Projection_analyzer get_instance(){
 

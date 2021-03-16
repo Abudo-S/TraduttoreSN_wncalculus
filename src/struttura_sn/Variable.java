@@ -6,6 +6,7 @@
 package struttura_sn;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import wncalculus.classfunction.Projection;
 import wncalculus.color.ColorClass;
 
@@ -18,7 +19,8 @@ public class Variable { //a projection is a variable in arc expression
     private final String variable_name;
     private final ColorClass colour_type;
     //private HashMap<Arc, Projection> available_projections_a; //all projections of variable that are written on arcs, will be empty while variable declaration
-    private ArrayList<Projection> available_projections_t; //all projections of variable that are written on transitions, will be empty while variable declaration
+    private HashMap<Transition, ArrayList<Projection>> available_projections_t; //all projections of variable that are written on transition, will be empty while variable declaration
+    //ArrayList<Projection> of a transition may contains x, x++, x--
     
     public Variable(String variable_name, ColorClass colour_type){
         this.variable_name = variable_name;
@@ -37,26 +39,58 @@ public class Variable { //a projection is a variable in arc expression
 //        this.available_projections_a.put(arc, p);
 //    }
     
-    public void add_available_projection(Projection p){
-        this.available_projections_t.add(p);
+    public void add_available_projection(Projection p, String transition_name){
+        this.available_projections_t.keySet().stream().filter(
+                t -> t.get_name().equals(transition_name)
+        ).forEach(
+                t -> {
+                        ArrayList<Projection> available_p = this.available_projections_t.get(t);
+                        available_p.add(p);
+                        this.available_projections_t.put(t, available_p);
+                     }
+        );
+    }
+    
+    public boolean check_if_index_exists(int index, String transition_name){    
+        ArrayList<Projection> projs;
+        
+        for(Transition t : this.available_projections_t.keySet()){
+            
+            if(t.get_name().equals(transition_name)){
+                projs = this.available_projections_t.get(t);
+                
+                for(Projection pro : projs){
+
+                    if(pro.getIndex() == index){
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
     }
     
 //    public Projection get_available_projection(Arc arc){
 //        return this.available_projections_a.get(arc);
 //    }
     
-    public Projection get_available_projection(int index){
-        Projection p = null;
+    public Projection get_available_projection(int index, String transition_name){
+        Projection[] p_wrapper = new Projection[1];
         
-        for(var i = 0; i < this.available_projections_t.size(); i++){
-            
-            if(this.available_projections_t.get(i).getIndex() == index){
-                p = this.available_projections_t.get(i);
-                break;
-            }
-        }
+        this.available_projections_t.keySet().stream().filter(
+                t ->  t.get_name().equals(transition_name)
+        ).forEach(
+                t -> {
+                        ArrayList<Projection> available_p = this.available_projections_t.get(t);
+                        
+                        p_wrapper[0] = available_p.stream().filter(
+                                projection -> projection.getIndex().equals(index)
+                        ).findFirst().orElse(null);
+                     }
+        );
         
-        return p;
+        return p_wrapper[0];
     }
     
 }

@@ -31,15 +31,24 @@ public class Constant_analyzer extends ElementAnalyzer{
         for(ColorClass cc : sn.get_C()){
             
             if(cc.name().equals(const_name)){ //search in colorclasses' names
-                con = Subcl.factory(this.generate_subcl_index(const_name), cc);
-                 break;
+                //constant index is 0 if the constant has the colorclass value itself
+                con = Subcl.factory(0, cc);
+                break;
             }else{ //search in subclasses of colorclass
-                Interval interval = Arrays.stream(cc.getConstraints()).filter(
-                                                 sub_interval -> sub_interval.name().equals(const_name)
-                                                 ).findFirst().orElse(null);
-                if(interval != null){
-                    con = Subcl.factory(this.generate_subcl_index(const_name), cc); //should we pass the sub-interval in which we have found the constant?
-                    break;        
+//                Interval interval = Arrays.stream(cc.getConstraints()).filter(
+//                                                 sub_interval -> sub_interval.name().equals(const_name)
+//                                                 ).findFirst().orElse(null);
+//                if(interval != null){
+//                    con = Subcl.factory(this.generate_subcl_index(const_name), cc); //should we pass the sub-interval in which we have found the constant? No
+//                    break;        
+//                }
+                Interval[] intervals = cc.getConstraints();
+                
+                for(var i = 0; i < intervals.length; i++){
+                    
+                    if(intervals[i].name().equals(const_name)){
+                        con = Subcl.factory(i+1, cc); // 0 is reserved to the colorclass itself
+                    }
                 }
             }
         }
@@ -47,10 +56,10 @@ public class Constant_analyzer extends ElementAnalyzer{
         return con;
     }
     
-    //subcl/constant index is 0 ?
-    private int generate_subcl_index(String const_name){
-        return this.generate_index(const_name, "", 0);
-    }
+//    //subcl/constant index is always 0? it's 0 if the constant has the colorclass value itself
+//    private int generate_subcl_index(String const_name){
+//        return this.generate_index(const_name, "", 0);
+//    }
     
     public static Constant_analyzer get_instance(){
 
