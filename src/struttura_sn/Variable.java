@@ -20,7 +20,7 @@ public class Variable { //a projection is a variable in arc expression
     private final ColorClass colour_type;
     //private HashMap<Arc, Projection> available_projections_a; //all projections of variable that are written on arcs, will be empty while variable declaration
     private HashMap<Transition, ArrayList<Projection>> available_projections_t; //all projections of variable that are written on transition, will be empty while variable declaration
-    //ArrayList<Projection> of a transition may contains x, x++, x--
+    //Note: ArrayList<Projection> of a transition may contains x, x++, x--
     
     public Variable(String variable_name, ColorClass colour_type){
         this.variable_name = variable_name;
@@ -34,10 +34,6 @@ public class Variable { //a projection is a variable in arc expression
     public ColorClass get_colourClass(){
         return this.colour_type;
     }
-    
-//    public void add_available_projection(Arc arc, Projection p){
-//        this.available_projections_a.put(arc, p);
-//    }
     
     public void add_available_projection(Projection p, String transition_name){
         this.available_projections_t.keySet().stream().filter(
@@ -70,10 +66,6 @@ public class Variable { //a projection is a variable in arc expression
         
         return false;
     }
-    
-//    public Projection get_available_projection(Arc arc){
-//        return this.available_projections_a.get(arc);
-//    }
     
     public Projection get_available_projection(int index, String transition_name){
         Projection[] p_wrapper = new Projection[1];
