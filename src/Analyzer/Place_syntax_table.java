@@ -32,7 +32,7 @@ public class Place_syntax_table { //used for "All" class functuon to follow Colo
         this.type_values.put(type, value);
     }
     
-    public ArrayList<String> get_place_value(String place_name){
+    public ArrayList<String> get_place_values(String place_name){
         return this.type_values.get(this.syntax.get(place_name));
     }
     

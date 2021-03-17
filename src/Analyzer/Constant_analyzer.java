@@ -5,7 +5,8 @@
  */
 package Analyzer;
 
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import struttura_sn.SN;
 import wncalculus.classfunction.Subcl;
 import wncalculus.color.ColorClass;
@@ -27,30 +28,38 @@ public class Constant_analyzer extends ElementAnalyzer{
     //constant, es: subclass name
     public Subcl analyze_constant_element(String const_name){
         Subcl con = null;
+        Pattern p = Pattern.compile(str_rx_element);
+        Matcher m = p.matcher(const_name.replaceAll("\\s+", ""));
         
-        for(ColorClass cc : sn.get_C()){
+        if(m.find()){
+            const_name = m.group(1);
             
-            if(cc.name().equals(const_name)){ //search in colorclasses' names
-                //constant index is 0 if the constant has the colorclass value itself
-                con = Subcl.factory(0, cc);
-                break;
-            }else{ //search in subclasses of colorclass
-//                Interval interval = Arrays.stream(cc.getConstraints()).filter(
-//                                                 sub_interval -> sub_interval.name().equals(const_name)
-//                                                 ).findFirst().orElse(null);
-//                if(interval != null){
-//                    con = Subcl.factory(this.generate_subcl_index(const_name), cc); //should we pass the sub-interval in which we have found the constant? No
-//                    break;        
-//                }
-                Interval[] intervals = cc.getConstraints();
-                
-                for(var i = 0; i < intervals.length; i++){
-                    
-                    if(intervals[i].name().equals(const_name)){
-                        con = Subcl.factory(i+1, cc); // 0 is reserved to the colorclass itself
+            for(ColorClass cc : sn.get_C()){
+
+                if(cc.name().equals(const_name)){ //search in colorclasses' names
+                    //constant index is 0 if the constant has the colorclass value itself
+                    con = Subcl.factory(0, cc);
+                    break;
+                }else{ //search in subclasses of colorclass
+    //                Interval interval = Arrays.stream(cc.getConstraints()).filter(
+    //                                                 sub_interval -> sub_interval.name().equals(const_name)
+    //                                                 ).findFirst().orElse(null);
+    //                if(interval != null){
+    //                    con = Subcl.factory(this.generate_subcl_index(const_name), cc); //should we pass the sub-interval in which we have found the constant? No
+    //                    break;        
+    //                }
+                    Interval[] intervals = cc.getConstraints();
+
+                    for(var i = 0; i < intervals.length; i++){
+
+                        if(intervals[i].name().equals(const_name)){
+                            con = Subcl.factory(i+1, cc); // 0 is reserved to the colorclass itself
+                        }
                     }
                 }
             }
+        }else{
+            throw new NullPointerException("can't find constant in " + const_name);
         }
                 
         return con;
