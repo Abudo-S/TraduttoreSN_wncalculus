@@ -26,8 +26,8 @@ public class SemanticAnalyzer {
     
     private static SN sn;
     private static SyntaxTree snt;
-    private Guard_analyzer ga;
-    private Tuple_analyzer ta;
+    private final Guard_analyzer ga;
+    private final Tuple_analyzer ta;
     //single instance
     private static SemanticAnalyzer instance = null;
     
@@ -160,7 +160,7 @@ public class SemanticAnalyzer {
             Syntactic_arc synt_arc = next_of_synt_place.get(synt_t);
             Transition t = sn.find_transition(synt_t.get_name());
             //pass transition domain
-            Arc arc = this.create_analyzed_arc(synt_arc, t.get_node_domain());
+            Arc arc = this.create_analyzed_arc(synt_arc,t.get_name(), p.get_name(), t.get_node_domain());
             
             if(synt_arc.get_type()){ //inhibitor
                 p.add_inib(arc, t);
@@ -184,7 +184,7 @@ public class SemanticAnalyzer {
             Syntactic_arc synt_arc = next_of_synt_place.get(synt_p);
             Place p = sn.find_place(synt_p.get_name());
             //pass place domain
-            Arc arc = this.create_analyzed_arc(synt_arc, p.get_node_domain());
+            Arc arc = this.create_analyzed_arc(synt_arc, t.get_name(), p.get_name(), p.get_node_domain());
             
             if(synt_arc.get_type()){ //inhibitor
                 p.add_inib(arc, t);
@@ -199,7 +199,7 @@ public class SemanticAnalyzer {
         return t;
     }
     
-    private Arc create_analyzed_arc(Syntactic_arc synt_arc, Domain d){
+    private Arc create_analyzed_arc(Syntactic_arc synt_arc, String transition_name, String place_name, Domain d){
         HashMap<Syntactic_tuple, Integer> multiplied_tuples = synt_arc.get_all_tuples();
         Map<WNtuple, Integer> tuple_bag_map =  new HashMap<>();
         
@@ -207,7 +207,7 @@ public class SemanticAnalyzer {
         multiplied_tuples.keySet().stream().forEach(
                 synt_tuple -> tuple_bag_map.put(
                         ta.analyze_arc_tuple(
-                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d), synt_tuple.get_tuple_elements(), d
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d), synt_tuple.get_tuple_elements(),transition_name, place_name, d
                         ), multiplied_tuples.get(synt_tuple)
                 )
         );

@@ -6,9 +6,9 @@
 package operazioni_xml;
 
 import Albero_sintattico.*;
+import Analyzer.Place_syntax_table;
 import Test.XML_DataTester;
 import java.util.*;
-import java.util.stream.Collectors;
 import struttura_sn.*;
 import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
@@ -23,8 +23,7 @@ public class DataParser { // will use SemanticAnalyzer
     
     private static SN sn;
     private static SemanticAnalyzer sa;
-//    private static ArrayList<Syntactic_place> all_pl;
-//    private static ArrayList<Syntactic_transition> all_st;
+    private static Place_syntax_table pst; 
     private static SyntaxTree snt;
     //single instance
     private static DataParser instance = null;
@@ -33,6 +32,7 @@ public class DataParser { // will use SemanticAnalyzer
        sn = SN.get_instance();
        sa = SemanticAnalyzer.get_instance();
        snt = SyntaxTree.get_instance();
+       pst = Place_syntax_table.get_instance();
     }
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
@@ -81,10 +81,22 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_Domain(String domain_name, ArrayList<String> colorclasses){
         //XML_DataTester.get_instance().test_add_Domain(domain_name, colorclasses);
         HashMap<ColorClass, Integer> product_sort = new HashMap<>();
-        
+
+//GreatSpn tool doesn't allow the (1<n) * color class muliplicity        
         colorclasses.stream().forEach( 
-                e -> product_sort.put(sn.find_colorClass(e), 1) //GreatSpn tool doesn't allow the (1<) * color class muliplicity
+                e -> {
+                    ColorClass cc = sn.find_colorClass(e);
+
+                    if(product_sort.containsKey(cc)){
+                        int mult = product_sort.get(cc);
+                        mult += 1;
+                        product_sort.put(cc, mult);
+                    }else{
+                        product_sort.put(cc, 1);
+                    }
+                }
         );
+        pst.add_type_value(domain_name, colorclasses);
         
         Domain d = new Domain(product_sort);
         d.set_name(domain_name);
@@ -98,9 +110,13 @@ public class DataParser { // will use SemanticAnalyzer
         
         if(cc != null){ //place of color class type
             p = new Place(place_name, cc);
-            
+            //add to Place_syntax_table
+            pst.add_place_type(place_name, cc.name());
+            pst.add_type_value(cc.name(), new ArrayList<>(List.of(cc.name())));
         }else{ //place of domain type
             p = new Place(place_name, sn.find_domain(place_type));
+            //add to Place_syntax_table
+            pst.add_place_type(place_name, place_type);
         }
         snt.add_synt_place(new Syntactic_place(place_name));
         //analyze place domain
@@ -110,6 +126,7 @@ public class DataParser { // will use SemanticAnalyzer
     
     //uses add_Marking_colorclass()
     //uses add_Marking_domain()
+    //All marking will be added 
     public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type
         try{ //assume that the marking belongs to a place of color class type
             this.add_Marking_colorclass(place_name, new HashMap<String, Integer>(tokens));
@@ -122,7 +139,7 @@ public class DataParser { // will use SemanticAnalyzer
     private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens){ //for place of color class type
         //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
         Marking m0 = Marking.get_instance();
-        HashMap<Token, Integer> multiplied_token = new HashMap<>();
+        HashMap<Token, Integer> multiplied_token = new HashMap<>(); //may contain "All"
         
         //fill multiplied_token using tokens
         Place p = sn.find_place(place_name);
@@ -139,7 +156,7 @@ public class DataParser { // will use SemanticAnalyzer
     private void add_Marking_domain(String place_name, LinkedHashMap<String[], Integer> tokens){ //for place of domain type of n dimension
         //XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
         Marking m0 = Marking.get_instance();
-        HashMap<Token[], Integer> multiplied_token = new HashMap<>();
+        HashMap<Token[], Integer> multiplied_token = new HashMap<>(); //may contain array of "All"
         
         //fill multiplied_token using tokens
         Place p = sn.find_place(place_name);

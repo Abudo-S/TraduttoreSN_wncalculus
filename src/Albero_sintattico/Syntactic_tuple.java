@@ -29,4 +29,5 @@ public class Syntactic_tuple { //element of Syntactic_arc
     public String[] get_tuple_elements(){
         return this.tuple_elements;
     }
+
 }
