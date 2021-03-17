@@ -7,6 +7,7 @@ package Analyzer;
 
 import Albero_sintattico.Syntactic_guard;
 import Albero_sintattico.Syntactic_predicate;
+import Test.UnsupportedOperation;
 import java.util.*;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
@@ -20,8 +21,8 @@ import wncalculus.guard.*;
 //singleton
 public class Guard_analyzer{
     
-    private Projection_analyzer pa;
-    private Constant_analyzer ca;
+    private final Projection_analyzer pa;
+    private final Constant_analyzer ca;
     //single instance
     private static Guard_analyzer instance = null;
     
@@ -115,7 +116,7 @@ public class Guard_analyzer{
                         g = this.analyze_membership_guard(p1, ca.analyze_constant_element(op3), false, d);
                         break;
                     default:
-                        throw new RuntimeException("can't analyze predicate of 3 elements!");
+                        throw new UnsupportedOperation("can't analyze predicate of 3 elements with operation sign: " + operation);
                 }
             }
             //check if inverted
