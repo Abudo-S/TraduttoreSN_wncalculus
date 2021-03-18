@@ -5,8 +5,8 @@
  */
 package struttura_sn;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
+import wncalculus.wnbag.LinearComb;
 
 /**
  *
@@ -15,8 +15,9 @@ import java.util.Set;
 //singleton
 public class Marking {
     
-    // place -> token(s) of multiplicity n, a domained marking will have array of tokens with n multiplicity 
-    private static HashMap<Place, HashMap<Token[], Integer>> marking; 
+    // place -> token(s) of multiplicity n, a domained marking will have ArrayList of LinearComb with n multiplicity 
+    //the ArrayList will have only 1 element in the marking of place of colorclass type 
+    private static HashMap<Place, HashMap<ArrayList<LinearComb>, Integer>> marking; 
     //single instance
     private static Marking instance = null;
     
@@ -24,17 +25,17 @@ public class Marking {
         this.marking = new HashMap<>();
     }
     
-    public void mark_colored_place(Place p, HashMap<Token, Integer> multiplied_token){ // mark a coloured place
-        HashMap<Token[], Integer> mark = new HashMap<>();
+    public void mark_colored_place(Place p, HashMap<LinearComb, Integer> multiplied_token){ // mark a coloured place
+        HashMap<ArrayList<LinearComb>, Integer> mark = new HashMap<>();
         
         multiplied_token.keySet().stream().forEach(
-                token -> mark.put(new Token[]{token}, multiplied_token.get(token))
+                comb_element -> mark.put(new ArrayList<LinearComb>(List.of(comb_element)), multiplied_token.get(comb_element))
         );
         
         marking.put(p, mark);
     }
     
-    public void mark_domained_place(Place p, HashMap<Token[], Integer> multiplied_token){ // mark a domained place
+    public void mark_domained_place(Place p, HashMap<ArrayList<LinearComb>, Integer> multiplied_token){ // mark a domained place
         marking.put(p, multiplied_token);
     }
     
@@ -42,7 +43,7 @@ public class Marking {
         return marking.keySet();
     }
     
-    public HashMap<Token[], Integer> get_marking_of_place(Place p){
+    public HashMap<ArrayList<LinearComb>, Integer> get_marking_of_place(Place p){
         return marking.get(p);
     }
     
