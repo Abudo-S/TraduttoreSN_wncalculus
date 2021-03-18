@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Test;
+package Componenti;
 
 /**
  *
  * @author dell
  */
-public class UnsupportedOperation extends RuntimeException{
+public class UnsupportedPredicateOperation extends RuntimeException{
     
-    public UnsupportedOperation(String message){
+    public UnsupportedPredicateOperation(String message){
         super(message);
     }
 }

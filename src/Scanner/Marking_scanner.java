@@ -19,7 +19,7 @@ import java.util.regex.*;
 //singleton
 public class Marking_scanner extends ElementScanner{
     
-    private static final String str_rx_TupleToken = "(\\d*)([_a-zA-Z0-9]+)([,]([_a-zA-Z0-9]+))*";
+    private static final String str_rx_TupleToken = "(\\d*)<(\\d*[_a-zA-Z0-9]+([\\+-]\\d*[_a-zA-Z0-9]+)*)([,](\\d*[_a-zA-Z0-9]+)([\\+-]\\d*[_a-zA-Z0-9]+)*)*>";
     
     private static final String str_rx_multiplicity = "(\\d*)";
     //single instance
@@ -44,16 +44,13 @@ public class Marking_scanner extends ElementScanner{
         Map tokens;
         String marking = Marking_element.getElementsByTagName("text").item(0).getTextContent();
         
-        //remove unnecessary data
-        marking = marking.replaceAll("[<\\s>]", "");
-        
         //scan tuple of tokens
         Pattern p = Pattern.compile(str_rx_TupleToken);
         String[] mult_tuples_token = marking.split("\\+");
         
         //check token type (color class || domain)
         if(mult_tuples_token[0].contains(",")){ //domain
-          tokens = new LinkedHashMap<String[], Integer>();
+          tokens = new HashMap<String[], Integer>();
           
         }else{ //color class
           tokens = new HashMap<String, Integer>();
@@ -67,6 +64,8 @@ public class Marking_scanner extends ElementScanner{
             m = p.matcher(mult_tuples_token[i]);
             
             if(m.find()){
+                //remove unnecessary data
+                mult_tuples_token[i] = mult_tuples_token[i].replaceAll("[<\\s>]", "");
                 mult = m.group(1);
                 
                 if(!mult.isEmpty()){
@@ -82,7 +81,7 @@ public class Marking_scanner extends ElementScanner{
                     tokens.put(colors_token, multiplicity);
                 }                                               
             }else{
-                throw new NullPointerException("Initial marking exception : " + marking);
+                throw new NullPointerException("Initial marking exception : " + mult_tuples_token[i]);
             }
         }
         
