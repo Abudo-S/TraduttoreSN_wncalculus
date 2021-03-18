@@ -7,12 +7,14 @@ package operazioni_xml;
 
 import Albero_sintattico.*;
 import Analyzer.Place_syntax_table;
+import Analyzer.Tuple_analyzer;
 import Test.XML_DataTester;
 import java.util.*;
 import struttura_sn.*;
 import wncalculus.expr.Interval;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
+import wncalculus.wnbag.LinearComb;
 
 /**
  *
@@ -25,6 +27,7 @@ public class DataParser { // will use SemanticAnalyzer
     private static SemanticAnalyzer sa;
     private static Place_syntax_table pst; 
     private static SyntaxTree snt;
+    private static Marking m0;
     //single instance
     private static DataParser instance = null;
     
@@ -33,6 +36,7 @@ public class DataParser { // will use SemanticAnalyzer
        sa = SemanticAnalyzer.get_instance();
        snt = SyntaxTree.get_instance();
        pst = Place_syntax_table.get_instance();
+       m0 = Marking.get_instance();
     }
     
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
@@ -126,72 +130,103 @@ public class DataParser { // will use SemanticAnalyzer
     
     //uses add_Marking_colorclass()
     //uses add_Marking_domain()
-    //All marking will be added 
+    //marking of type "All" will be added 
     public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type
+        Tuple_analyzer ta = Tuple_analyzer.get_instance();
+        
         try{ //assume that the marking belongs to a place of color class type
-            this.add_Marking_colorclass(place_name, new HashMap<String, Integer>(tokens));
+            this.add_Marking_colorclass(place_name, new HashMap<String, Integer>(tokens), ta);
         }catch(Exception e){ // if it's not a place of color class type then it's of domain type 
-            this.add_Marking_domain(place_name, new LinkedHashMap<String[], Integer>(tokens));
+            this.add_Marking_domain(place_name, new HashMap<String[], Integer>(tokens), ta);
         }
     }
     
     //tokens parameter will have 1d colors with their multiplicity
-    private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens){ //for place of color class type
+    private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens, Tuple_analyzer ta){ //for place of color class type
         //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
-        Marking m0 = Marking.get_instance();
-        HashMap<Token, Integer> multiplied_token = new HashMap<>(); //may contain "All"
-        
-        //fill multiplied_token using tokens
-        Place p = sn.find_place(place_name);
-        ColorClass cc = sn.find_colorClass(p.get_type());
+        HashMap<LinearComb, Integer> multiplied_token = new HashMap<>();
         
         tokens.keySet().stream().forEach(
-                t_name -> multiplied_token.put(new Token(t_name, cc), tokens.get(t_name))
+                t_name -> multiplied_token.put(ta.analyze_marking_tuple_element(t_name, place_name, 0), tokens.get(t_name))
         );
         
         m0.mark_colored_place(sn.find_place(place_name), multiplied_token);
     }
     
-    //tokens parameter will have (n)d colors with their multiplicity
-    private void add_Marking_domain(String place_name, LinkedHashMap<String[], Integer> tokens){ //for place of domain type of n dimension
+    private void add_Marking_domain(String place_name, HashMap<String[], Integer> tokens, Tuple_analyzer ta){ //for place of domain type of n dimension
         //XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
-        Marking m0 = Marking.get_instance();
-        HashMap<Token[], Integer> multiplied_token = new HashMap<>(); //may contain array of "All"
-        
-        //fill multiplied_token using tokens
-        Place p = sn.find_place(place_name);
-        Domain d = sn.find_domain(p.get_type());
-        Map<ColorClass, Integer> product = (Map<ColorClass, Integer>) d.asMap();
-        
-        Token[] tokens_tuple = new Token[d.asMap().keySet().size()];
-//        int i;
-//        for(String[] tokens_mark : tokens.keySet()){
-//            tokens_tuple;
-//            i = 0;
-//            
-//            for(ColorClass cc : product.keySet()){    
-//                tokens_tuple[i] = new Token(tokens_mark[i], cc);
-//                i++;
-//            }
-//            multiplied_token.put(tokens_tuple, tokens.get(tokens_mark));
-//        }
-//same solution of the following stream method:
-        
-        ArrayList<Token> tokens_t = new ArrayList<>();
+        HashMap<ArrayList<LinearComb>, Integer> multiplied_token = new HashMap<>();
         
         tokens.keySet().stream().forEach(
-                token_arr -> { 
-                               Iterator<ColorClass> cc_it = product.keySet().iterator();
-                               
-                               Arrays.stream(token_arr).forEach(
-                                       token_str -> tokens_t.add(new Token(token_str, cc_it.next()))
-                               );
-                               multiplied_token.put(tokens_t.toArray(tokens_tuple), tokens.get(token_arr));
-                             }
+                marking_tuple_element -> {
+                    ArrayList<LinearComb> comb_elements = new ArrayList<>();
+
+                    for(var i = 0; i < marking_tuple_element.length; i++){
+                        comb_elements.add(ta.analyze_marking_tuple_element(marking_tuple_element[i], place_name, i));
+                    }
+                    multiplied_token.put(comb_elements, tokens.get(marking_tuple_element));
+                }
         );
-                
+        
         m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
     }
+    
+//    //tokens parameter will have 1d colors with their multiplicity
+//    private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens){ //for place of color class type
+//        //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
+//        Marking m0 = Marking.get_instance();
+//        HashMap<Token, Integer> multiplied_token = new HashMap<>(); //may contain "All"
+//        //fill multiplied_token using tokens
+//        Place p = sn.find_place(place_name);
+//        ColorClass cc = sn.find_colorClass(p.get_type());
+//        
+//        tokens.keySet().stream().forEach(
+//                t_name -> multiplied_token.put(new Token(t_name, cc), tokens.get(t_name))
+//        );
+//        
+//        m0.mark_colored_place(sn.find_place(place_name), multiplied_token);
+//    }
+//    
+//    //tokens parameter will have (n)d colors with their multiplicity
+//    private void add_Marking_domain(String place_name, LinkedHashMap<String[], Integer> tokens){ //for place of domain type of n dimension
+//        //XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
+//        Marking m0 = Marking.get_instance();
+//        HashMap<Token[], Integer> multiplied_token = new HashMap<>(); //may contain array of "All"
+//        
+//        //fill multiplied_token using tokens
+//        Place p = sn.find_place(place_name);
+//        Domain d = sn.find_domain(p.get_type());
+//        Map<ColorClass, Integer> product = (Map<ColorClass, Integer>) d.asMap();
+//        
+//        Token[] tokens_tuple = new Token[d.asMap().keySet().size()];
+////        int i;
+////        for(String[] tokens_mark : tokens.keySet()){
+////            tokens_tuple;
+////            i = 0;
+////            
+////            for(ColorClass cc : product.keySet()){    
+////                tokens_tuple[i] = new Token(tokens_mark[i], cc);
+////                i++;
+////            }
+////            multiplied_token.put(tokens_tuple, tokens.get(tokens_mark));
+////        }
+////same solution of the following stream method:
+//        
+//        ArrayList<Token> tokens_t = new ArrayList<>();
+//        
+//        tokens.keySet().stream().forEach(
+//                token_arr -> { 
+//                               Iterator<ColorClass> cc_it = product.keySet().iterator();
+//                               
+//                               Arrays.stream(token_arr).forEach(
+//                                       token_str -> tokens_t.add(new Token(token_str, cc_it.next()))
+//                               );
+//                               multiplied_token.put(tokens_t.toArray(tokens_tuple), tokens.get(token_arr));
+//                             }
+//        );
+//                
+//        m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
+//    }
     
     //format: LinkedHashMap<HashMap<ArrayList, Boolean>, String> = LinkedHashMap<HashMap<predicate with projections/constants, invert_predicate>, separator with next predicate if exists>
     //predicates describe guard and each predicate might be inverted
