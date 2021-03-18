@@ -7,7 +7,7 @@ package Analyzer;
 
 import Albero_sintattico.Syntactic_guard;
 import Albero_sintattico.Syntactic_predicate;
-import Test.UnsupportedOperation;
+import Componenti.UnsupportedPredicateOperation;
 import java.util.*;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
@@ -116,7 +116,7 @@ public class Guard_analyzer{
                         g = this.analyze_membership_guard(p1, ca.analyze_constant_element(op3), false, d);
                         break;
                     default:
-                        throw new UnsupportedOperation("can't analyze predicate of 3 elements with operation sign: " + operation);
+                        throw new UnsupportedPredicateOperation("can't analyze predicate of 3 elements with operation sign: " + operation);
                 }
             }
             //check if inverted

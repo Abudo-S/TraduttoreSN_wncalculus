@@ -9,8 +9,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import struttura_sn.SN;
+import struttura_sn.Token;
 import wncalculus.classfunction.All;
 import wncalculus.classfunction.ElementaryFunction;
+import wncalculus.classfunction.Subcl;
 import wncalculus.expr.Domain;
 import wncalculus.guard.Guard;
 import wncalculus.wnbag.LinearComb;
@@ -54,7 +56,7 @@ public class Tuple_analyzer {
     }
     
     //ElementaryFunction is (All, Projection, Subcl)
-    private LinearComb analyze_tuple_element(String tuple_element, String transition_name, String place_name, int tuple_index){
+    private LinearComb analyze_tuple_element(String tuple_element, String transition_name, String place_name, int element_index){ //used for arc expression tuple 
         Map<ElementaryFunction, Integer> element_t = new HashMap<>();
         Pattern p = Pattern.compile(str_rx_circ_projection);
         Matcher m = p.matcher(tuple_element);
@@ -70,20 +72,21 @@ public class Tuple_analyzer {
             //add constant with its multiplicity
             element_t.put(ca.analyze_constant_element(element), mult);       
         }else{
-            element_t = this.one_or_more_element(tuple_element, transition_name, place_name, tuple_index);
+            element_t = this.one_or_more_element(tuple_element, transition_name, place_name, element_index);
         }
         
         return new LinearComb(element_t);
     }
     
-    private Map<ElementaryFunction, Integer> one_or_more_element(String tuple_element, String transition_name, String place_name, int tuple_index){
+    private Map<ElementaryFunction, Integer> one_or_more_element(String tuple_element, String transition_name, String place_name, int element_index){
         Map<ElementaryFunction, Integer> element_t = new HashMap<>();
         Pattern p = Pattern.compile(str_rx_comb_element), p1 = Pattern.compile(str_rx_comb_operation);
         Matcher m = p.matcher(tuple_element), m1 = p1.matcher(tuple_element);        
 
-        int mult = 1, sign = 1;
+        int mult, sign = 1;
                 
         while(m.find()){
+            mult = 1;
             String element = m.group(2);
             
             if(!m.group(1).isEmpty()){
@@ -93,7 +96,7 @@ public class Tuple_analyzer {
             
             if(element.equals("All")){
                 //add class function of type "All"
-                element_t.put(create_All_from_index(place_name, tuple_index), mult);
+                element_t.put(create_All_from_index(place_name, element_index), mult);
             }else if(sn.find_variable(element) != null){ 
                 //add ordered projection with its multiplicity
                 element_t.put(pa.analyze_projection_element(tuple_element, transition_name), mult);
@@ -115,8 +118,56 @@ public class Tuple_analyzer {
         return element_t;
     }
     
+    public LinearComb analyze_marking_tuple_element(String tuple_element, String place_name, int element_index){ //used for marking tuple
+        Map<ElementaryFunction, Integer> element_m = new HashMap<>();
+        
+        Pattern p = Pattern.compile(str_rx_comb_element), p1 = Pattern.compile(str_rx_comb_operation);
+        Matcher m = p.matcher(tuple_element), m1 = p1.matcher(tuple_element);        
+
+        int mult, sign = 1;
+                
+        while(m.find()){
+            mult = 1;
+            String element = m.group(2);
+            
+            if(!m.group(1).isEmpty()){
+                mult = Integer.parseInt(m.group(1));
+            } 
+            mult = sign * mult;
+            
+            if(element.equals("All")){
+                //add class function of type "All"
+                element_m.put(create_All_from_index(place_name, element_index), mult);
+            }else{    
+                try{
+                    //assume that element is a constant
+                    Subcl con = ca.analyze_constant_element(element);
+
+                    if(con != null){ //add constant with its multiplicity
+                        element_m.put(con, mult);
+                    }else{ //if element isn't a constant then it's a color token
+                        element_m.put(new Token(element, sn.find_colorClass(pst.get_place_values(place_name).get(element_index))), mult);
+                    }
+                }catch(Exception e){
+                    System.out.println(e + " in Tuple_analyzer/analyze_marking_tuple_element");
+                }
+            }
+            
+            if(m1.find()){ //for element's sign in next matching
+                
+                if(m1.group(1).equals("-")){
+                    sign = -1;
+                }else{
+                    sign = 1;
+                }
+            }
+        }
+        
+        return new LinearComb(element_m);
+    }
+    
     //cc_index: is the index of colorclass in place type value(s) -> colorclass/domain
-    public static All create_All_from_index(String place_name, int cc_index){
+    private All create_All_from_index(String place_name, int cc_index){
         return All.getInstance(sn.find_colorClass(pst.get_place_values(place_name).get(cc_index)));
     }
     
