@@ -14,7 +14,7 @@ import struttura_sn.SN;
  */
 public abstract class ElementAnalyzer {
     
-    protected static final String str_rx_element = "([_a-zA-Z]+[_a-zA-Z0-9]*)(([+]{2}|[-]{2})?)";
+    protected static final String str_rx_element = "([_a-zA-Z]+[_a-zA-Z0-9]*)(([\\+]{2}|[-]{2})?)";
     protected static SN sn;
     
 //    public int generate_index(String name1, String name2, int flag){
