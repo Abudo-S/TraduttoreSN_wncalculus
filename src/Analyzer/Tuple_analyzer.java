@@ -27,9 +27,10 @@ import wncalculus.wnbag.WNtuple;
 //singleton
 public class Tuple_analyzer {
     
-    private static final String str_rx_circ_projection= "\\s*(\\d*)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)(([\\+]{2}|[-]{2}))"; //str_rx_element may match "All"
-    private static final String str_rx_comb_element = "\\s*(\\d*)\\s*" + ElementAnalyzer.get_str_rx_element();
-    private static final String str_rx_comb_operation = "([\\+-])";
+    //private static final String str_rx_circ_projection= "\\s*(\\d*)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)(([\\+]{2}|[-]{2}))"; //str_rx_element may match "All"
+    //group1 = (n), group2 = (variable_name), group6 = (+|-)    
+    private static final String str_rx_comb_element = "\\s*(\\d*)\\s*(" + ElementAnalyzer.get_str_rx_element() + ")" + Tuple_analyzer.str_rx_comb_operation; 
+    private static final String str_rx_comb_operation = "\\s*([\\+-])?\\s*";
     private final Projection_analyzer pa;
     private final Constant_analyzer ca;
     private static Place_syntax_table pst;
@@ -56,36 +57,15 @@ public class Tuple_analyzer {
         
         return new WNtuple(null, tuple_combs, g, d, true);
     }
-    
+  
     //ElementaryFunction is (All, Projection, Subcl)
     private LinearComb analyze_tuple_element(String tuple_element, String transition_name, String place_name, int element_index){ //used for arc expression tuple 
         Map<ElementaryFunction, Integer> element_t = new HashMap<>();
-        Pattern p = Pattern.compile(str_rx_circ_projection);
-        Matcher m = p.matcher(tuple_element);
-        int mult = 1;
-        
-        if(m.find()){
-            String element = m.group(2);
-            
-            if(!m.group(1).isEmpty()){
-                mult = Integer.parseInt(m.group(1));
-            }
-            //add constant with its multiplicity
-            element_t.put(ca.analyze_constant_element(element), mult);       
-        }else{
-            element_t = this.one_or_more_element(tuple_element, transition_name, place_name, element_index);
-        }
-        
-        return new LinearComb(element_t);
-    }
-    
-    private Map<ElementaryFunction, Integer> one_or_more_element(String tuple_element, String transition_name, String place_name, int element_index){
-        Map<ElementaryFunction, Integer> element_t = new HashMap<>();
-        Pattern p = Pattern.compile(str_rx_comb_element), p1 = Pattern.compile(str_rx_comb_operation);
-        Matcher m = p.matcher(tuple_element), m1 = p1.matcher(tuple_element);        
+        Pattern p = Pattern.compile(str_rx_comb_element);
+        Matcher m = p.matcher(tuple_element);        
 
         int mult, sign = 1;
-                
+        String op;        
         while(m.find()){
             mult = 1;
             String element = m.group(2);
@@ -100,15 +80,16 @@ public class Tuple_analyzer {
                 element_t.put(create_All_from_index(place_name, element_index), mult);
             }else if(sn.find_variable(element) != null){ 
                 //add ordered projection with its multiplicity
-                element_t.put(pa.analyze_projection_element(tuple_element, transition_name), mult);
+                element_t = this.update_or_add(element_t, pa.analyze_projection_element(tuple_element, transition_name), mult);
             }else{
                 //add constant with its multiplicity
-                element_t.put(ca.analyze_constant_element(element), mult);
+                element_t = this.update_or_add(element_t, ca.analyze_constant_element(element), mult);
             }
             
-            if(m1.find()){ //for element's sign in next matching
+            op = m.group(6);
+            if(!op.isBlank()){ //for element's sign in next matching
                 
-                if(m1.group(1).equals("-")){
+                if(op.equals("-")){
                     sign = -1;
                 }else{
                     sign = 1;
@@ -116,17 +97,18 @@ public class Tuple_analyzer {
             }
         }
         
-        return element_t;
+        return new LinearComb(element_t);
     }
     
+    //ElementaryFunction is (All, Token, Subcl)
     public LinearComb analyze_marking_tuple_element(String tuple_element, String place_name, int element_index){ //used for marking tuple
         Map<ElementaryFunction, Integer> element_m = new HashMap<>();
         
-        Pattern p = Pattern.compile(str_rx_comb_element), p1 = Pattern.compile(str_rx_comb_operation);
-        Matcher m = p.matcher(tuple_element), m1 = p1.matcher(tuple_element);        
+        Pattern p = Pattern.compile(str_rx_comb_element);
+        Matcher m = p.matcher(tuple_element);        
 
         int mult, sign = 1;
-                
+        String op;        
         while(m.find()){
             mult = 1;
             String element = m.group(2);
@@ -154,9 +136,10 @@ public class Tuple_analyzer {
                 }
             }
             
-            if(m1.find()){ //for element's sign in next matching
+            op = m.group(6);
+            if(!op.isBlank()){ //for element's sign in next matching
                 
-                if(m1.group(1).equals("-")){
+                if(op.equals("-")){
                     sign = -1;
                 }else{
                     sign = 1;
