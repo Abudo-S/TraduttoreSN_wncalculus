@@ -142,6 +142,15 @@ public class SemanticAnalyzer {
     
     private Map<ColorClass,Integer> analyze_tuple_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_tuple tuple){
         //update domain_elements with new data
+        String[] tuple_elements = tuple.get_tuple_elements();
+        
+        for(String tuple_element : tuple_elements){
+            String[] combs_of_elements = tuple_element.split(Tuple_analyzer.get_str_rx_comb_operation());
+            
+            for(String comb : combs_of_elements){
+                domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(comb), domain_elements);
+            }
+        }
         
         return domain_elements;
     }
