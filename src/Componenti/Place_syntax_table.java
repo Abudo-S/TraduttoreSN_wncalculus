@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Analyzer;
+package Componenti;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,8 @@ public class Place_syntax_table { //used for "All" class functuon to follow Colo
     private static Place_syntax_table instance = null;
     
     private Place_syntax_table(){
-        
+        this.syntax = new HashMap<>();
+        this.type_values = new HashMap<>();
     }
     
     public void add_place_type(String place_name, String type){

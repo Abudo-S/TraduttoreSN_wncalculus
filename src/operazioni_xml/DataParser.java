@@ -6,7 +6,7 @@
 package operazioni_xml;
 
 import Albero_sintattico.*;
-import Analyzer.Place_syntax_table;
+import Componenti.Place_syntax_table;
 import Analyzer.Tuple_analyzer;
 import Test.XML_DataTester;
 import java.util.*;
@@ -143,7 +143,7 @@ public class DataParser { // will use SemanticAnalyzer
     
     //tokens parameter will have 1d colors with their multiplicity
     private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens, Tuple_analyzer ta){ //for place of color class type
-        //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
+        XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
         HashMap<LinearComb, Integer> multiplied_token = new HashMap<>();
         
         tokens.keySet().stream().forEach(
@@ -154,7 +154,7 @@ public class DataParser { // will use SemanticAnalyzer
     }
     
     private void add_Marking_domain(String place_name, HashMap<String[], Integer> tokens, Tuple_analyzer ta){ //for place of domain type of n dimension
-        //XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
+        XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
         HashMap<ArrayList<LinearComb>, Integer> multiplied_token = new HashMap<>();
         
         tokens.keySet().stream().forEach(

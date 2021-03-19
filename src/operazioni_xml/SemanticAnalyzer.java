@@ -8,6 +8,8 @@ package operazioni_xml;
 import java.util.*;
 import Albero_sintattico.*;
 import Analyzer.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import struttura_sn.*;
 import wncalculus.expr.Domain;
 import wncalculus.guard.*;
@@ -112,25 +114,59 @@ public class SemanticAnalyzer {
             HashMap<Syntactic_tuple,Integer> arc_tuples = synt_arc.get_all_tuples();
             
             for(Syntactic_tuple synt_tuple : arc_tuples.keySet()){
+                //find projections colorclasses
                 domain_elements = this.analyze_tuple_colorclasses(domain_elements, synt_tuple);
                 domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_guard());
             }
         }
- 
+
         return new Domain((HashMap<? extends Sort, Integer>) domain_elements);
     }
     
-    private Map<ColorClass,Integer> analyze_guard_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_guard guard){
+    private Map<ColorClass,Integer> analyze_guard_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_guard guard){ 
         //update domain_elements with new data
-        //to be completed
+        LinkedHashMap<Syntactic_predicate,String> separated_predicates= guard.get_separated_predicates();
+        
+        for(Syntactic_predicate synt_predicate : separated_predicates.keySet()){
+            ArrayList<String> predicate_elements = synt_predicate.get_predicate_elements();
+            //projections may appear in the first and the third elements, Note: it won't appear in the second element because it's a predicate-operation 
+            domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(0)), domain_elements);
+            
+            if(predicate_elements.size() > 2){
+                domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(2)), domain_elements);
+            }
+        }
+        
         return domain_elements;
     }
     
     private Map<ColorClass,Integer> analyze_tuple_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_tuple tuple){
         //update domain_elements with new data
-        //to be completed
+        
         return domain_elements;
     }
+    
+    private Map<ColorClass,Integer> domain_elements_updater(ColorClass cc, Map<ColorClass,Integer> domain_elements){
+        
+        if(cc != null){
+            boolean found = false;
+
+            for(ColorClass cc_element : domain_elements.keySet()){
+
+                if(cc_element.name().equals(cc.name())){ //update map-element
+                    domain_elements.put(cc_element, domain_elements.get(cc_element) + 1);
+                    found = true;
+                }
+            }
+
+            if(!found){ //add new map-element 
+                domain_elements.put(cc, 1);
+            }
+        }
+        
+        return domain_elements;
+    }
+    
     
     public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
         Domain d = p.get_node_domain();
@@ -213,6 +249,25 @@ public class SemanticAnalyzer {
         );
         
         return new Arc(synt_arc.get_name(), new TupleBag(tuple_bag_map));
+    }
+    
+    private ColorClass analyze_projection_colorclass(String element){
+        ColorClass cc = null;
+        Pattern p = Pattern.compile(ElementAnalyzer.get_str_rx_element());
+        Matcher m = p.matcher(element);
+        
+        if(m.find()){
+            Variable v = sn.find_variable(m.group(1));
+            
+            if(v != null){
+                cc = v.get_colourClass();
+            }
+            
+        }else{
+            throw new NullPointerException("Can't analyze the colorclass of element: " + element);
+        } 
+        
+        return cc;
     }
     
     public static SemanticAnalyzer get_instance(){

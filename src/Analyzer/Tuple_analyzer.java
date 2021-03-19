@@ -5,6 +5,7 @@
  */
 package Analyzer;
 
+import Componenti.Place_syntax_table;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -169,6 +170,10 @@ public class Tuple_analyzer {
     //cc_index: is the index of colorclass in place type value(s) -> colorclass/domain
     private All create_All_from_index(String place_name, int cc_index){
         return All.getInstance(sn.find_colorClass(pst.get_place_values(place_name).get(cc_index)));
+    }
+    
+    public static String get_str_rx_comb_operation(){
+        return str_rx_comb_operation;
     }
     
     public static Tuple_analyzer get_instance(){
