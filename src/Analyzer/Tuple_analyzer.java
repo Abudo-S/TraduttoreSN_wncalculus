@@ -55,7 +55,19 @@ public class Tuple_analyzer {
             tuple_combs.add(this.analyze_tuple_element(tuple_elements[i], transition_name, place_name, i));
         }
         
-        return new WNtuple(null, tuple_combs, g, d, true);
+//        System.out.println(sn.find_colorClass("Risorsa").getConstraints()[0].lb());      
+//        tuple_combs.stream().forEach(
+//                comb -> {
+//                    System.out.println("comb start:");
+//                    comb.asMap().keySet().stream().forEach(
+//                         comb_element -> System.out.println(comb_element.indexSet().iterator().next())
+//                    );
+//                    System.out.println("comb end:");
+//                }
+//        );
+//        System.out.println(place_name + "," + tuple_combs.size() + "," + transition_name);
+        
+        return new WNtuple(null, tuple_combs, g, d, false);
     }
   
     //ElementaryFunction is (All, Projection, Subcl)

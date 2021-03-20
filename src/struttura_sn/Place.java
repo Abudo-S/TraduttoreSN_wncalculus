@@ -22,6 +22,7 @@ public class Place extends Node{
         this.name = name;
         this.Next = new HashMap<>();
         this.previous = new HashMap<>();
+        this.Inib = new HashMap<>();
         this.colour_type = type;
     }
     

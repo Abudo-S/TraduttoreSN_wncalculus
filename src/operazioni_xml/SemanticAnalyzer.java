@@ -215,7 +215,7 @@ public class SemanticAnalyzer {
                 p.add_inib(arc, t);
                 t.add_inib(arc, p);
             }else{
-                t = (Transition) p.add_next_Node(arc, p);
+                t = (Transition) p.add_next_Node(arc, t);
             }         
             //update connected transition
             sn.update_transition(t);

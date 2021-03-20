@@ -43,6 +43,10 @@ public class Marking {
         return marking.keySet();
     }
     
+    public HashMap<Place, HashMap<ArrayList<LinearComb>, Integer>> get_marking(){
+        return marking;
+    }
+    
     public HashMap<ArrayList<LinearComb>, Integer> get_marking_of_place(Place p){
         return marking.get(p);
     }

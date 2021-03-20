@@ -20,6 +20,7 @@ public class Transition extends Node{
         this.name = name;
         this.Next = new HashMap<>();
         this.previous = new HashMap<>();
+        this.Inib = new HashMap<>();
         this.guard = g;
     }
     

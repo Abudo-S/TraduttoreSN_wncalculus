@@ -41,7 +41,6 @@ public class Guard_analyzer{
                 return this.analyze_true_false_guard(true, d);
             }
 
-
             try{
                 Iterator<Syntactic_predicate> it = separated_predicates.keySet().iterator(); //iterate predicates after and/or operation
                 it.next(); //ignore first predicate
@@ -49,12 +48,11 @@ public class Guard_analyzer{
                 for(Syntactic_predicate predicate : separated_predicates.keySet()){
 
                     if(next_p == null){ //first cycle
-                        g = this.analyze_predicate(predicate, name, d);
+                        res = g = this.analyze_predicate(predicate, name, d);
 
                         if(it.hasNext()){
                             next_p = this.analyze_predicate(it.next(), name, d);
                         }else{
-                            res = g;
                             break;
                         }                    
                     }else{
@@ -63,7 +61,7 @@ public class Guard_analyzer{
                         if(it.hasNext()){
                             next_p = this.analyze_predicate(it.next(), name, d);
                         }else{
-                            res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
+                            //res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
                             break;
                         }
                     }
@@ -74,7 +72,7 @@ public class Guard_analyzer{
                     res = Neg.factory(res);
                 }
             }catch(Exception e){
-                System.out.println(e + " in SemanticAnalyzer/analyze_guard_of_predicates()");
+                System.out.println(e + " in Guard_analyzer/analyze_guard_of_predicates()");
             }
         }
         return res;    
@@ -101,7 +99,7 @@ public class Guard_analyzer{
                 //1st element
                 Projection p1 = pa.analyze_projection_element(p_txt, transition_name);
                 //2nd element
-                String operation = predicate_txt.get(1);
+                String operation = predicate_txt.get(1).replaceAll("\\s+","");
                 //3rd element
                 String op3 = predicate_txt.get(2);
                 
@@ -127,13 +125,13 @@ public class Guard_analyzer{
                 g = Neg.factory(g);
             }                
         }catch(Exception e){
-            System.out.println(e + " in SemanticAnalyzer/analyze_predicate()");
+            System.out.println(e + " in Guard_analyzer/analyze_predicate()");
         }
         return g;
     }
     
     private Guard analyze_and_or_guard(Guard g1, Guard g2, String operation){
-
+        
         if(operation.equals("and")){
             return And.factory(g1, g2); 
         }
@@ -150,12 +148,22 @@ public class Guard_analyzer{
     
     //operation: true = in, false = !in
     private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation, Domain d){
+        
+        if(p1 == null || p2 == null){
+            throw new NullPointerException("one of predicate elements weren't analyzed because of xml syntax error or not dound in SN");
+        }
+        
         return Equality.builder(p1, p2, operation, d);
     }
     
     //operation: true = belongs to, false = doesn't belongs to
-    private Guard analyze_membership_guard(Projection g1, Subcl constant, boolean operation, Domain d){
-        return Membership.build(g1, constant, operation, d);
+    private Guard analyze_membership_guard(Projection p1, Subcl constant, boolean operation, Domain d){
+        
+        if(p1 == null || constant == null){
+            throw new NullPointerException("one of predicate elements weren't analyzed because of xml syntax error or not dound in SN");
+        }
+         
+        return Membership.build(p1, constant, operation, d);
     }
     
     public static Guard_analyzer get_instance(){
