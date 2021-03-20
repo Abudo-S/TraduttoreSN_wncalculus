@@ -87,7 +87,7 @@ public class Tuple_analyzer {
             }
             
             op = m.group(6);
-            if(!op.isBlank()){ //for element's sign in next matching
+            if(op != null){ //for element's sign in next matching
                 
                 if(op.equals("-")){
                     sign = -1;
@@ -137,7 +137,8 @@ public class Tuple_analyzer {
             }
             
             op = m.group(6);
-            if(!op.isBlank()){ //for element's sign in next matching
+
+            if(op != null){ //for element's sign in next matching
                 
                 if(op.equals("-")){
                     sign = -1;

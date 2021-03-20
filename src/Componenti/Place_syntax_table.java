@@ -13,7 +13,7 @@ import java.util.HashMap;
  * @author dell
  */
 //singleton
-public class Place_syntax_table { //used for "All" class functuon to follow ColorClass ordering
+public class Place_syntax_table { //used for analyzing "All" class functuon to follow ColorClass ordering
     
     private HashMap<String, String> syntax; //place_name and its type, will be added while adding a new place
     private HashMap<String, ArrayList<String>> type_values; //colorclass/domain type with its ordered value(s) of colorclasses' names, will be added while adding new colorclass/domain

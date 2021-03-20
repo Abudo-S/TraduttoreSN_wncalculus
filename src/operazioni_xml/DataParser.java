@@ -8,6 +8,7 @@ package operazioni_xml;
 import Albero_sintattico.*;
 import Componenti.Place_syntax_table;
 import Analyzer.Tuple_analyzer;
+import Componenti.Variable_index_table;
 import Test.XML_DataTester;
 import java.util.*;
 import struttura_sn.*;
@@ -26,6 +27,7 @@ public class DataParser { // will use SemanticAnalyzer
     private static SN sn;
     private static SemanticAnalyzer sa;
     private static Place_syntax_table pst; 
+    private static Variable_index_table vit;
     private static SyntaxTree snt;
     private static Marking m0;
     //single instance
@@ -34,8 +36,9 @@ public class DataParser { // will use SemanticAnalyzer
     private DataParser(){
        sn = SN.get_instance();
        sa = SemanticAnalyzer.get_instance();
-       snt = SyntaxTree.get_instance();
        pst = Place_syntax_table.get_instance();
+       vit = Variable_index_table.get_instance();
+       snt = SyntaxTree.get_instance();
        m0 = Marking.get_instance();
     }
     
@@ -80,6 +83,7 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_Variable(String variable_name, String variable_type){ //type = color class
         //XML_DataTester.get_instance().test_add_Variable(variable_name, variable_type);
         sn.add_variable(new Variable(variable_name, sn.find_colorClass(variable_type)));
+        vit.add_cc_var_name(variable_type, variable_name);
     }    
     
     public void add_Domain(String domain_name, ArrayList<String> colorclasses){
@@ -143,7 +147,7 @@ public class DataParser { // will use SemanticAnalyzer
     
     //tokens parameter will have 1d colors with their multiplicity
     private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens, Tuple_analyzer ta){ //for place of color class type
-        XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
+        //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
         HashMap<LinearComb, Integer> multiplied_token = new HashMap<>();
         
         tokens.keySet().stream().forEach(
@@ -154,7 +158,7 @@ public class DataParser { // will use SemanticAnalyzer
     }
     
     private void add_Marking_domain(String place_name, HashMap<String[], Integer> tokens, Tuple_analyzer ta){ //for place of domain type of n dimension
-        XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
+        //XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
         HashMap<ArrayList<LinearComb>, Integer> multiplied_token = new HashMap<>();
         
         tokens.keySet().stream().forEach(

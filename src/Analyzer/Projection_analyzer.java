@@ -5,6 +5,7 @@
  */
 package Analyzer;
 
+import Componenti.Variable_index_table;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import struttura_sn.SN;
@@ -17,11 +18,14 @@ import wncalculus.classfunction.Projection;
  */
 //singleton
 public class Projection_analyzer extends ElementAnalyzer{
+    
+    private static Variable_index_table vit;
     //single instance
     private static Projection_analyzer instance = null;
     
     private Projection_analyzer(){
         sn = SN.get_instance();
+        vit = Variable_index_table.get_instance();
     }
     
     public Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException{
@@ -34,37 +38,38 @@ public class Projection_analyzer extends ElementAnalyzer{
             Variable v = sn.find_variable(m.group(1));
             String variable_name = v.get_name();
             String circ_op = m.group(2);
-
+            index = vit.get_variable_index(variable_name);
+            //System.out.println(index + "," + v.get_colourClass());
             if(circ_op.equals("")){
-                index = this.generate_projection_index(variable_name, 0);
+                //index = this.generate_projection_index(variable_name, 0);
                 //check if projection already exists
                 if(v.check_if_index_exists(index, transition_name)){
-                    return v.get_available_projection(index, transition_name);
+                    return v.get_available_projection(index, transition_name, v.get_colourClass(), 0);
                 }
                 
                 pro = Projection.builder(index, 0, v.get_colourClass());
             }else{
 
                 if(circ_op.contains("++")){
-                    index = this.generate_projection_index(variable_name, 1);
+                    //index = this.generate_projection_index(variable_name, 1);
                     //check if projection already exists
                     if(v.check_if_index_exists(index, transition_name)){
-                        return v.get_available_projection(index, transition_name);
+                        return v.get_available_projection(index, transition_name, v.get_colourClass(), 1);
                     }
 
                     pro = Projection.builder(index, 1, v.get_colourClass());
 
                 }else if(circ_op.contains("--")){
-                    index = this.generate_projection_index(variable_name, -1);
+                    //index = this.generate_projection_index(variable_name, -1);
                     //check if projection already exists
                     if(v.check_if_index_exists(index, transition_name)){
-                        return v.get_available_projection(index, transition_name);
+                        return v.get_available_projection(index, transition_name, v.get_colourClass(), -1);
                     }
                     
                     pro = Projection.builder(index, -1, v.get_colourClass());
 
                 }else{
-                    throw new NullPointerException("can't find successor/predecessor in " + proj);
+                    throw new NullPointerException("Can't find successor/predecessor in " + proj);
                 }       
             }
             
@@ -79,17 +84,16 @@ public class Projection_analyzer extends ElementAnalyzer{
     }
     
     //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
-    private int generate_projection_index(String variable_name, int successor_flag){
-        //return this.generate_index(transition_name, variable_name, successor_flag);
-        int index = 0;
-        
-        for(var i = 0; i< variable_name.length(); i++){
-            index += variable_name.charAt(i);
-        }
-        
-        return index + successor_flag;
-    }
-    
+//    private int generate_projection_index(String variable_name, int successor_flag){
+//        //return this.generate_index(transition_name, variable_name, successor_flag);
+//        int index = 0;
+//        
+//        for(var i = 0; i< variable_name.length(); i++){
+//            index += variable_name.charAt(i);
+//        }
+//        
+//        return index + successor_flag;
+//    }   
     
     public static Projection_analyzer get_instance(){
 

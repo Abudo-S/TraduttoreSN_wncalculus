@@ -125,18 +125,19 @@ public class SemanticAnalyzer {
     
     private Map<ColorClass,Integer> analyze_guard_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_guard guard){ 
         //update domain_elements with new data
-        LinkedHashMap<Syntactic_predicate,String> separated_predicates= guard.get_separated_predicates();
-        
-        for(Syntactic_predicate synt_predicate : separated_predicates.keySet()){
-            ArrayList<String> predicate_elements = synt_predicate.get_predicate_elements();
-            //projections may appear in the first and the third elements, Note: it won't appear in the second element because it's a predicate-operation 
-            domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(0)), domain_elements);
-            
-            if(predicate_elements.size() > 2){
-                domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(2)), domain_elements);
+        if(guard != null){
+            LinkedHashMap<Syntactic_predicate,String> separated_predicates= guard.get_separated_predicates();
+
+            for(Syntactic_predicate synt_predicate : separated_predicates.keySet()){
+                ArrayList<String> predicate_elements = synt_predicate.get_predicate_elements();
+                //projections may appear in the first and the third elements, Note: it won't appear in the second element because it's a predicate-operation 
+                domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(0)), domain_elements);
+
+                if(predicate_elements.size() > 2){
+                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(2)), domain_elements);
+                }
             }
         }
-        
         return domain_elements;
     }
     
@@ -148,7 +149,10 @@ public class SemanticAnalyzer {
             String[] combs_of_elements = tuple_element.split(Tuple_analyzer.get_str_rx_comb_operation());
             
             for(String comb : combs_of_elements){
-                domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(comb), domain_elements);
+                
+                if(sn.find_variable(comb) != null){
+                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(comb), domain_elements);
+                }
             }
         }
         
