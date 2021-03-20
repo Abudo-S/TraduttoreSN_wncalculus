@@ -25,6 +25,7 @@ public class Variable { //a projection is a variable in arc expression
     public Variable(String variable_name, ColorClass colour_type){
         this.variable_name = variable_name;
         this.colour_type = colour_type;
+        this.available_projections_t = new HashMap<>();
     }
     
     public String get_name(){
@@ -49,7 +50,7 @@ public class Variable { //a projection is a variable in arc expression
     
     public boolean check_if_index_exists(int index, String transition_name){    
         ArrayList<Projection> projs;
-        
+        //System.out.println(available_projections_t.size());
         for(Transition t : this.available_projections_t.keySet()){
             
             if(t.get_name().equals(transition_name)){
@@ -67,7 +68,8 @@ public class Variable { //a projection is a variable in arc expression
         return false;
     }
     
-    public Projection get_available_projection(int index, String transition_name){
+    //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
+    public Projection get_available_projection(int index, String transition_name, ColorClass cc, int successor_flag){
         Projection[] p_wrapper = new Projection[1];
         
         this.available_projections_t.keySet().stream().filter(
@@ -77,10 +79,14 @@ public class Variable { //a projection is a variable in arc expression
                         ArrayList<Projection> available_p = this.available_projections_t.get(t);
                         
                         p_wrapper[0] = available_p.stream().filter(
-                                projection -> projection.getIndex().equals(index)
+                                projection -> projection.getIndex().equals(index) && projection.getSucc() == successor_flag
                         ).findFirst().orElse(null);
                      }
         );
+        
+        if(p_wrapper[0] == null){
+           p_wrapper[0] = Projection.builder(index, -1, cc); 
+        }
         
         return p_wrapper[0];
     }
