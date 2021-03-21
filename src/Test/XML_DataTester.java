@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
  */
 //singleton
 public class XML_DataTester {
-    
+    //single instance
     private static XML_DataTester instance = null;
     
     private XML_DataTester(){

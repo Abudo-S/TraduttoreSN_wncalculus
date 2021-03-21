@@ -18,7 +18,6 @@ public class Syntactic_arc{
     
     public Syntactic_arc(String name){
         this.name = name;
-        this.inhibitor = inhibitor;
         this.multiplied_tuples = new HashMap<>();
     }
     

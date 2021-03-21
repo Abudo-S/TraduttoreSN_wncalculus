@@ -6,8 +6,8 @@
 package traduttoresn_wncalculus;
 
 import Test.SN_DataTester;
+import Test.SyntaxTree_DataTester;
 import operazioni_xml.*;
-import struttura_sn.SN;
 
 /**
  *
@@ -25,7 +25,11 @@ public class TraduttoreSN_wncalculus {
         SemanticAnalyzer sa = SemanticAnalyzer.get_instance();
         sa.set_syntax_tree(DataParser.get_syntax_tree());
         sa.analyze_syntax_tree();
-        SN_DataTester.get_instance().SN_all_data();
+        SyntaxTree_DataTester st_dt = SyntaxTree_DataTester.get_instance();
+        st_dt.SyntaxTree_all_data();
+        SN_DataTester sn_dt = SN_DataTester.get_instance();
+        //sn_dt.SN_all_data();
+        sn_dt.print_nodes_connections();
     }
     
 }

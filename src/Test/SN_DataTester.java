@@ -8,12 +8,15 @@ package Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import struttura_sn.Arc;
 import struttura_sn.Marking;
+import struttura_sn.Node;
 import struttura_sn.SN;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.expr.Sort;
 import wncalculus.guard.Guard;
 import wncalculus.wnbag.LinearComb;
+import wncalculus.wnbag.WNtuple;
 
 /**
  *
@@ -21,8 +24,12 @@ import wncalculus.wnbag.LinearComb;
  */
 //singleton
 public class SN_DataTester {
-    
+    //single instance
     private static SN_DataTester instance = null;
+    
+    private SN_DataTester(){
+        
+    }
     
     public void SN_all_data(){
         SN sn = SN.get_instance();
@@ -69,9 +76,9 @@ public class SN_DataTester {
             
             m0.get_all_marked_Places().stream().forEach(
                     x -> {
-                        System.out.print(x.get_name() + ": ");
-                        
+                        System.out.print(x.get_name() + ": ");       
                         HashMap<ArrayList<LinearComb>, Integer> x_mark = m0.get_marking_of_place(x);
+                        
                         x_mark.keySet().stream().forEach(
                                 comb_list -> {
                                         System.out.print(x_mark.get(comb_list) + " *[");
@@ -89,6 +96,108 @@ public class SN_DataTester {
         }catch(Exception e){
             System.out.println(e + " in SN_DataTester");
         }
+    }
+    
+    public void print_nodes_connections(){
+        SN sn = SN.get_instance();
+        System.out.println();
+        System.out.println("Nodes connections via arcs \"node_name ------ arc_name ----> node_name)\": ");
+        System.out.println();
+        
+        sn.get_P().stream().forEach(
+                place -> {
+                        System.out.println(place.get_name() + ", Next nodes: ");
+                        HashMap<Node, Arc> next = place.get_next_nodes();
+                        HashMap<Node, Arc> inib = place.get_inib_nodes();
+                        
+                        next.keySet().stream().forEach(
+                                next_node -> {
+                                    Arc arc = next.get(next_node);
+                                    System.out.print("-------- " + arc.get_name() + ": ");
+                                    Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
+                                     
+                                    arc_tuples_map.keySet().stream().forEach(
+                                            tuple -> {
+                                                System.out.print(arc_tuples_map.get(tuple) + " *[");
+                                                Guard g = tuple.guard();
+                                                
+                                                if(g != null){
+                                                    System.out.print("guard #" + g.toString() + "# ");
+                                                }
+                                                
+                                                tuple.getComponents().stream().forEach(
+                                                        comb_element -> this.print_linear_comb(comb_element)
+                                                );
+                                            }
+                                    );
+                                    
+                                    System.out.print("] -------> " + next_node.get_name());
+                                    System.out.println();
+                                }
+                        );
+                        
+                        System.out.println("Inhibitor(s):");
+                        inib.keySet().stream().forEach(
+                                next_node -> {
+                                    Arc arc = inib.get(next_node);
+                                    System.out.print("-------- " + arc.get_name() + ": ");
+                                    Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
+                                     
+                                    arc_tuples_map.keySet().stream().forEach(
+                                            tuple -> {
+                                                System.out.print(arc_tuples_map.get(tuple) + " *[");
+                                                Guard g = tuple.guard();
+                                                
+                                                if(g != null){
+                                                    System.out.print("guard #" + g.toString() + "# ");
+                                                }
+                                                
+                                                tuple.getComponents().stream().forEach(
+                                                        comb_element -> this.print_linear_comb(comb_element)
+                                                );
+                                            }
+                                    );
+                                    
+                                    System.out.print("] -------> " + next_node.get_name());
+                                    System.out.println();
+                                }
+                        );
+                        System.out.println("End of Inhibitor(s):");
+                }
+        );
+        
+        sn.get_T().stream().forEach(
+                transition -> {
+                    System.out.println(transition.get_name() + ", Next nodes: ");
+                        HashMap<Node, Arc> next = transition.get_next_nodes();
+                        
+                        next.keySet().stream().forEach(
+                                next_node -> {
+                                    Arc arc = next.get(next_node);
+                                    System.out.print("-------- " + arc.get_name() + ": ");
+                                    Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
+                                     
+                                    arc_tuples_map.keySet().stream().forEach(
+                                            tuple -> {
+                                                System.out.print(arc_tuples_map.get(tuple) + " *[");
+                                                Guard g = tuple.guard();
+                                                
+                                                if(g != null){
+                                                    System.out.print("guard #" + g.toString() + "# ");
+                                                }
+                                                
+                                                tuple.getComponents().stream().forEach(
+                                                        comb_element -> this.print_linear_comb(comb_element)
+                                                );
+                                            }
+                                    );
+                                    
+                                    System.out.print("] -------> " + next_node.get_name());
+                                    System.out.println();
+                                }
+                        );
+                }
+        );
     }
     
     private void print_linear_comb(LinearComb comb){
