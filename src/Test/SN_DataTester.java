@@ -5,10 +5,15 @@
  */
 package Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import struttura_sn.Marking;
 import struttura_sn.SN;
+import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.expr.Sort;
 import wncalculus.guard.Guard;
+import wncalculus.wnbag.LinearComb;
 
 /**
  *
@@ -59,12 +64,45 @@ public class SN_DataTester {
                     }
             );
             
-            System.out.println("initial Marking:");        
-            sn.get_initial_marking().get_all_marked_Places().stream().forEach(x -> System.out.println(x.get_name()));
+            System.out.println("initial Marking:");    
+            Marking m0 = sn.get_initial_marking();
+            
+            m0.get_all_marked_Places().stream().forEach(
+                    x -> {
+                        System.out.print(x.get_name() + ": ");
+                        
+                        HashMap<ArrayList<LinearComb>, Integer> x_mark = m0.get_marking_of_place(x);
+                        x_mark.keySet().stream().forEach(
+                                comb_list -> {
+                                        System.out.print(x_mark.get(comb_list) + " *[");
+                                        
+                                        comb_list.stream().forEach(
+                                                comb_element -> this.print_linear_comb(comb_element)
+                                        );
+                                }
+                        );
+                        
+                        System.out.println("]");
+                    }
+            );
             
         }catch(Exception e){
             System.out.println(e + " in SN_DataTester");
         }
+    }
+    
+    private void print_linear_comb(LinearComb comb){
+        Map<? extends ElementaryFunction, Integer> comb_map = comb.asMap();
+        System.out.print("(");
+        
+        comb_map.keySet().stream().forEach(
+                comb_map_element -> {
+                    System.out.print(comb_map.get(comb_map_element) + " * ");
+                    System.out.print(comb_map_element.getClass().getName());
+                }
+        );
+        
+        System.out.print(")  ");
     }
     
     public static SN_DataTester get_instance(){
