@@ -109,7 +109,7 @@ public class Tuple_analyzer {
                 }
             }
         }
-        
+
         return new LinearComb(element_t);
     }
     

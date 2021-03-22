@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.expr.Domain;
+import wncalculus.expr.Sort;
 import wncalculus.guard.Guard;
 import wncalculus.wnbag.LinearComb;
 
@@ -67,6 +68,10 @@ public class Semantic_DataTester { //for guards and tuples
         System.out.println();
     }
     
+    public void test_semantic_arc(){
+        //to be completed
+    }
+    
     public void test_semantic_arc_tuple(ArrayList<LinearComb> tuple_combs, Guard g, String transition_name){
         System.out.println("Tuple elements(belong to transition "+ transition_name + "):");
         
@@ -77,7 +82,7 @@ public class Semantic_DataTester { //for guards and tuples
         tuple_combs.stream().forEach(
                 comb -> {
                     System.out.print("<");
-                    this.test_semantic_linearcomb(comb);
+                    this.test_semantic_linearcomb_elements((Map<ElementaryFunction, Integer>) comb.asMap());
                     System.out.print(">");
                 }
         );
@@ -85,16 +90,21 @@ public class Semantic_DataTester { //for guards and tuples
         System.out.println();
     }
     
-    public void test_semantic_linearcomb(LinearComb comb){
-        Map<ElementaryFunction, Integer> comb_elements = (Map<ElementaryFunction, Integer>) comb.asMap();
+    private void test_semantic_linearcomb_elements(Map<ElementaryFunction, Integer> comb_elements){
         
         comb_elements.keySet().stream().forEach(
-                comb_element -> System.out.print(comb_element.getClass().getName())
+                comb_element -> System.out.print(comb_element.getClass().getName() + "+/- ")
         );
     }
     
-    public void test_domain(String element_name, Domain d){ //for WNtuple/transition objects
-        //to be completed
+    public void test_domain(String element_name, Domain d){ //for arc-WNtuple/transition objects
+        System.out.print("Domain of " + element_name + ": ");
+        Map<Sort,Integer> domain_elements = (Map<Sort,Integer>) d.asMap();
+        
+        domain_elements.keySet().stream().forEach(
+                domain_element -> System.out.print(domain_elements.get(domain_element) + "*(" + domain_element.name() + ") * ")
+        );
+        System.out.println();
     }
     
     public static Semantic_DataTester get_instance(){
