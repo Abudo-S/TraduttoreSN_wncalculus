@@ -26,10 +26,10 @@ public class TraduttoreSN_wncalculus {
         sa.set_syntax_tree(DataParser.get_syntax_tree());
         sa.analyze_syntax_tree();
         SyntaxTree_DataTester st_dt = SyntaxTree_DataTester.get_instance();
-        st_dt.SyntaxTree_all_data();
+        //st_dt.SyntaxTree_all_data();
         SN_DataTester sn_dt = SN_DataTester.get_instance();
         //sn_dt.SN_all_data();
-        sn_dt.print_nodes_connections();
+       //sn_dt.print_nodes_connections();
     }
     
 }

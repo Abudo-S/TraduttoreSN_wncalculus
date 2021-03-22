@@ -101,7 +101,7 @@ public class SN_DataTester {
     public void print_nodes_connections(){
         SN sn = SN.get_instance();
         System.out.println();
-        System.out.println("Nodes connections via arcs \"node_name ------ arc_name ----> node_name)\": ");
+        System.out.println("(SN)Nodes connections via arcs \"node_name ------ arc_name: arc expression ----> node_name\": ");
         System.out.println();
         
         sn.get_P().stream().forEach(
@@ -128,6 +128,7 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
+                                                System.out.print(" / ");
                                             }
                                     );
                                     
@@ -136,7 +137,7 @@ public class SN_DataTester {
                                 }
                         );
                         
-                        System.out.println("Inhibitor(s):");
+                        System.out.println(place.get_name() + ", Next inhibitors' nodes:");
                         inib.keySet().stream().forEach(
                                 next_node -> {
                                     Arc arc = inib.get(next_node);
@@ -155,6 +156,7 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
+                                                System.out.print(" / ");
                                             }
                                     );
                                     
@@ -162,7 +164,8 @@ public class SN_DataTester {
                                     System.out.println();
                                 }
                         );
-                        System.out.println("End of Inhibitor(s):");
+                        System.out.println("End of inhibitors:");
+                        System.out.println();
                 }
         );
         
@@ -189,6 +192,7 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
+                                                System.out.print(" / ");
                                             }
                                     );
                                     

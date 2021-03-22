@@ -8,6 +8,7 @@ package Analyzer;
 import Albero_sintattico.Syntactic_guard;
 import Albero_sintattico.Syntactic_predicate;
 import Componenti.UnsupportedPredicateOperation;
+import Test.Semantic_DataTester;
 import java.util.*;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
@@ -31,7 +32,7 @@ public class Guard_analyzer{
         this.ca = Constant_analyzer.get_instance();
     }
     
-    public Guard analyze_guard_of_predicates(Syntactic_guard guard, String name,  Domain d){
+    public Guard analyze_guard_of_predicates(Syntactic_guard guard, String transition_name,  Domain d){
         Guard next_p = null, g, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
         
         if(guard != null){
@@ -48,10 +49,10 @@ public class Guard_analyzer{
                 for(Syntactic_predicate predicate : separated_predicates.keySet()){
 
                     if(next_p == null){ //first cycle
-                        res = g = this.analyze_predicate(predicate, name, d);
+                        res = g = this.analyze_predicate(predicate, transition_name, d);
 
                         if(it.hasNext()){
-                            next_p = this.analyze_predicate(it.next(), name, d);
+                            next_p = this.analyze_predicate(it.next(), transition_name, d);
                         }else{
                             break;
                         }                    
@@ -59,7 +60,7 @@ public class Guard_analyzer{
                         g = next_p;
 
                         if(it.hasNext()){
-                            next_p = this.analyze_predicate(it.next(), name, d);
+                            next_p = this.analyze_predicate(it.next(), transition_name, d);
                         }else{
                             //res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
                             break;
@@ -74,11 +75,14 @@ public class Guard_analyzer{
             }catch(Exception e){
                 System.out.println(e + " in Guard_analyzer/analyze_guard_of_predicates()");
             }
+            
+            //Semantic_DataTester.get_instance().test_semantic_guard(separated_predicates, res);
         }
+        
         return res;    
     }
     
-    private Guard analyze_predicate(Syntactic_predicate synt_pr, String transition_name, Domain d) throws RuntimeException{
+    private Guard analyze_predicate(Syntactic_predicate synt_pr, String transition_name, Domain d) throws UnsupportedPredicateOperation{
         ArrayList<String> predicate_txt = synt_pr.get_predicate_elements();
         Guard g = null;
         
@@ -105,7 +109,7 @@ public class Guard_analyzer{
                 
                 switch (operation){
                     case "=":
-                        g = this.analyze_equality_guard(p1, p1, true, d);
+                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name), true, d);
                         break;
                     case "!=":
                         g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name), false, d);
@@ -127,6 +131,8 @@ public class Guard_analyzer{
         }catch(Exception e){
             System.out.println(e + " in Guard_analyzer/analyze_predicate()");
         }
+        Semantic_DataTester.get_instance().test_semantic_predicate(synt_pr, g);
+        
         return g;
     }
     

@@ -94,7 +94,7 @@ public class Arc_scanner extends ElementScanner{
 
                     if(m.find()){ //multiplicity of function/tuple
                         tuple_mult = Integer.parseInt(m.group(1).replaceAll("\\s*", ""));
-                        arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple, "<");
+                        arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple2, "<");
                     } 
                     //extract tuple elements
                     Tuple_scanner t_sc = Tuple_scanner.get_instance();

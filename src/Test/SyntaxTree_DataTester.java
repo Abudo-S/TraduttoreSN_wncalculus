@@ -26,6 +26,9 @@ public class SyntaxTree_DataTester {
     
     public void SyntaxTree_all_data(){
         SyntaxTree synt_tree = SyntaxTree.get_instance();
+        System.out.println();
+        System.out.println("(SyntaxTree)Nodes connections via arcs \"node_name ------ arc_name: is inhibitor ,arc expression ----> node_name\": ");
+        System.out.println();
         
         synt_tree.get_synt_places().stream().forEach(
                 synt_p -> {
@@ -50,7 +53,7 @@ public class SyntaxTree_DataTester {
                                             
                                             separated_predicates.keySet().stream().forEach(
                                                     separated_p -> {
-                                                            System.out.print((separated_p.get_invert_guard() == true)? "predicate !%" : "predicate %");
+                                                            System.out.print((separated_p.get_invert_guard() == true)? "predicate !% " : "predicate % ");
                                                             ArrayList<String> p_elements = separated_p.get_predicate_elements();
                                                             
                                                             p_elements.stream().forEach(
@@ -58,10 +61,11 @@ public class SyntaxTree_DataTester {
                                                             );
                                                             
                                                             String seperator = separated_predicates.get(separated_p);
+                                                            System.out.print("% ");
+                                                            
                                                             if(seperator != null && !seperator.isEmpty()){
                                                                 System.out.print(" " + seperator + " ");
-                                                            }
-                                                            System.out.print("% ");
+                                                            }  
                                                         }
                                             );
                                                     
@@ -69,9 +73,10 @@ public class SyntaxTree_DataTester {
                                             Arrays.stream(synt_tuple.get_tuple_elements()).forEach(
                                                     tp_element -> System.out.print(tp_element + ",")
                                             );
+                                            System.out.print(") ");
                                         }
                                 );
-                                System.out.print(")] -------> " + synt_next.get_name());
+                                System.out.print("] -------> " + synt_next.get_name());
                                 System.out.println();
                             }
                     );
@@ -102,7 +107,7 @@ public class SyntaxTree_DataTester {
                                             
                                             separated_predicates.keySet().stream().forEach(
                                                     separated_p -> {
-                                                            System.out.print((separated_p.get_invert_guard() == true)? "predicate !%" : "predicate %");
+                                                            System.out.print((separated_p.get_invert_guard() == true)? "predicate !% " : "predicate % ");
                                                             ArrayList<String> p_elements = separated_p.get_predicate_elements();
                                                             
                                                             p_elements.stream().forEach(
@@ -110,10 +115,11 @@ public class SyntaxTree_DataTester {
                                                             );
                                                             
                                                             String seperator = separated_predicates.get(separated_p);
+                                                            System.out.print("% ");
+                                                            
                                                             if(seperator != null && !seperator.isEmpty()){
                                                                 System.out.print(" " + seperator + " ");
-                                                            }
-                                                            System.out.print("% ");
+                                                            }   
                                                         }
                                             );
                                                     
@@ -121,7 +127,7 @@ public class SyntaxTree_DataTester {
                                             Arrays.stream(synt_tuple.get_tuple_elements()).forEach(
                                                     tp_element -> System.out.print(tp_element + ",")
                                             );
-                                            
+                                            System.out.print(")");
                                         }                                       
                                 );
                                 System.out.print(")] -------> " + synt_next.get_name());
