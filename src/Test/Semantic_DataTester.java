@@ -52,7 +52,16 @@ public class Semantic_DataTester { //for guards and tuples
     }
     
     public void test_semantic_predicate(Syntactic_predicate synt_pr, Guard g){
-       //to be completed
+        System.out.print((synt_pr.get_invert_guard() == true)? "predicate !% " : "predicate % ");
+        ArrayList<String> p_elements = synt_pr.get_predicate_elements();
+
+        p_elements.stream().forEach(
+                element -> System.out.print(element + " ")
+        );
+
+        System.out.print("% ");
+        System.out.print(" >>>equivalent predicate>>> " + g.toString() + "Class type: " + g.getClass().getName());
+        System.out.println();
     }
     
     public void test_semantic_arc(){
