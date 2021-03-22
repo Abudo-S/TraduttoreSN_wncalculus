@@ -86,7 +86,11 @@ public class Semantic_DataTester { //for guards and tuples
     }
     
     public void test_semantic_linearcomb(LinearComb comb){
-         //to be completed
+        Map<ElementaryFunction, Integer> comb_elements = (Map<ElementaryFunction, Integer>) comb.asMap();
+        
+        comb_elements.keySet().stream().forEach(
+                comb_element -> System.out.print(comb_element.getClass().getName())
+        );
     }
     
     public void test_domain(String element_name, Domain d){ //for WNtuple/transition objects
