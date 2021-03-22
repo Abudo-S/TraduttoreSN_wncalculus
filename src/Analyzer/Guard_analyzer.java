@@ -131,7 +131,7 @@ public class Guard_analyzer{
         }catch(Exception e){
             System.out.println(e + " in Guard_analyzer/analyze_predicate()");
         }
-        Semantic_DataTester.get_instance().test_semantic_predicate(synt_pr, g);
+        //Semantic_DataTester.get_instance().test_semantic_predicate(synt_pr, g);
         
         return g;
     }
@@ -147,8 +147,9 @@ public class Guard_analyzer{
     private Guard analyze_true_false_guard(boolean TF, Domain d){
         
         if(TF){ //create true guard
-            True.getInstance(d);
+            return True.getInstance(d);
         }
+        
         return False.getInstance(d);
     }
     

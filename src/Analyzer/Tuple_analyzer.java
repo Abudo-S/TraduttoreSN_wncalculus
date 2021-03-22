@@ -6,6 +6,7 @@
 package Analyzer;
 
 import Componenti.Place_syntax_table;
+import Test.Semantic_DataTester;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,7 +67,7 @@ public class Tuple_analyzer {
 //                }
 //        );
 //        System.out.println(place_name + "," + tuple_combs.size() + "," + transition_name);
-        
+        //Semantic_DataTester.get_instance().test_semantic_arc_tuple(tuple_combs, g, transition_name);
         return new WNtuple(null, tuple_combs, g, d, false);
     }
   

@@ -8,8 +8,11 @@ package Test;
 import Albero_sintattico.Syntactic_predicate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.expr.Domain;
 import wncalculus.guard.Guard;
+import wncalculus.wnbag.LinearComb;
 
 /**
  *
@@ -64,12 +67,26 @@ public class Semantic_DataTester { //for guards and tuples
         System.out.println();
     }
     
-    public void test_semantic_arc(){
-        //to be completed
+    public void test_semantic_arc_tuple(ArrayList<LinearComb> tuple_combs, Guard g, String transition_name){
+        System.out.println("Tuple elements(belong to transition "+ transition_name + "):");
+        
+        if(g != null){
+            System.out.print("[guard: " + g.toString() + "] ");
+        }
+                
+        tuple_combs.stream().forEach(
+                comb -> {
+                    System.out.print("<");
+                    this.test_semantic_linearcomb(comb);
+                    System.out.print(">");
+                }
+        );
+        
+        System.out.println();
     }
     
-    public void test_semantic_arc_tuple(){
-        //to be completed
+    public void test_semantic_linearcomb(LinearComb comb){
+         //to be completed
     }
     
     public void test_domain(String element_name, Domain d){ //for WNtuple/transition objects
