@@ -25,7 +25,30 @@ public class Semantic_DataTester { //for guards and tuples
     }
     
     public void test_semantic_guard(LinkedHashMap<Syntactic_predicate, String> separated_predicates, Guard g){
-        //to be completed
+        
+        if(!separated_predicates.isEmpty()){
+            
+            separated_predicates.keySet().stream().forEach(
+                    separated_p -> {
+                        System.out.print((separated_p.get_invert_guard() == true)? "predicate !% " : "predicate % ");
+                        ArrayList<String> p_elements = separated_p.get_predicate_elements();
+
+                        p_elements.stream().forEach(
+                                element -> System.out.print(element + " ")
+                        );
+
+                        String seperator = separated_predicates.get(separated_p);
+                        System.out.print("% ");
+
+                        if(seperator != null && !seperator.isEmpty()){
+                            System.out.print(" " + seperator + " ");
+                        }   
+                    }
+            );
+        
+        System.out.print(" >>>equivalent guard>>> " + g.toString());
+        System.out.println();
+        }
     }
     
     public void test_semantic_predicate(Syntactic_predicate synt_pr, Guard g){
