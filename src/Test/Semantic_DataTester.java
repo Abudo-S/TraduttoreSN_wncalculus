@@ -14,6 +14,7 @@ import wncalculus.expr.Domain;
 import wncalculus.expr.Sort;
 import wncalculus.guard.Guard;
 import wncalculus.wnbag.LinearComb;
+import wncalculus.wnbag.WNtuple;
 
 /**
  *
@@ -68,8 +69,18 @@ public class Semantic_DataTester { //for guards and tuples
         System.out.println();
     }
     
-    public void test_semantic_arc(){
-        //to be completed
+    public void test_semantic_arc(Map<WNtuple, Integer> tuple_bag_map, String arc_name ,String transition_name){
+        System.out.print("Arc name(" + arc_name + "): ");
+        
+        tuple_bag_map.keySet().stream().forEach(
+            tuple -> {
+                this.test_domain(arc_name, tuple.getDomain());
+                System.out.println("STR arc expressions--->");
+                this.test_semantic_arc_tuple(new ArrayList<LinearComb>(tuple.getComponents()), tuple.guard(), transition_name);
+                System.out.println("END arc expressions<---");
+            }
+        );
+        System.out.println();
     }
     
     public void test_semantic_arc_tuple(ArrayList<LinearComb> tuple_combs, Guard g, String transition_name){
@@ -83,7 +94,7 @@ public class Semantic_DataTester { //for guards and tuples
                 comb -> {
                     System.out.print("<");
                     this.test_semantic_linearcomb_elements((Map<ElementaryFunction, Integer>) comb.asMap());
-                    System.out.print(">");
+                    System.out.print("> + ");
                 }
         );
         
@@ -93,7 +104,7 @@ public class Semantic_DataTester { //for guards and tuples
     private void test_semantic_linearcomb_elements(Map<ElementaryFunction, Integer> comb_elements){
         
         comb_elements.keySet().stream().forEach(
-                comb_element -> System.out.print(comb_element.getClass().getName() + "+/- ")
+                comb_element -> System.out.print(comb_elements.get(comb_element) + "* " + comb_element.getClass().getName())
         );
     }
     

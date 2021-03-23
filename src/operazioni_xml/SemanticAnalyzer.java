@@ -282,6 +282,7 @@ public class SemanticAnalyzer {
                         ), multiplied_tuples.get(synt_tuple)
                 )
         );
+        //Semantic_DataTester.get_instance().test_semantic_arc(tuple_bag_map, synt_arc.get_name(), transition_name);
         
         return new Arc(synt_arc.get_name(), new TupleBag(tuple_bag_map));
     }
