@@ -8,6 +8,7 @@ package operazioni_xml;
 import java.util.*;
 import Albero_sintattico.*;
 import Analyzer.*;
+import Test.Semantic_DataTester;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import struttura_sn.*;
@@ -30,6 +31,8 @@ public class SemanticAnalyzer {
     private static SyntaxTree snt;
     private final Guard_analyzer ga;
     private final Tuple_analyzer ta;
+    //cache
+    private ArrayList<String> domain_analyzed_variables; //will be treated as cache for each transition that will be (reasigned/reset) as new ArrayList for each transition
     //single instance
     private static SemanticAnalyzer instance = null;
     
@@ -37,6 +40,7 @@ public class SemanticAnalyzer {
         sn = SN.get_instance();
         ga = Guard_analyzer.get_instance();
         ta = Tuple_analyzer.get_instance();
+        this.domain_analyzed_variables = new ArrayList<>();
     }
     
     public void set_syntax_tree(final SyntaxTree synt_tree){
@@ -90,6 +94,8 @@ public class SemanticAnalyzer {
                     sn.update_transition(this.create_connected_transition(synt_transition));
                     //reset list "around_transition" for the next transition
                     around_transition.removeAll(around_transition);
+                    
+                    //Semantic_DataTester.get_instance().test_domain(t.get_name(), d);
                 }
         );
         
@@ -119,7 +125,9 @@ public class SemanticAnalyzer {
                 domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_guard());
             }
         }
-
+        //reset list of projection indices "domain_analyzed_variables" for next transition 
+        this.domain_analyzed_variables = new ArrayList<>();
+                    
         return new Domain((HashMap<? extends Sort, Integer>) domain_elements);
     }
     
@@ -131,10 +139,20 @@ public class SemanticAnalyzer {
             for(Syntactic_predicate synt_predicate : separated_predicates.keySet()){
                 ArrayList<String> predicate_elements = synt_predicate.get_predicate_elements();
                 //projections may appear in the first and the third elements, Note: it won't appear in the second element because it's a predicate-operation 
-                domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(0)), domain_elements);
+                String var_name = predicate_elements.get(0);
+                
+                if(!this.domain_analyzed_variables.contains(var_name)){
+                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(var_name), domain_elements);
+                    this.domain_analyzed_variables.add(var_name);
+                }
 
-                if(predicate_elements.size() > 2){
-                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(predicate_elements.get(2)), domain_elements);
+                if(predicate_elements.size() > 2){ //3 elements predicate
+                    var_name = predicate_elements.get(2);
+                    
+                    if(!this.domain_analyzed_variables.contains(var_name)){
+                        domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(var_name), domain_elements);
+                        this.domain_analyzed_variables.add(var_name);
+                    }
                 }
             }
         }
@@ -151,7 +169,11 @@ public class SemanticAnalyzer {
             for(String comb : combs_of_elements){
                 
                 if(sn.find_variable(comb) != null){
-                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(comb), domain_elements);
+                    
+                    if(!this.domain_analyzed_variables.contains(comb)){
+                        domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(comb), domain_elements);
+                        this.domain_analyzed_variables.add(comb);
+                    }
                 }
             }
         }
