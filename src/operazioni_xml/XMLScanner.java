@@ -61,10 +61,10 @@ public class XMLScanner {
     
     public void scan_file_data(){
         this.scan_color_classes();
-        this.scan_places();
-        this.scan_transitions();
         this.scan_domains();
         this.scan_variables();
+        this.scan_places();
+        this.scan_transitions();
         this.scan_arcs();
     }
     

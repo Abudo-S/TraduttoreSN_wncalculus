@@ -6,6 +6,7 @@
 package Analyzer;
 
 import Componenti.Place_syntax_table;
+import Componenti.UnsupportedLinearCombElement;
 import Test.Semantic_DataTester;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -96,7 +97,13 @@ public class Tuple_analyzer {
                 element_t = this.update_or_add(element_t, pa.analyze_projection_element(tuple_element, transition_name), mult);
             }else{
                 //add constant with its multiplicity
-                element_t = this.update_or_add(element_t, ca.analyze_constant_element(element), mult);
+                Subcl con = ca.analyze_constant_element(element);
+                
+                if(con != null){
+                    element_t = this.update_or_add(element_t, con, mult);
+                }else{
+                    throw new UnsupportedLinearCombElement("Can't add this element in a linear combination of arc tuple: " + element);     
+                }  
             }
             
             op = m.group(6);
@@ -141,8 +148,10 @@ public class Tuple_analyzer {
 
                     if(con != null){ //add constant with its multiplicity
                         element_m = this.update_or_add(element_m, con, mult);
-                    }else{ //if element isn't a constant then it's a color token
+                    }else if(sn.find_variable(element) == null){ //if element isn't a constant then it's a color token (check if it isn't a variable)
                         element_m = this.update_or_add(element_m, new Token(element, sn.find_colorClass(pst.get_place_values(place_name).get(element_index))), mult);
+                    }else{
+                        throw new UnsupportedLinearCombElement("Can't add this element in a linear combination of marking tuple: " + element);    
                     }
                 }catch(Exception e){
                     System.out.println(e + " in Tuple_analyzer/analyze_marking_tuple_element");
