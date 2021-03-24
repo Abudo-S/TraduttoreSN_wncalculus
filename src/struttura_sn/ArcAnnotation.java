@@ -12,7 +12,7 @@ import wncalculus.wnbag.TupleBag;
  *
  * @author dell
  */
-public class Arc {
+public class ArcAnnotation {
     
     protected String name;
 //    protected ArrayList<Guard> guard_classORdomain; //[guard]<tuple_element> || [guard]<tuple_element,tuple_element,...> 
@@ -23,13 +23,13 @@ public class Arc {
     //protected ArrayList<Boolean> invert_guarded_tuples; //default = false if the tuple isn't guarded
     //protected int level;
             
-    public Arc(String name, TupleBag tb){
+    public ArcAnnotation(String name, TupleBag tb){
         this.name = name;
         this.tb = tb;
         //this.level = lvl;
     }    
     
-    public Arc(String name){
+    public ArcAnnotation(String name){
         this.name = name;
         //this.level = lvl;
     }    

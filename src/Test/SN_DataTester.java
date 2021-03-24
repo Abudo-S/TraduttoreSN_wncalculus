@@ -6,10 +6,9 @@
 package Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import struttura_sn.Arc;
+import struttura_sn.ArcAnnotation;
 import struttura_sn.Marking;
 import struttura_sn.Node;
 import struttura_sn.SN;
@@ -40,7 +39,7 @@ public class SN_DataTester {
             System.out.println("ColorClasses:");
             sn.get_C().stream().forEach(
                     x -> {
-                        System.out.print(x.name());
+                        System.out.print(x.name() + ", circular?" + x.isOrdered() + " ");
                         
                         Interval[] intervals = x.getConstraints();
                         
@@ -126,15 +125,13 @@ public class SN_DataTester {
         System.out.println("(SN)Nodes connections via arcs \"node_name ------ arc_name: arc expression ----> node_name\": ");
         System.out.println();
         
-        sn.get_P().stream().forEach(
-                place -> {
+        sn.get_P().stream().forEach(place -> {
                         System.out.println(place.get_name() + ", Next nodes: ");
-                        HashMap<Node, Arc> next = place.get_next_nodes();
-                        HashMap<Node, Arc> inib = place.get_inib_nodes();
+                        HashMap<Node, ArcAnnotation> next = place.get_next_nodes();
+                        HashMap<Node, ArcAnnotation> inib = place.get_inib_nodes();
                         
-                        next.keySet().stream().forEach(
-                                next_node -> {
-                                    Arc arc = next.get(next_node);
+                        next.keySet().stream().forEach(next_node -> {
+                                    ArcAnnotation arc = next.get(next_node);
                                     System.out.print("-------- " + arc.get_name() + ": ");
                                     Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
                                      
@@ -160,9 +157,8 @@ public class SN_DataTester {
                         );
                         
                         System.out.println(place.get_name() + ", Next inhibitors' nodes:");
-                        inib.keySet().stream().forEach(
-                                next_node -> {
-                                    Arc arc = inib.get(next_node);
+                        inib.keySet().stream().forEach(next_node -> {
+                                    ArcAnnotation arc = inib.get(next_node);
                                     System.out.print("-------- " + arc.get_name() + ": ");
                                     Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
                                      
@@ -191,14 +187,12 @@ public class SN_DataTester {
                 }
         );
         
-        sn.get_T().stream().forEach(
-                transition -> {
+        sn.get_T().stream().forEach(transition -> {
                     System.out.println(transition.get_name() + ", Next nodes: ");
-                        HashMap<Node, Arc> next = transition.get_next_nodes();
+                        HashMap<Node, ArcAnnotation> next = transition.get_next_nodes();
                         
-                        next.keySet().stream().forEach(
-                                next_node -> {
-                                    Arc arc = next.get(next_node);
+                        next.keySet().stream().forEach(next_node -> {
+                                    ArcAnnotation arc = next.get(next_node);
                                     System.out.print("-------- " + arc.get_name() + ": ");
                                     Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
                                      

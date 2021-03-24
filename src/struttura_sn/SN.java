@@ -7,7 +7,6 @@ package struttura_sn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import wncalculus.expr.Domain;
 import wncalculus.color.ColorClass;
 
@@ -18,8 +17,8 @@ import wncalculus.color.ColorClass;
 //singleton
 public class SN {
     
-    private static ArrayList<Place> P;
-    private static ArrayList<Transition> T;
+    private static ArrayList<Place> P; //hashmap con domini
+    private static ArrayList<Transition> T; //hashmap con variabili
     private static ArrayList<ColorClass> C;
     private static ArrayList<Domain> DC;
     private static ArrayList<Variable> V;

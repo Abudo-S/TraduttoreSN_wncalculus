@@ -8,7 +8,7 @@ package operazioni_xml;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import struttura_sn.Arc;
+import struttura_sn.ArcAnnotation;
 import struttura_sn.Node;
 import struttura_sn.Place;
 import struttura_sn.SN;
@@ -248,9 +248,9 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
         
         if(d == null){ 
             domain_elements = new HashMap<>();
-            HashMap<Node, Arc> t_next = t.get_next_nodes();
-            HashMap<Node, Arc> t_previous = t.get_previous_nodes();
-            HashMap<Node, Arc> t_inib = t.get_inib_nodes();
+            HashMap<Node, ArcAnnotation> t_next = t.get_next_nodes();
+            HashMap<Node, ArcAnnotation> t_previous = t.get_previous_nodes();
+            HashMap<Node, ArcAnnotation> t_inib = t.get_inib_nodes();
             
             t_next.keySet().stream().forEach(
                     place -> t_next.get(place)
@@ -267,7 +267,7 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
         return d;
     }
     
-    private ArrayList<ColorClass> search_arc_projection(Arc arc){
+    private ArrayList<ColorClass> search_arc_projection(ArcAnnotation arc){
         //to be completed
         return null;
     }

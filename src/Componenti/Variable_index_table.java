@@ -13,6 +13,7 @@ import java.util.List;
  *
  * @author dell
  */
+//singleton
 public class Variable_index_table { //used for assigning variables' indices for each colorclass
     
     private HashMap<String, ArrayList<String>> cc_vars_names; //all variables that are created for a colorclass, Note: variable index will be considered as projection index+1
@@ -51,6 +52,18 @@ public class Variable_index_table { //used for assigning variables' indices for 
         throw new RuntimeException("Can't find the index of var: " + var);
     }
             
+    //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
+//    private int generate_projection_index(String variable_name, int successor_flag){
+//        //return this.generate_index(transition_name, variable_name, successor_flag);
+//        int index = 0;
+//        
+//        for(var i = 0; i< variable_name.length(); i++){
+//            index += variable_name.charAt(i);
+//        }
+//        
+//        return index + successor_flag;
+//    }   
+    
     public static Variable_index_table get_instance(){
 
         if(instance == null){

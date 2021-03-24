@@ -231,7 +231,7 @@ public class SemanticAnalyzer {
             Syntactic_arc synt_arc = next_of_synt_place.get(synt_t);
             Transition t = sn.find_transition(synt_t.get_name());
             //pass transition domain
-            Arc arc = this.create_analyzed_arc(synt_arc,t.get_name(), p.get_name(), t.get_node_domain());
+            ArcAnnotation arc = this.create_analyzed_arc(synt_arc,t.get_name(), p.get_name(), t.get_node_domain());
             
             if(synt_arc.get_type()){ //inhibitor
                 p.add_inib(arc, t);
@@ -255,7 +255,7 @@ public class SemanticAnalyzer {
             Syntactic_arc synt_arc = next_of_synt_place.get(synt_p);
             Place p = sn.find_place(synt_p.get_name());
             //pass place domain
-            Arc arc = this.create_analyzed_arc(synt_arc, t.get_name(), p.get_name(), p.get_node_domain());
+            ArcAnnotation arc = this.create_analyzed_arc(synt_arc, t.get_name(), p.get_name(), p.get_node_domain());
             
             if(synt_arc.get_type()){ //inhibitor
                 p.add_inib(arc, t);
@@ -270,7 +270,7 @@ public class SemanticAnalyzer {
         return t;
     }
     
-    private Arc create_analyzed_arc(Syntactic_arc synt_arc, String transition_name, String place_name, Domain d){
+    private ArcAnnotation create_analyzed_arc(Syntactic_arc synt_arc, String transition_name, String place_name, Domain d){
         HashMap<Syntactic_tuple, Integer> multiplied_tuples = synt_arc.get_all_tuples();
         Map<WNtuple, Integer> tuple_bag_map =  new HashMap<>();
         
@@ -284,7 +284,7 @@ public class SemanticAnalyzer {
         );
         //Semantic_DataTester.get_instance().test_semantic_arc(tuple_bag_map, synt_arc.get_name(), transition_name);
         
-        return new Arc(synt_arc.get_name(), new TupleBag(tuple_bag_map));
+        return new ArcAnnotation(synt_arc.get_name(), new TupleBag(tuple_bag_map));
     }
     
     private ColorClass analyze_projection_colorclass(String element){
