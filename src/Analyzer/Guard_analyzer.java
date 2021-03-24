@@ -42,7 +42,7 @@ public class Guard_analyzer{
                 return this.analyze_true_false_guard(true, d);
             }
 
-            try{
+
                 Iterator<Syntactic_predicate> it = separated_predicates.keySet().iterator(); //iterate predicates after and/or operation
                 it.next(); //ignore first predicate
 
@@ -72,9 +72,7 @@ public class Guard_analyzer{
                 if(guard.get_invert_guard()){
                     res = Neg.factory(res);
                 }
-            }catch(Exception e){
-                System.out.println(e + " in Guard_analyzer/analyze_guard_of_predicates()");
-            }
+
             
             //Semantic_DataTester.get_instance().test_semantic_guard(separated_predicates, res);
         }
@@ -86,7 +84,7 @@ public class Guard_analyzer{
         ArrayList<String> predicate_txt = synt_pr.get_predicate_elements();
         Guard g = null;
         
-        try{
+ 
             String p_txt = predicate_txt.get(0);
             
             if(predicate_txt.size() == 1) { 
@@ -128,9 +126,7 @@ public class Guard_analyzer{
             if(synt_pr.get_invert_guard()){ 
                 g = Neg.factory(g);
             }                
-        }catch(Exception e){
-            System.out.println(e + " in Guard_analyzer/analyze_predicate()");
-        }
+
         //Semantic_DataTester.get_instance().test_semantic_predicate(synt_pr, g);
         
         return g;
@@ -156,9 +152,7 @@ public class Guard_analyzer{
     //operation: true = in, false = !in
     private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation, Domain d){
         
-        if(p1 == null || p2 == null){
-            throw new NullPointerException("one of predicate elements weren't analyzed because of xml syntax error or not dound in SN");
-        }
+
         
         return Equality.builder(p1, p2, operation, d);
     }
@@ -166,9 +160,7 @@ public class Guard_analyzer{
     //operation: true = belongs to, false = doesn't belongs to
     private Guard analyze_membership_guard(Projection p1, Subcl constant, boolean operation, Domain d){
         
-        if(p1 == null || constant == null){
-            throw new NullPointerException("one of predicate elements weren't analyzed because of xml syntax error or not dound in SN");
-        }
+
          
         return Membership.build(p1, constant, operation, d);
     }

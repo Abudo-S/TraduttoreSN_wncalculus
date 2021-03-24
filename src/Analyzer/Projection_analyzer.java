@@ -49,14 +49,18 @@ public class Projection_analyzer extends ElementAnalyzer{
                 
                 pro = Projection.builder(index, 0, v.get_colourClass());
             }else{
-
+                
                 if(circ_op.contains("++")){
                     //index = this.generate_projection_index(variable_name, 1);
                     //check if projection already exists
                     if(v.check_if_index_exists(index, transition_name)){
                         return v.get_available_projection(index, transition_name, v.get_colourClass(), 1);
                     }
-
+                    
+                    if(!v.get_colourClass().isOrdered()){
+                        throw new RuntimeException("Trying to assign successor to variable: " + v.get_name() + ", while its colorclass isn't circular/ordered"); 
+                    }
+                    
                     pro = Projection.builder(index, 1, v.get_colourClass());
 
                 }else if(circ_op.contains("--")){
@@ -66,6 +70,10 @@ public class Projection_analyzer extends ElementAnalyzer{
                         return v.get_available_projection(index, transition_name, v.get_colourClass(), -1);
                     }
                     
+                    if(!v.get_colourClass().isOrdered()){
+                        throw new RuntimeException("Trying to assign predecessor to variable: " + v.get_name() + ", while its colorclass isn't circular/ordered"); 
+                    }
+                                        
                     pro = Projection.builder(index, -1, v.get_colourClass());
 
                 }else{
