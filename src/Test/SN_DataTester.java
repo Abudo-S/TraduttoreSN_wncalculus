@@ -6,6 +6,7 @@
 package Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import struttura_sn.Arc;
@@ -13,6 +14,7 @@ import struttura_sn.Marking;
 import struttura_sn.Node;
 import struttura_sn.SN;
 import wncalculus.classfunction.ElementaryFunction;
+import wncalculus.expr.Interval;
 import wncalculus.expr.Sort;
 import wncalculus.guard.Guard;
 import wncalculus.wnbag.LinearComb;
@@ -36,7 +38,27 @@ public class SN_DataTester {
        
         try{
             System.out.println("ColorClasses:");
-            sn.get_C().stream().forEach(x -> System.out.println(x.name())); 
+            sn.get_C().stream().forEach(
+                    x -> {
+                        System.out.print(x.name());
+                        
+                        Interval[] intervals = x.getConstraints();
+                        
+                        if(intervals.length > 1){
+                            System.out.print("= ");
+                            
+                           for(var i = 0; i < intervals.length; i++){
+                               System.out.print(intervals[i].name());
+                               
+                               if(i != intervals.length-1){
+                                   System.out.print(" + ");
+                               }
+                           }
+                        }
+                        
+                        System.out.println();
+                    }
+            ); 
             
             System.out.println("Domains:");
             sn.get_DC().stream().forEach(
