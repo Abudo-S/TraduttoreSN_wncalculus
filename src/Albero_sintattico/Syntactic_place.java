@@ -14,10 +14,18 @@ import struttura_sn.SN;
  */
 public class Syntactic_place extends SyntacticNode{
     
+    /**
+     * 
+     * @param name syntactic-place's name
+     */
     public Syntactic_place(String name){
         super(name);
     }
     
+    /**
+     * 
+     * @return place's equivalent object from SN 
+     */
     public Place get_place_from_sn(){
         return SN.get_instance().find_place(this.name);
     }
