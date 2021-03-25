@@ -6,8 +6,6 @@
 package Albero_sintattico;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-import struttura_sn.SN;
 
 /**
  *
@@ -28,40 +26,71 @@ public class SyntaxTree {
         all_st = new ArrayList<>();
     }
     
+    /**
+     * 
+     * @param synt_p syntactic place that will be a node of this tree
+     */
     public void add_synt_place(Syntactic_place synt_p){
         all_pl.add(synt_p);
     }
     
+    /**
+     * 
+     * @param synt_t syntactic transition that will be a node of this tree
+     */
     public void add_synt_transition(Syntactic_transition synt_t){
         all_st.add(synt_t);
     }
     
+    /**
+     * 
+     * @return ArrayList of all syntactic places that exist in this tree
+     */
     public ArrayList<Syntactic_place> get_synt_places(){
         return all_pl;
     }
     
+    /**
+     * 
+     * @return ArrayList of all syntactic transitions that exist in this tree
+     */
     public ArrayList<Syntactic_transition> get_synt_transition(){
         return all_st;
     }
     
+    /**
+     * 
+     * @param name syntactic-place name that we want to retrieve its syntactic-place's object
+     * @return syntactic-place object, null otherwise
+     */
     public Syntactic_place find_synt_place(String name){
         return all_pl.stream().filter(
                     sp -> name.equals(sp.get_name())
                ).findFirst().orElse(null);
     }
     
+    /**
+     * 
+     * @param name syntactic-transition name that we want to retrieve its syntactic-place's object
+     * @return syntactic-transition object, null otherwise
+     */
     public Syntactic_transition find_synt_transition(String name){
         return all_st.stream().filter(
                     st -> name.equals(st.get_name())
                ).findFirst().orElse(null);
     }
     
+    /**
+     * 
+     * @param synt_p a syntactic-place object that will replace another syntactic-place object that has the same name
+     * @param synt_t a syntactic-transition object that will replace another syntactic-transition object that has the same name
+     */
     public void update_synt_p_t(Syntactic_place synt_p, Syntactic_transition synt_t){
         try{
             
             for(var i = 0; i < all_pl.size(); i++){
                 
-                if(all_pl.get(i).get_name().equals(synt_p)){
+                if(all_pl.get(i).get_name().equals(synt_p.get_name())){
                     all_pl.set(i, synt_p);
                     break;
                 }
@@ -69,7 +98,7 @@ public class SyntaxTree {
 
             for(var i = 0; i < all_st.size(); i++){
                 
-                if(all_st.get(i).get_name().equals(synt_p)){
+                if(all_st.get(i).get_name().equals(synt_t.get_name())){
                     all_st.set(i, synt_t);
                     break;
                 }
@@ -92,6 +121,10 @@ public class SyntaxTree {
 //        instance = ins;
 //    }
     
+    /**
+     * 
+     * @return single static instance of SyntaxTree
+     */
     public static SyntaxTree get_instance(){
 
         if(instance == null){
