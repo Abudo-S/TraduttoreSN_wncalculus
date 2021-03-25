@@ -9,6 +9,7 @@ package Componenti;
  *
  * @author dell
  */
+//used if the element of LinearComb isn't allowed, ex: adding a variable inside place's marking, or adding a token inside arc expression
 public class UnsupportedLinearCombElement extends RuntimeException{
     
     public UnsupportedLinearCombElement(String message){

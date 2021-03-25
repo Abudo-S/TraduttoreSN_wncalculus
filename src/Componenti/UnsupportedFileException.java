@@ -9,6 +9,7 @@ package Componenti;
  *
  * @author dell
  */
+//used if the file name entered doesn't have pnml extension 
 public class UnsupportedFileException extends RuntimeException{
     
     public UnsupportedFileException(String message){
