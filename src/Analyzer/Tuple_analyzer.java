@@ -6,7 +6,7 @@
 package Analyzer;
 
 import Componenti.Place_syntax_table;
-import Componenti.UnsupportedLinearCombElement;
+import Eccezioni.UnsupportedLinearCombElement;
 import Test.Semantic_DataTester;
 import java.util.*;
 import java.util.regex.Matcher;

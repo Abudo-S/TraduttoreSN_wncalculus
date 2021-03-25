@@ -25,6 +25,11 @@ public class Constant_analyzer extends ElementAnalyzer{
         sn = SN.get_instance();
     }
     
+    /**
+     * 
+     * @param const_name the name of constant that we want to analyse 
+     * @return the created constant
+     */
     //constant, es: subclass name
     public Subcl analyze_constant_element(String const_name){
         Subcl con = null;
@@ -70,6 +75,10 @@ public class Constant_analyzer extends ElementAnalyzer{
 //        return this.generate_index(const_name, "", 0);
 //    }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static Constant_analyzer get_instance(){
 
         if(instance == null){

@@ -7,7 +7,7 @@ package Analyzer;
 
 import Albero_sintattico.Syntactic_guard;
 import Albero_sintattico.Syntactic_predicate;
-import Componenti.UnsupportedPredicateOperation;
+import Eccezioni.UnsupportedPredicateOperation;
 import Test.Semantic_DataTester;
 import java.util.*;
 import wncalculus.classfunction.Projection;

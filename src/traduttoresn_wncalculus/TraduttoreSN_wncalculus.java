@@ -5,7 +5,7 @@
  */
 package traduttoresn_wncalculus;
 
-import Componenti.UnsupportedFileException;
+import Eccezioni.UnsupportedFileException;
 import Test.SN_DataTester;
 import Test.SyntaxTree_DataTester;
 import java.util.Scanner;
