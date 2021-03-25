@@ -13,14 +13,26 @@ public class Syntactic_transition extends SyntacticNode{
     
     private Syntactic_guard sg;
     
+    /**
+     * 
+     * @param name transition name
+     */
     public Syntactic_transition(String name){
         super(name);
     }
     
+    /**
+     * 
+     * @param sg syntactic guard of this syntactic-transition object
+     */
     public void set_syntactic_guard(Syntactic_guard sg){
         this.sg = sg;
     }
     
+    /**
+     * 
+     * @return syntactic guard of this syntactic-transition object
+     */
     public Syntactic_guard get_syntactic_guard(){
         return this.sg;
     }
