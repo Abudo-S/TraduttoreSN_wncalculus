@@ -17,11 +17,13 @@ import wncalculus.color.ColorClass;
 //singleton
 public class SN {
     
-    private static ArrayList<Place> P; //hashmap con domini
-    private static ArrayList<Transition> T; //hashmap con variabili
+    private static ArrayList<Place> P; //hashmap con domini, ma se il posto e' di tipo colorclass allora il dominio associato sarebbe null!, il dominio del posto esiste gis' dentro l'oggetto di place
+    private static ArrayList<Transition> T; //hashmap con variabili, ma le variabili di una transizione esistono gia' negli oggetti di guardie/tuple
     private static ArrayList<ColorClass> C;
+    //devono esistere in un'altra classe?
     private static ArrayList<Domain> DC;
     private static ArrayList<Variable> V;
+    //
     private static Marking m0;
     //single instance
     private static SN instance = null;

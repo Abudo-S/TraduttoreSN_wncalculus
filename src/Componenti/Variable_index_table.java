@@ -14,9 +14,9 @@ import java.util.List;
  * @author dell
  */
 //singleton
-public class Variable_index_table { //used for assigning variables' indices for each colorclass
+public class Variable_index_table { //used for assigning projections' indices for each colorclass
     
-    private HashMap<String, ArrayList<String>> cc_vars_names; //all variables that are created for a colorclass, Note: variable index will be considered as projection index+1
+    private HashMap<String, ArrayList<String>> cc_vars_names; //all variables that are created for a colorclass, Note: variable index will be considered as projection index +1
     //single instance
     private static Variable_index_table instance = null;
     
@@ -24,6 +24,11 @@ public class Variable_index_table { //used for assigning variables' indices for 
         this.cc_vars_names = new HashMap<>();
     }
     
+    /**
+     * 
+     * @param cc colour-class name
+     * @param var variable name that is created from cc type
+     */
     public void add_cc_var_name(String cc, String var){
         
         if(this.cc_vars_names.containsKey(cc)){ //if cc exists then update it's ArrayList of variables
@@ -35,6 +40,12 @@ public class Variable_index_table { //used for assigning variables' indices for 
         }
     }
     
+    /**
+     * 
+     * @param var variable name that we want to get its index to create a projection
+     * @return the index of variable in the ArrayList (+1) 
+     * Note: +1 is added because that library wncalculus doesn't allow creating a projection with index 0 
+     */
     public int get_variable_index(String var){
         
         for(String cc : this.cc_vars_names.keySet()){
@@ -64,6 +75,10 @@ public class Variable_index_table { //used for assigning variables' indices for 
 //        return index + successor_flag;
 //    }   
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static Variable_index_table get_instance(){
 
         if(instance == null){
