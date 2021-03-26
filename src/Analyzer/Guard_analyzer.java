@@ -32,8 +32,15 @@ public class Guard_analyzer{
         this.ca = Constant_analyzer.get_instance();
     }
     
+    /**
+     * 
+     * @param guard syntactic guard that will be analysed
+     * @param transition_name the name of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @param d the domain of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @return the analysed guard
+     */
     public Guard analyze_guard_of_predicates(Syntactic_guard guard, String transition_name,  Domain d){
-        Guard next_p = null, g, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
+        Guard next_p = null, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
         
         if(guard != null){
             LinkedHashMap<Syntactic_predicate,String> separated_predicates = guard.get_separated_predicates();
@@ -49,7 +56,7 @@ public class Guard_analyzer{
                 for(Syntactic_predicate predicate : separated_predicates.keySet()){
 
                     if(next_p == null){ //first cycle
-                        res = g = this.analyze_predicate(predicate, transition_name, d);
+                        res = this.analyze_predicate(predicate, transition_name, d);
 
                         if(it.hasNext()){
                             next_p = this.analyze_predicate(it.next(), transition_name, d);
@@ -57,12 +64,10 @@ public class Guard_analyzer{
                             break;
                         }                    
                     }else{
-                        g = next_p;
 
                         if(it.hasNext()){
                             next_p = this.analyze_predicate(it.next(), transition_name, d);
                         }else{
-                            //res = this.analyze_and_or_guard(res, g, separated_predicates.get(predicate));
                             break;
                         }
                     }
@@ -80,6 +85,14 @@ public class Guard_analyzer{
         return res;    
     }
     
+    /**
+     * 
+     * @param synt_pr syntactic predicate that will be analysed
+     * @param transition_name the name of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @param d the domain of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @return the analysed guard of predicate 
+     * @throws UnsupportedPredicateOperation if predicate's operation isn't (= | != |in |!in) & the predicate isn't of type True/False
+     */
     private Guard analyze_predicate(Syntactic_predicate synt_pr, String transition_name, Domain d) throws UnsupportedPredicateOperation{
         ArrayList<String> predicate_txt = synt_pr.get_predicate_elements();
         Guard g = null;
@@ -132,6 +145,13 @@ public class Guard_analyzer{
         return g;
     }
     
+    /**
+     * 
+     * @param g1 first guard
+     * @param g2 second guard
+     * @param operation and/or operation
+     * @return the analysed guard
+     */
     private Guard analyze_and_or_guard(Guard g1, Guard g2, String operation){
         
         if(operation.equals("and")){
@@ -140,6 +160,12 @@ public class Guard_analyzer{
         return Or.factory(false, g1, g2); 
     }
     
+    /**
+     * 
+     * @param TF true/false sign
+     * @param d the domain of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @return the analysed domain
+     */
     private Guard analyze_true_false_guard(boolean TF, Domain d){
         
         if(TF){ //create true guard
@@ -149,7 +175,14 @@ public class Guard_analyzer{
         return False.getInstance(d);
     }
     
-    //operation: true = in, false = !in
+    /**
+     * 
+     * @param p1 first projection
+     * @param p2 second projection
+     * @param operation true = in, false = !in
+     * @param d the domain of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @return the analysed guard
+     */
     private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation, Domain d){
         
 
@@ -157,7 +190,14 @@ public class Guard_analyzer{
         return Equality.builder(p1, p2, operation, d);
     }
     
-    //operation: true = belongs to, false = doesn't belongs to
+    /**
+     * 
+     * @param p1 projection
+     * @param constant subclass/subset in which we search
+     * @param operation true = belongs to, false = doesn't belongs to
+     * @param d the domain of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @return the analysed guard
+     */ 
     private Guard analyze_membership_guard(Projection p1, Subcl constant, boolean operation, Domain d){
         
 
@@ -165,6 +205,10 @@ public class Guard_analyzer{
         return Membership.build(p1, constant, operation, d);
     }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static Guard_analyzer get_instance(){
 
         if(instance == null){
