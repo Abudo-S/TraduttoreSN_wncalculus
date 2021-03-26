@@ -14,7 +14,7 @@ import java.util.regex.*;
  * @author dell
  */
 //singleton
-public class Predicate_scanner{
+public class Predicate_scanner{ //sub-element of Guard_scanner
     
     private static Predicate_scanner instance = null;
     
@@ -28,7 +28,12 @@ public class Predicate_scanner{
         
     }
     
-    //scans an/a (inverted)predicate as arraylist of operators and variables/constants
+    /**
+     * Note: scans an/a (inverted)predicate as ArrayList of operators and variables/constants
+     * @param predicate String of predicate the will be elaborated
+     * @return HashMap of predicate elements and their associated flag that will be true if predicate is inverted, false otherwise
+     * @throws RuntimeException if predicate isn't matched by the matcher
+     */
     public HashMap<ArrayList<String>,Boolean> scan_predicate(String predicate) throws RuntimeException{ //could be inverted
         if(!predicate.matches(str_rx_predicate)){
            throw new RuntimeException("Can't match predicate: " + predicate);   
@@ -40,6 +45,11 @@ public class Predicate_scanner{
         return predicates_with_invert;
     }
     
+    /**
+     * 
+     * @param predicate String of predicate the will be elaborated
+     * @return ArrayList of predicate elements
+     */
     private ArrayList<String> get_predicate_operators(String predicate){
         ArrayList<String> predicate_op = new ArrayList<>();
         Pattern p = Pattern.compile(str_rx_predicate);
@@ -61,6 +71,11 @@ public class Predicate_scanner{
         return predicate_op;
     }
     
+    /**
+     * 
+     * @param predicate String of predicate in which we will search for Not-sign(!)
+     * @return true if predicate is inverted, false otherwise
+     */
     private Boolean get_invert_predicate(String predicate){
         Pattern p = Pattern.compile(str_rx_inverter);
         Matcher m = p.matcher(predicate);
@@ -70,7 +85,11 @@ public class Predicate_scanner{
         }
         return false;
     }
-
+    
+    /**
+     * 
+     * @return single static instance
+     */
     public static Predicate_scanner get_instance(){
         
         if(instance == null){
