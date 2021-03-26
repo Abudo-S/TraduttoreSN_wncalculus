@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @author dell
  */
 //singleton
-public class Tuple_scanner {
+public class Tuple_scanner { //sub-element of Arc_scanner
     
     private static Tuple_scanner instance = null;
     
@@ -24,7 +24,12 @@ public class Tuple_scanner {
         
     }
     
-    //returns a separated array of elements of tuple, using "," as separator
+    /**
+     * 
+     * @param tuple String of tuple data
+     * @return a separated array of elements of tuple, using "," as separator
+     * @throws RuntimeException 
+     */
     public String[] scan_tuple(String tuple) throws RuntimeException{
         Pattern p = Pattern.compile(str_rx_tuple);
         Matcher m = p.matcher(tuple);
@@ -37,6 +42,10 @@ public class Tuple_scanner {
         return tuple.split(",");
     }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static Tuple_scanner get_instance(){
         
         if(instance == null){
