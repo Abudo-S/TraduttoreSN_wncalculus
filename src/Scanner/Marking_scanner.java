@@ -6,7 +6,6 @@
 package Scanner;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,7 +16,7 @@ import java.util.regex.*;
  * @author dell
  */
 //singleton
-public class Marking_scanner extends ElementScanner{
+public class Marking_scanner extends ElementScanner{ //sub-element of Place_scanner but it's treated as an element while scanning using scan_info()
     
     private static final String str_rx_TupleToken = "(\\d*)<(\\d*[_a-zA-Z0-9]+([\\+-]\\d*[_a-zA-Z0-9]+)*)([,](\\d*[_a-zA-Z0-9]+)([\\+-]\\d*[_a-zA-Z0-9]+)*)*>";
     
@@ -25,11 +24,21 @@ public class Marking_scanner extends ElementScanner{
     //single instance
     private static Marking_scanner instance = null;
     
+    /**
+     * 
+     * @param doc the document from which we scan elements
+     */
     private Marking_scanner(final Document doc){
         super(doc);
     }
     
-    public void scan_info(Element Marking_element, String place_name){
+    /**
+     * 
+     * @param Marking_element marking-element's tag from which we retrieve place marking data
+     * @param place_name the name of place that contains Marking_element
+     * @throws NullPointerException if the tag that contain marking data don't exist
+     */
+    public void scan_info(Element Marking_element, String place_name) throws NullPointerException{
         
       if(Marking_element.getElementsByTagName("text").getLength()>0){
             this.scan_marking_text(Marking_element, place_name);
@@ -39,6 +48,12 @@ public class Marking_scanner extends ElementScanner{
       
     }
     
+    /**
+     * 
+     * @param Marking_element marking-element's tag from which we retrieve place marking data
+     * @param place_name the name of place that contains Marking_element
+     * @throws NullPointerException if the initial marking isn't matched by the matcher
+     */
     private void scan_marking_text(Element Marking_element, String place_name) throws NullPointerException{
         int multiplicity;
         Map tokens;
@@ -81,13 +96,18 @@ public class Marking_scanner extends ElementScanner{
                     tokens.put(colors_token, multiplicity);
                 }                                               
             }else{
-                throw new NullPointerException("Initial marking exception : " + mult_tuples_token[i]);
+                throw new NullPointerException("Can't match initial marking : " + mult_tuples_token[i]);
             }
         }
         
         dp.add_Marking(place_name, tokens);
     }
     
+    /**
+     * 
+     * @param doc the document from which we scan initial markings
+     * @return single static instance
+     */
     public static Marking_scanner get_instance(Document doc){
         
         if(instance == null){
