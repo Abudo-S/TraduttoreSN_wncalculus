@@ -22,12 +22,20 @@ public abstract class ElementScanner{
     protected ArrayList<Element> element_tags;
     protected static DataParser dp;
     
+    /**
+     * 
+     * @param doc the document from which we scan elements
+     */
     public ElementScanner(final Document doc){
         ElementScanner.doc = doc;  
         this.element_tags = new ArrayList<>();
         dp = DataParser.get_instance();
     }
     
+    /**
+     * 
+     * @param object_tag String of element's parent-tag from which we will scan its attributes and sub-tags data
+     */
     public void Scan_element(String object_tag){
         try {
             NodeList object_list = doc.getElementsByTagName(object_tag);
@@ -45,6 +53,10 @@ public abstract class ElementScanner{
         }
     }
     
+    /**
+     * 
+     * @return Array of strings of parent-elements names
+     */
     public String[] get_element_names(){
         int size = this.element_tags.size(); 
         String[] names = new String[size]; 
@@ -56,14 +68,27 @@ public abstract class ElementScanner{
         return names;
     }
     
+    /**
+     * 
+     * @return ArrayList of elements found that have the same type
+     */
     public ArrayList<Element> get_element_tags(){
         return this.element_tags;
     }
     
+    /**
+     * 
+     * @param e
+     * @return 
+     */
     public String get_element_name(Element e){
         return e.getAttribute("id"); // id should have object's name
     }
     
+    /**
+     * 
+     * @return the document we're elaborating
+     */
     public Document get_document(){
         return doc;
     }

@@ -37,11 +37,9 @@ public class XMLScanner {
     
     private static XMLScanner instance = null;
     private String file_address; 
-    private DataParser dp;
     private Document doc;
     
     private XMLScanner(String file_address) throws NullPointerException{ // xml file of pnml format
-        this.dp = DataParser.get_instance();
         
         try{
             this.file_address = file_address;
