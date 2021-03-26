@@ -28,12 +28,21 @@ public class Arc_scanner extends ElementScanner{
     
     private static Arc_scanner instance = null;
     
+    /**
+     * 
+     * @param doc the document from which we scan arcs
+     */
     private Arc_scanner(final Document doc){
         super(doc);
     }
     
+    /**
+     * 
+     * @param Arc_element arc-element's tag from which we retrieve arc data
+     * @throws NullPointerException if tag "hlinscription" doesn't exist
+     */
     @Override
-    public void scan_info(Element Arc_element){
+    public void scan_info(Element Arc_element) throws NullPointerException{
              
       if(Arc_element.getElementsByTagName("hlinscription").getLength()>0){
             this.scan_arc(Arc_element);
@@ -44,6 +53,10 @@ public class Arc_scanner extends ElementScanner{
  
     }
     
+    /**
+     * 
+     * @param Arc_element arc-element's tag from which we retrieve arc expression 
+     */
     private void scan_arc(Element Arc_element){
         //arc expressions
         ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards = new ArrayList<>();
@@ -127,7 +140,7 @@ public class Arc_scanner extends ElementScanner{
 
                     //guard of function/tuple
                     arc_expression_data[0] = arc_expression_data[0].replaceFirst("[\\[]", "");
-                    Guard_scanner g_sc = Guard_scanner.get_instance(doc);
+                    Guard_scanner g_sc = Guard_scanner.get_instance();
                     guards.add(g_sc.scan_guard(arc_expression_data[0])); 
 
                     //extract tuple elements
@@ -142,6 +155,11 @@ public class Arc_scanner extends ElementScanner{
         dp.add_Arc(arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
     }
     
+    /**
+     * 
+     * @param doc the document from which we scan arcs
+     * @return single static instance
+     */
     public static Arc_scanner get_instance(Document doc){
         
         if(instance == null){
