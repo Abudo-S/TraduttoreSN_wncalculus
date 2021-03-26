@@ -20,12 +20,21 @@ public class Domain_scanner extends ElementScanner{
     
     private static Domain_scanner instance = null;
     
+    /**
+     * 
+     * @param doc the document from which we scan domains
+     */
     private Domain_scanner(final Document doc){
         super(doc);
     }
     
+    /**
+     * 
+     * @param Domain_element domain-element's tag from which we retrieve domain data
+     * @throws NullPointerException if the tag that contain domain data don't exist
+     */
     @Override
-    public void scan_info(Element Domain_element){
+    public void scan_info(Element Domain_element) throws NullPointerException{
         
         if(Domain_element.getElementsByTagName("usersort").getLength()>0){
             this.scan_domain_classes(Domain_element);
@@ -37,6 +46,10 @@ public class Domain_scanner extends ElementScanner{
         }
     }
     
+    /**
+     * 
+     * @param Domain_element domain's tag from which we retrieve domain data
+     */
     private void scan_domain_classes(Element Domain_element){ //namedsort tag
         NodeList classes_decl = Domain_element.getElementsByTagName("usersort");
         ArrayList<String> classes = new ArrayList<>();
@@ -54,10 +67,15 @@ public class Domain_scanner extends ElementScanner{
     
     //remove color-class's declarations because they have the same tag "namesort" 
     @Override
-    public void remove_from_tags_list(){
+    public void remove_from_tags_list(){ //not used yet/replaced by additional else-if in scan_info()
         element_tags.removeIf(namesort -> namesort.getElementsByTagName("productsort").getLength() == 0); //remove from domain tags if it's a color class
     }
     
+    /**
+     * 
+     * @param doc the document from which we scan domains
+     * @return single static instance
+     */
     public static Domain_scanner get_instance(Document doc){
         
         if(instance == null){
