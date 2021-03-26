@@ -18,12 +18,21 @@ public class Variable_scanner extends ElementScanner{
     
     private static Variable_scanner instance = null;
     
+    /**
+     * 
+     * @param doc the document from which we scan elements
+     */
     private Variable_scanner(final Document doc){
         super(doc);
     }
     
+    /**
+     * 
+     * @param Variable_element variable-element's tag from which we retrieve variable data
+     * @throws NullPointerException if the tag that contain domain data don't exist
+     */
     @Override
-    public void scan_info(Element Variable_element){
+    public void scan_info(Element Variable_element) throws NullPointerException{
         
         if(Variable_element.getElementsByTagName("usersort").getLength()>0){
             this.scan_variable_type(Variable_element);
@@ -32,6 +41,10 @@ public class Variable_scanner extends ElementScanner{
         }
     }
     
+    /**
+     * 
+     * @param Variable_element place's tag from which we retrieve variable data
+     */
     private void scan_variable_type(Element Variable_element){ //variabledecl tag
         Node decl = Variable_element.getElementsByTagName("usersort").item(0);
         
@@ -43,6 +56,11 @@ public class Variable_scanner extends ElementScanner{
         }
     }
     
+    /**
+     * 
+     * @param doc the document from which we scan variables
+     * @return single static instance
+     */
     public static Variable_scanner get_instance(Document doc){
         
         if(instance == null){
