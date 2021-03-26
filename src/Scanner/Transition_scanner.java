@@ -25,19 +25,23 @@ public class Transition_scanner extends ElementScanner{
         super(doc);
     }
     
+     /**
+     * 
+     * @param Transition_element transition-element's tag from which we retrieve transition data
+     */
     @Override
     public void scan_info(Element Transition_element){   
         LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = null; //guard has predicates with separators and each predicate might be inverted
         boolean invert_guard = false;
         
-        if(Transition_element.getElementsByTagName("condition").getLength()>0){
+        if(Transition_element.getElementsByTagName("condition").getLength()>0){ //transition's condition may exist or not
             Node cond_node = Transition_element.getElementsByTagName("condition").item(0);
             
             if(cond_node.getNodeType() == Node.ELEMENT_NODE){
                Element guard_element = (Element) cond_node; 
                
                //acquire guard data
-               Guard_scanner g_sc = Guard_scanner.get_instance(doc);
+               Guard_scanner g_sc = Guard_scanner.get_instance();
                guard = g_sc.scan_guard(guard_element);
                invert_guard = g_sc.scan_invert_guard(guard_element);
             }   
@@ -46,6 +50,11 @@ public class Transition_scanner extends ElementScanner{
         dp.add_Transition(Transition_element.getAttribute("id"), guard, invert_guard);
     }
     
+    /**
+     * 
+     * @param doc the document from which we scan transitions
+     * @return single static instance
+     */
     public static Transition_scanner get_instance(Document doc){
         
         if(instance == null){
