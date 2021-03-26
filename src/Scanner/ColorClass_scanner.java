@@ -22,12 +22,21 @@ public class ColorClass_scanner extends ElementScanner{
     
     private static ColorClass_scanner instance = null;
     
+    /**
+     * 
+     * @param doc the document from which we scan colour classes
+     */
     private ColorClass_scanner(final Document doc){
         super(doc);
     }
     
+    /**
+     * 
+     * @param color_class arc-element's tag from which we retrieve colour class data
+     * @throws NullPointerException if tags that contain colour class data don't exist
+     */
     @Override
-    public void scan_info(Element color_class){
+    public void scan_info(Element color_class) throws NullPointerException{
         if(color_class.getElementsByTagName("finiteintrange").getLength()>0){
             this.scan_finiterange(color_class);
             
@@ -44,6 +53,10 @@ public class ColorClass_scanner extends ElementScanner{
         }
     }
     
+    /**
+     * Note: in case of colour-class's data exists in tag "finiteintrange"
+     * @param color_class color_class's tag from which we retrieve colour class data
+     */
     private void scan_finiterange(Element color_class){ //namedsort tag
         int rangStart, rangEnd;
         boolean circular = false;
@@ -62,6 +75,10 @@ public class ColorClass_scanner extends ElementScanner{
         }
     }
     
+    /**
+     * Note: in case of colour-class's data exists in tag "feconstant"
+     * @param color_class color_class's tag from which we retrieve colour class data
+     */
     private void scan_finiteenumeration(Element color_class){ //namedsort tag
         boolean circular = false;
         NodeList finco_list = color_class.getElementsByTagName("feconstant");
@@ -82,6 +99,10 @@ public class ColorClass_scanner extends ElementScanner{
         dp.add_ColorClass(this.get_element_name(color_class), token_names, circular);
     }
     
+    /**
+     * Note: in case of colour-class's data exists in tag "partitionelement" (partitioned colour class "in subclasses")
+     * @param color_class color_class's tag from which we retrieve colour class data
+     */
     private void scan_partitionedclass(Element color_class) throws NullPointerException{ //partition tag
         NodeList partiel_list = color_class.getElementsByTagName("partitionelement");
         HashMap<String, ArrayList<String>> subclasses = new HashMap<>(); //subclass_name -> subclass elements
@@ -134,10 +155,15 @@ public class ColorClass_scanner extends ElementScanner{
     
     //remove domain's declarations because they have the same tag "namesort" 
     @Override
-    public void remove_from_tags_list(){
+    public void remove_from_tags_list(){ //not used yet/replaced by additional else-if in scan_info()
         element_tags.removeIf(namesort -> namesort.getElementsByTagName("productsort").getLength()>0); //remove from color class tags if it's a domain
     }
     
+    /**
+     * 
+     * @param doc the document from which we scan colour classes
+     * @return single static instance
+     */
     public static ColorClass_scanner get_instance(Document doc){
         
         if(instance == null){
