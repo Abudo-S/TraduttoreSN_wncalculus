@@ -18,12 +18,21 @@ public class Place_scanner extends ElementScanner{
     
     private static Place_scanner instance = null;
     
+    /**
+     * 
+     * @param doc the document from which we scan elements
+     */
     private Place_scanner(final Document doc){
         super(doc);
     }
     
+    /**
+     * 
+     * @param Place_element place-element's tag from which we retrieve place data
+     * @throws NullPointerException if the tag that contain domain data don't exist
+     */
     @Override
-    public void scan_info(Element Place_element){
+    public void scan_info(Element Place_element) throws NullPointerException{
         
         if(Place_element.getElementsByTagName("type").getLength()>0){
             this.scan_place_type(Place_element);
@@ -32,6 +41,10 @@ public class Place_scanner extends ElementScanner{
         }
     }
     
+    /**
+     * 
+     * @param Place_element place's tag from which we retrieve place data
+     */
     private void scan_place_type(Element Place_element){ //place tag
         Node pt = Place_element.getElementsByTagName("type").item(0);
         
@@ -55,6 +68,11 @@ public class Place_scanner extends ElementScanner{
         }
     }
 
+    /**
+     * 
+     * @param doc the document from which we scan places
+     * @return single static instance
+     */
     public static Place_scanner get_instance(Document doc){
         
         if(instance == null){
