@@ -28,7 +28,15 @@ public class Projection_analyzer extends ElementAnalyzer{
         vit = Variable_index_table.get_instance();
     }
     
-    public Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException{
+    /**
+     * 
+     * @param proj projection's text that is found in the entered pnml file
+     * @param transition_name the name of transition (that contains projection or with which an arc expression is connected that contains that projection)
+     * @return the analysed projection
+     * @throws NullPointerException if projection's text isn't matched by the matcher
+     * @throws RuntimeException if the projection is a predecessor/successor and projection's colour class isn't circular/ordered
+     */
+    public Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException, RuntimeException{
         Pattern p = Pattern.compile(str_rx_element);
         Matcher m = p.matcher(proj.replaceAll("\\s+", ""));
         Projection pro;
@@ -103,6 +111,10 @@ public class Projection_analyzer extends ElementAnalyzer{
 //        return index + successor_flag;
 //    }   
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static Projection_analyzer get_instance(){
 
         if(instance == null){
