@@ -22,6 +22,10 @@ public abstract class ElementAnalyzer {
 //        return ck.hashCode();
 //    }   
     
+    /**
+     * 
+     * @return regex of guard/tuple element
+     */
     public static String get_str_rx_element(){
         return str_rx_element;
     }
