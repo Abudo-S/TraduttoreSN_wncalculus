@@ -47,6 +47,15 @@ public class Tuple_analyzer {
         sn = SN.get_instance();
     }
     
+    /**
+     * 
+     * @param g the guard of tuple
+     * @param tuple_elements all tuple elements
+     * @param transition_name the name of transition with which an arc expression is connected and contains that tuple
+     * @param place_name the place should is connected with tuple and tuple should follow its colour class ordering to create ClassFunction (All) if it's needed
+     * @param d the domain of transition with which an arc expression is connected and contains that tuple
+     * @return the analysed tuple 
+     */
     //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
     //tuples_elements list contains linearcombs
     public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements, String transition_name, String place_name, Domain d){
@@ -71,8 +80,15 @@ public class Tuple_analyzer {
         //Semantic_DataTester.get_instance().test_semantic_arc_tuple(tuple_combs, g, transition_name);
         return new WNtuple(null, tuple_combs, g, d, false);
     }
-  
-    //ElementaryFunction is (All, Projection, Subcl)
+    
+    /**
+     * 
+     * @param tuple_element tuple element from which we'll retrieve its linear combination
+     * @param place_name the place should is connected with tuple and tuple should follow its colour class ordering to create ClassFunction (All) if it's needed
+     * @param element_index tuple-element's index that is used in case of creating ClassFunction (All) to determine which class will be used
+     * @return linear combination of found ElementaryFunctions and their multiplicity
+     * Note: ElementaryFunction is (All, Projection, Subcl) here
+     */
     private LinearComb analyze_tuple_element(String tuple_element, String transition_name, String place_name, int element_index){ //used for arc expression tuple 
         Map<ElementaryFunction, Integer> element_t = new HashMap<>();
         Pattern p = Pattern.compile(str_rx_comb_element);
@@ -120,7 +136,14 @@ public class Tuple_analyzer {
         return new LinearComb(element_t);
     }
     
-    //ElementaryFunction is (All, Token, Subcl)
+    /**
+     * 
+     * @param tuple_element tuple element from which we'll retrieve its linear combination
+     * @param place_name the place should is connected with tuple and tuple should follow its colour class ordering to create ClassFunction (All) if it's needed
+     * @param element_index tuple-element's index that is used in case of creating ClassFunction (All) to determine which class will be used
+     * @return linear combination of found ElementaryFunctions and their multiplicity
+     * Note: ElementaryFunction is (All, Token, Subcl) here
+     */
     public LinearComb analyze_marking_tuple_element(String tuple_element, String place_name, int element_index){ //used for marking tuple
         Map<ElementaryFunction, Integer> element_m = new HashMap<>();
         
@@ -173,11 +196,24 @@ public class Tuple_analyzer {
         return new LinearComb(element_m);
     }
     
+    /**
+     * 
+     * @param place_name the place should is connected with tuple and tuple should follow its colour class ordering to create ClassFunction (All)
+     * @param cc_index the index of colour class that we want to create ClassFunction (All) form it
+     * @return ClassFunction (All)
+     */
     //cc_index: is the index of colorclass in place type value(s) -> colorclass/domain
     private All create_All_from_index(String place_name, int cc_index){
         return All.getInstance(sn.find_colorClass(pst.get_place_values(place_name).get(cc_index)));
     }
     
+    /**
+     * 
+     * @param element_m Map of ElementaryFunctions(Projection/Constant"Subcl"/Token) that will be updated
+     * @param ef ElementaryFunction(Projection/Constant"Subcl"/Token)
+     * @param mult ElementaryFunction's multiplicity
+     * @return the updated Map of ElementaryFunctions(Projection/Constant"Subcl"/Token) and their multiplicity
+     */
     public Map<ElementaryFunction, Integer> update_or_add(Map<ElementaryFunction, Integer> element_m, ElementaryFunction ef, int mult){
         boolean found = false;
         
@@ -222,10 +258,18 @@ public class Tuple_analyzer {
         return element_m;
     }
     
+    /**
+     * 
+     * @return regex of combination between 2 elements
+     */
     public static String get_str_rx_comb_operation(){
         return str_rx_comb_operation;
     }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static Tuple_analyzer get_instance(){
 
         if(instance == null){
