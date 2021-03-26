@@ -16,7 +16,7 @@ import org.w3c.dom.Node;
  * @author dell
  */
 //singleton
-public class Guard_scanner{
+public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
     
     private static Guard_scanner instance = null; 
             
@@ -39,6 +39,11 @@ public class Guard_scanner{
         
     }
     
+    /**
+     * 
+     * @param Guard_element the element from which we'll retrieve guard all data
+     * @return 
+     */
     public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(Element Guard_element){
         String guard = this.get_guard_txt(Guard_element);           
         guard = "[" + guard + "]";
@@ -48,6 +53,11 @@ public class Guard_scanner{
         return this.scan_guard(guard);
     }
     
+    /**
+     * 
+     * @param Guard_element the element in which we'll search for Not-sign(!)
+     * @return 
+     */
     public boolean scan_invert_guard(Element Guard_element){
         String guard = this.get_guard_txt(Guard_element);  
         guard = "[" + guard + "]";
@@ -61,7 +71,13 @@ public class Guard_scanner{
         return false;
     }
     
-    public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(String Guard){  
+    /**
+     * 
+     * @param Guard String of guard the will be elaborated
+     * @return LinkedHashMap of ordered predicated with their separators following the ordering of predicate insertion 
+     * @throws NullPointerException if Guard is an empty String
+     */
+    public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(String Guard) throws NullPointerException{  
         if(Guard.isEmpty()){
             throw new NullPointerException("Can't add an empty guard");
         }
@@ -69,7 +85,12 @@ public class Guard_scanner{
         return this.get_guard_map(Guard);
     }
     
-    //
+    /**
+     * 
+     * @param Guard String of guard the will be elaborated
+     * @return LinkedHashMap of ordered predicated with their separators following the ordering of predicate insertion
+     * @throws RuntimeException if Guard isn't matched by the matcher
+     */
     private LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> get_guard_map(String Guard) throws RuntimeException{ //map of (not-)inverted predicates with their separators
         LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = new LinkedHashMap<>();
         
@@ -120,6 +141,11 @@ public class Guard_scanner{
         return guard;
     }
     
+    /**
+     * 
+     * @param Guard_element the element from which we will retrieve guard's text
+     * @return String of guard's text if found
+     */
     private String get_guard_txt(Element Guard_element){
         Node guard_txt_n = Guard_element.getElementsByTagName("text").item(0);
         
@@ -131,7 +157,11 @@ public class Guard_scanner{
         return "";
     }
     
-    public static Guard_scanner get_instance(Document doc){
+    /**
+     * 
+     * @return single static instance
+     */
+    public static Guard_scanner get_instance(){
         
         if(instance == null){
             instance = new Guard_scanner();
