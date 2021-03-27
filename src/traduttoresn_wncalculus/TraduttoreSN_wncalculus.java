@@ -5,11 +5,13 @@
  */
 package traduttoresn_wncalculus;
 
-import Eccezioni.UnsupportedFileException;
-import Test.SN_DataTester;
-import Test.SyntaxTree_DataTester;
+import fasi_traduzione.DataParser;
+import fasi_traduzione.XMLScanner;
+import fasi_traduzione.SemanticAnalyzer;
+import eccezioni.UnsupportedFileException;
+import test.SN_DataTester;
+import test.SyntaxTree_DataTester;
 import java.util.Scanner;
-import operazioni_xml.*;
 
 /**
  *
