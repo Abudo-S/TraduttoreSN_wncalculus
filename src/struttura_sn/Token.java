@@ -16,21 +16,33 @@ import wncalculus.expr.Interval;
  */
 public class Token extends ElementaryFunction{
     
-    private final String value; //in case of domain token then it will be value1,value2,...
+    private final String value; //element that exist in a predefined colorclass
 //    private final ColorClass class_type;
    
-    //can't be token of colour domain and colour class at the same time
+    /**
+     * 
+     * @param value the value of token
+     * @param type the colour class type of token
+     */
     public Token(String value, ColorClass type){
-         super(type);
+        super(type);
         this.value = value;
 //        this.class_type = type;
     }
     
+    /**
+     * 
+     * @return the colour class type of token
+     */
     public ColorClass get_type(){
 //        return this.class_type;
         return this.getSort();
     }
     
+    /**
+     * 
+     * @return the value of token
+     */
     public String get_Token_value(){
         return this.value;
     }
