@@ -5,13 +5,7 @@
  */
 package fasi_traduzione;
 
-import albero_sintattico.Syntactic_arc;
-import albero_sintattico.Syntactic_place;
-import albero_sintattico.Syntactic_predicate;
-import albero_sintattico.Syntactic_guard;
-import albero_sintattico.SyntaxTree;
-import albero_sintattico.Syntactic_tuple;
-import albero_sintattico.Syntactic_transition;
+import albero_sintattico.*;
 import struttura_sn.Place;
 import struttura_sn.Variable;
 import struttura_sn.Marking;
@@ -51,16 +45,35 @@ public class DataParser { // will use SemanticAnalyzer
        m0 = Marking.get_instance();
     }
     
+    /**
+     * Note: in case of colour-class's data exists in tag "finiteintrange"
+     * @param class_name the name class that will be added
+     * @param start the starting number of colour class range
+     * @param end the ending number of colour class range
+     * @param circular true if colour class is circular/ordered, false otherwise 
+     */
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, start, end, circular);
         sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
     }
-      
+    
+    /**
+     * Note: in case of colour-class's data exists in tag "feconstant"
+     * @param class_name the name class that will be added
+     * @param token_names explicit available tokens in colour class
+     * @param circular true if colour class is circular/ordered, false otherwise 
+     */
     public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){ //finite enumeration color class
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, token_names, circular);
         sn.add_colorClass(new ColorClass(class_name, new Interval(token_names.size(), token_names.size()), circular)); //takes an interval of Arraylist size exactly 
     }
     
+    /**
+     * Note: in case of colour-class's data exists in tag "pratition"
+     * @param class_name the name class that will be added
+     * @param subclasses explicit/implicit tokens of subclasses that belongs to colour classes
+     * @param circular true if colour class is circular/ordered, false otherwise 
+     */
     //HashMap<String, ArrayList<String>> : HashMap<subclass_name, ArrayList of available tokens>
     public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses, boolean circular){ //partitioned color class
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, subclasses, circular);
@@ -89,12 +102,22 @@ public class DataParser { // will use SemanticAnalyzer
         sn.add_colorClass(new ColorClass(class_name, intervals, circular));
     }
     
+    /**
+     * 
+     * @param variable_name the name of variable
+     * @param variable_type the type of variable (colour class) name
+     */
     public void add_Variable(String variable_name, String variable_type){ //type = color class
         //XML_DataTester.get_instance().test_add_Variable(variable_name, variable_type);
         sn.add_variable(new Variable(variable_name, sn.find_colorClass(variable_type)));
         vit.add_cc_var_name(variable_type, variable_name);
     }    
     
+    /**
+     * 
+     * @param domain_name the name of domain 
+     * @param colorclasses ordered colour classes multiplication that belongs to domain
+     */
     public void add_Domain(String domain_name, ArrayList<String> colorclasses){
         //XML_DataTester.get_instance().test_add_Domain(domain_name, colorclasses);
         HashMap<ColorClass, Integer> product_sort = new HashMap<>();
@@ -120,6 +143,11 @@ public class DataParser { // will use SemanticAnalyzer
         sn.add_domain(d);
     }
     
+    /**
+     * 
+     * @param place_name the name of place
+     * @param place_type the type of place (colour class/domain) name
+     */
     public void add_Place(String place_name, String place_type){ //type = color class or domain
         //XML_DataTester.get_instance().test_add_Place(place_name, place_type);
         ColorClass cc = sn.find_colorClass(place_type);
@@ -141,9 +169,14 @@ public class DataParser { // will use SemanticAnalyzer
         sn.add_place(p);
     }
     
+    /**
+     * 
+     * @param place_name the name of place
+     * @param tokens Map of tokens that belong to place initial-marking
+     */
     //uses add_Marking_colorclass()
     //uses add_Marking_domain()
-    //marking of type "All" will be added 
+    //may contain marking of type "All"
     public void add_Marking(String place_name, Map tokens){ //for place of color class/domain type
         Tuple_analyzer ta = Tuple_analyzer.get_instance();
         
@@ -154,6 +187,13 @@ public class DataParser { // will use SemanticAnalyzer
         }
     }
     
+    /**
+     * 
+     * @param place_name the name of place
+     * @param tokens HashMap of tokens that belong to place initial-marking (case of colour class)
+     * @param ta the tuple analyser used
+     * Note: each marking tuple should contain 1 linear combination
+     */
     //tokens parameter will have 1d colors with their multiplicity
     private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens, Tuple_analyzer ta){ //for place of color class type
         //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
@@ -166,6 +206,13 @@ public class DataParser { // will use SemanticAnalyzer
         m0.mark_colored_place(sn.find_place(place_name), multiplied_token);
     }
     
+    /**
+     * 
+     * @param place_name the name of place
+     * @param tokens HashMap of tokens that belong to place initial-marking (case of domain)
+     * @param ta the tuple analyser used
+     * Note: each marking tuple should contain more than 1 linear combination that follows the ordering of domain elements
+     */
     private void add_Marking_domain(String place_name, HashMap<String[], Integer> tokens, Tuple_analyzer ta){ //for place of domain type of n dimension
         //XML_DataTester.get_instance().test_add_Marking_domain(place_name, tokens);
         HashMap<ArrayList<LinearComb>, Integer> multiplied_token = new HashMap<>();
@@ -241,6 +288,12 @@ public class DataParser { // will use SemanticAnalyzer
 //        m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
 //    }
     
+    /**
+     * 
+     * @param Transition_name the name of transition that contains guard
+     * @param guard the guard of transition, LinkedHashMap of ordered predicates associated with their separators with next predicate (if exists)
+     * @param invert_guard true if predicate is inverted, false otherwise
+     */
     //format: LinkedHashMap<HashMap<ArrayList, Boolean>, String> = LinkedHashMap<HashMap<predicate with projections/constants, invert_predicate>, separator with next predicate if exists>
     //predicates describe guard and each predicate might be inverted
     //Note: last element in separators will be null 
@@ -256,6 +309,17 @@ public class DataParser { // will use SemanticAnalyzer
         snt.add_synt_transition(st);
     }
     
+    /**
+     * 
+     * @param Arc_name the name of arc
+     * @param arc_type transiting/inhibitor arc
+     * @param from the name of starting node of arc
+     * @param to the name of ending node of arc
+     * @param guards ordered ArrayList of all guards existing on arc
+     * @param invert_guards ordered ArrayList of all inverters that belong to guards
+     * @param tuples_elements ordered ArrayList of all tuples with which ArrayList "guards" is associated 
+     * @param tuples_mult ordered ArrayList of all multiplicities associated with tuples 
+     */
     //an Arc can have array of guards related with tuples
     //TupleBag contains WNtuples, each of them has a multiplicity and a guard
     public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
@@ -293,6 +357,12 @@ public class DataParser { // will use SemanticAnalyzer
         snt.update_synt_p_t(synt_p, synt_t);
     }
     
+    /**
+     * 
+     * @param guard LinkedHashMap of ordered predicates associated with their separators with next predicate (if exists)
+     * @param invert_guard true if syntactic-guard should be inverted, false otherwise
+     * @return the syntactic guard generated
+     */
     private Syntactic_guard get_synt_guard(LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String> guard, boolean invert_guard){
         Syntactic_guard synt_guard = null;
         
@@ -326,11 +396,19 @@ public class DataParser { // will use SemanticAnalyzer
 //        return multiplied_tuples;
 //    }
     
+    /**
+     * 
+     * @return filled syntax tree
+     */
     //will be called after finishing all file data scanning    
     public static SyntaxTree get_syntax_tree(){
         return snt;
     }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static DataParser get_instance(){
         
         if(instance == null){
