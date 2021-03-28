@@ -26,30 +26,59 @@ public abstract class Node {
     
     public void add_previous_Node(ArcAnnotation arc, Node n){}
     
+    /**
+     * 
+     * @param arc the inhibitor arc that is connected with node n
+     * @param n the node reached by "arc" 
+     */
     public void add_inib(ArcAnnotation arc, Node n){
         this.InibSet.put(n, arc);
     }
     
+    /**
+     * 
+     * @return the name of node
+     */
     public String get_name(){
         return this.name;
     }
     
+    /**
+     * 
+     * @return HashMap of all nodes that are in the next level of this node and associated with a transiting arc
+     */
     public HashMap<Node, ArcAnnotation> get_next_nodes(){
         return this.PostSet;
     }
     
+    /**
+     * 
+     * @return HashMap of all nodes that are in the previous level of this node and associated with a transiting arc
+     */
     public HashMap<Node, ArcAnnotation> get_previous_nodes(){
         return this.PreSet;
     }
     
+    /**
+     * Note: and inhibitor arc is a previous arc of transition node & a next arc of place node
+     * @return HashMap of all nodes that are in the next/previous level of this node and associated with a inhibitor arc
+     */
     public HashMap<Node, ArcAnnotation> get_inib_nodes(){
         return this.InibSet;
     }
     
+    /**
+     * 
+     * @param d the domain that will be associated with this node
+     */
     public void set_node_domain(Domain d){
         this.d = d;
     }
     
+    /**
+     * 
+     * @return the domain associated with this node
+     */
     public Domain get_node_domain(){
         return this.d;
     }
