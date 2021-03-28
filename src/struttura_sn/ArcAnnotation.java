@@ -5,7 +5,6 @@
  */
 package struttura_sn;
 
-import java.util.Map;
 import wncalculus.wnbag.TupleBag;
 
 /**
@@ -22,26 +21,47 @@ public class ArcAnnotation {
     
     //protected ArrayList<Boolean> invert_guarded_tuples; //default = false if the tuple isn't guarded
     //protected int level;
-            
+    
+    /**
+     * 
+     * @param name the name of arc
+     * @param tb object of tuples that appear on arc (contains arc expression)
+     */
     public ArcAnnotation(String name, TupleBag tb){
         this.name = name;
         this.tb = tb;
         //this.level = lvl;
     }    
     
+    /**
+     * 
+     * @param name the name of arc
+     */
     public ArcAnnotation(String name){
         this.name = name;
         //this.level = lvl;
     }    
     
+    /**
+     * 
+     * @param tb tb object of tuples that appear on arc (contains arc expression)
+     */
     public void set_TupleBag(TupleBag tb){
         this.tb = tb;
     }
     
+    /**
+     * 
+     * @return tb object of tuples that appear on arc (contains arc expression)
+     */
     public TupleBag get_tuple_bag(){
         return this.tb;
     }
-     
+    
+    /**
+     * 
+     * @return the name assigned to this arc
+     */
     public String get_name(){
         return this.name;
     }
