@@ -122,7 +122,7 @@ public class XML_DataTester {
     /**
      * 
      * @param transition_name the name of transition that contains guard
-     * @param guard the guard of transition
+     * @param guard the guard of transition, LinkedHashMap of ordered predicates associated with their separators with next predicate (if exists)
      * @param invert_guard true if predicate is inverted, false otherwise
      */
     public void test_add_Transition(String transition_name, LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>  guard, boolean invert_guard){

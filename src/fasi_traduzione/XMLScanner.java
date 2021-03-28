@@ -44,6 +44,11 @@ public class XMLScanner {
     private String file_address; 
     private Document doc;
     
+    /**
+     * 
+     * @param file_address the address of file that will be scanned
+     * @throws NullPointerException if the file_address passed is null
+     */
     private XMLScanner(String file_address) throws NullPointerException{ // xml file of pnml format
         
         try{
@@ -62,6 +67,9 @@ public class XMLScanner {
         }
     }    
     
+    /**
+     * scan all files data in order
+     */
     public void scan_file_data(){
         this.scan_color_classes();
         this.scan_domains();
@@ -71,6 +79,10 @@ public class XMLScanner {
         this.scan_arcs();
     }
     
+    /**
+     * scan all tags "namedsort" & "partition"
+     * Note: the excluding of tag "namedsort" of domain will be done inside ColorClass_scanner
+     */
     private void scan_color_classes(){ //namedsort && partition
         ColorClass_scanner cc_scanner = ColorClass_scanner.get_instance(doc);
         cc_scanner.Scan_element("namedsort");
@@ -83,6 +95,10 @@ public class XMLScanner {
         }
     }
     
+    /**
+     * scan all tags "namedsort"
+     * Note: the excluding of tag "namedsort" of colour class will be done inside Domain_scanner
+     */
     private void scan_domains(){ //namedsort -> productsort
         Domain_scanner d_scanner = Domain_scanner.get_instance(doc);
         d_scanner.Scan_element("namedsort");
@@ -94,6 +110,9 @@ public class XMLScanner {
         }
     }
     
+    /**
+     * scan all tags "variabledecl"
+     */
     private void scan_variables(){ //variabledecl
         Variable_scanner v_scanner = Variable_scanner.get_instance(doc);
         v_scanner.Scan_element("variabledecl");
@@ -104,6 +123,9 @@ public class XMLScanner {
         }
     }
     
+    /**
+     * scan all tags "place
+     */
     private void scan_places(){ //place
         Place_scanner p_scanner = Place_scanner.get_instance(doc);
         p_scanner.Scan_element("place");
@@ -114,6 +136,9 @@ public class XMLScanner {
         }
     }
     
+    /**
+     * scan all tags "transition"
+     */
     private void scan_transitions(){ //transition
         Transition_scanner t_scanner = Transition_scanner.get_instance(doc);
         t_scanner.Scan_element("transition");
@@ -124,6 +149,9 @@ public class XMLScanner {
         }
     }
     
+    /**
+     * scan all tags "arc"
+     */
     private void scan_arcs(){ //arc
         Arc_scanner a_scanner = Arc_scanner.get_instance(doc);
         a_scanner.Scan_element("arc");
@@ -134,10 +162,15 @@ public class XMLScanner {
         }
     }
     
-    public void set_file_address(final String address){
-        this.file_address = address;
-    }
+//    public void set_file_address(final String address){
+//        this.file_address = address;
+//    }
     
+    /**
+     * 
+     * @param address the address of file that will be scanned
+     * @return single static instance
+     */
     public static XMLScanner get_instance(final String address){
         
         if(instance == null){
