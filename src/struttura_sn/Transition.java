@@ -16,6 +16,11 @@ public class Transition extends Node{
     
     private final Guard guard;
     
+    /**
+     * 
+     * @param name the name of transition
+     * @param g the guard of transition
+     */
     public Transition(String name, Guard g){
         this.name = name;
         this.PostSet = new HashMap<>();
@@ -34,6 +39,12 @@ public class Transition extends Node{
 //        this.guard = g ;
 //    }
     
+    /**
+     * 
+     * @param arc the arc expression associated with next node (p) of transition
+     * @param p next node of transition
+     * @return the updated next node (that contains transition as a previous node)
+     */
     //next/previous node of a transition is a place
     //next arc of a transition is a transitioning arc
     @Override
@@ -43,20 +54,39 @@ public class Transition extends Node{
         return p;
     }
     
+    /**
+     * 
+     * @param arc the arc expression associated with previous node (p) of transition
+     * @param p previous node of transition
+     */
     //previous arc of a transition might be an inhibitor or a transitioning arc
     @Override
     public void add_previous_Node(ArcAnnotation arc, Node p){
         this.PreSet.put(p, arc);
     }
     
+    /**
+     * 
+     * @param node the arc expression associated with next node (node)
+     * @return the arc expression found, null otherwise
+     */
     public ArcAnnotation get_next_by_node(Node node){
         return this.PostSet.get(node);
     }
     
+    /**
+     * 
+     * @param node the arc expression associated with previous node (node)
+     * @return the arc expression found, null otherwise
+     */
     public ArcAnnotation get_previous_by_node(Node node){
         return this.PreSet.get(node);
     }
     
+    /**
+     * 
+     * @return the guard associated with transition (if exists)
+     */
     public Guard get_guard(){
         return this.guard;
     }
