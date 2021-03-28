@@ -17,7 +17,7 @@ import wncalculus.color.ColorClass;
 //singleton
 public class SN {
     
-    private static ArrayList<Place> P; //hashmap con domini, ma se il posto e' di tipo colorclass allora il dominio associato sarebbe null!, il dominio del posto esiste gis' dentro l'oggetto di place
+    private static ArrayList<Place> P; //hashmap con domini, ma se il posto e' di tipo colorclass allora il dominio associato sarebbe null!, ma anche il dominio del posto esiste gia' dentro l'oggetto di place
     private static ArrayList<Transition> T; //hashmap con variabili, ma le variabili di una transizione esistono gia' negli oggetti di guardie/tuple
     private static ArrayList<ColorClass> C;
     //devono esistere in un'altra classe?
@@ -37,30 +37,59 @@ public class SN {
         m0 = Marking.get_instance();
     }
     
+    /**
+     * 
+     * @param p the place that will be added to places list
+     */
     public void add_place(Place p){
         SN.P.add(p);
     }
     
+    /**
+     * 
+     * @param t the transition that will be added to transitions list
+     */
     public void add_transition(Transition t){
         SN.T.add(t);
     }
     
+    /**
+     * 
+     * @param c the colour class that will be added to colour classes list
+     */
     public void add_colorClass(ColorClass c){
         SN.C.add(c);
     }
     
+    /**
+     * 
+     * @param d the domain that will be added to domains list
+     */
     public void add_domain(Domain d){
         SN.DC.add(d);
     }
     
+    /**
+     * 
+     * @param v the variable that will be added to variables list
+     */
     public void add_variable(Variable v){
         SN.V.add(v);
     }
-      
+    
+    /**
+     * 
+     * @param m0 the initial marking of some places existing in places list
+     */
     public void set_initial_marking(Marking m0){
         SN.m0 = m0;
     }
     
+    /**
+     * 
+     * @param place_name the name of place that we want to search
+     * @return place p if found, null otherwise
+     */
     public Place find_place(String place_name){
         
         for (Place p : SN.P) {
@@ -71,6 +100,11 @@ public class SN {
         return null;
     }
     
+    /**
+     * 
+     * @param transition_name the name of transition that we want to search
+     * @return transition t if found, null otherwise
+     */
     public Transition find_transition(String transition_name){
         
         for(Transition t : SN.T){
@@ -81,6 +115,11 @@ public class SN {
         return null;
     }
     
+    /**
+     * 
+     * @param name the name of colour class that we want to search
+     * @return colour class c if found, null otherwise
+     */
     public ColorClass find_colorClass(String name){
         
         for(ColorClass c : SN.C){
@@ -91,6 +130,11 @@ public class SN {
         return null;
     }
     
+    /**
+     * 
+     * @param domain_name the name of domain that we want to search
+     * @return domain d if found, null otherwise
+     */
     public Domain find_domain(String domain_name){
         
         for(Domain d : SN.DC){
@@ -101,6 +145,11 @@ public class SN {
         return null;
     }
     
+    /**
+     * 
+     * @param variable_name the name of variable that we want to search
+     * @return variable v if found, null otherwise
+     */
     public Variable find_variable(String variable_name){
         
         for(Variable v : SN.V){
@@ -111,28 +160,52 @@ public class SN {
         return null;
     }
     
+    /**
+     * 
+     * @return ArrayList of Places
+     */
     public ArrayList<Place> get_P(){
         return P;
     }
     
+    /**
+     * 
+     * @return ArrayList of transitions
+     */
     public ArrayList<Transition> get_T(){
         return T;
     }
      
+    /**
+     * 
+     * @return ArrayList of colour classes
+     */
     public ArrayList<ColorClass> get_C(){
         return C;
     }
     
+    /**
+     * 
+     * @return ArrayList of domains
+     */
     public ArrayList<Domain> get_DC(){
         return DC;
     }
      
+    /**
+     * 
+     * @return ArrayList of variables
+     */
     public ArrayList<Variable> get_V(){
         return V;
     }
     
+    /**
+     * 
+     * @return the initial marking pre-added
+     */
     public Marking get_initial_marking(){
-        return SN.m0;
+        return m0;
     }
     
 //    public void update_nodes_via_arc(Place p, Transition t){
@@ -153,6 +226,10 @@ public class SN {
 //        }
 //    }
     
+    /**
+     * 
+     * @param v the variable that we want to add to variables list and will replace an existing variable by its name
+     */
     public void update_variable_via_projection(Variable v){
         try{
             for(var i = 0; i < V.size(); i++){
@@ -164,10 +241,14 @@ public class SN {
             }
             
         }catch(Exception e){
-            System.out.println(e + " while update place: " + v.get_name());
+            System.out.println(e + " while updating variable: " + v.get_name());
         }
     }
     
+    /**
+     * 
+     * @param p the place that we want to add to places list and will replace an existing place by its name
+     */
     public void update_place(Place p){
         try{
             for(var i = 0; i < P.size(); i++){
@@ -179,10 +260,14 @@ public class SN {
             }
             
         }catch(Exception e){
-            System.out.println(e + " while update place: " + p.get_name());
+            System.out.println(e + " while updating place: " + p.get_name());
         }
     }
     
+    /**
+     * 
+     * @param t the transition that we want to add to transitions list and will replace an existing transition by its name
+     */
     public void update_transition(Transition t){
         try{
             for(var i = 0; i < T.size(); i++){
@@ -194,7 +279,7 @@ public class SN {
             }
             
         }catch(Exception e){
-            System.out.println(e + " while update place: " + t.get_name());
+            System.out.println(e + " while updating transition: " + t.get_name());
         }
     }
     
@@ -202,6 +287,10 @@ public class SN {
 //        instance = ins;
 //    }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static SN get_instance(){
         
         if(instance == null){
