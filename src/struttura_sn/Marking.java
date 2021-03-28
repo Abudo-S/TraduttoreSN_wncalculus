@@ -22,9 +22,14 @@ public class Marking {
     private static Marking instance = null;
     
     private Marking(){
-        this.marking = new HashMap<>();
+        marking = new HashMap<>();
     }
     
+    /**
+     * Note: case of place of colour-class type
+     * @param p the place that we want to mark 
+     * @param multiplied_token HashMap of linear combinations associated with their multiplicities
+     */
     public void mark_colored_place(Place p, HashMap<LinearComb, Integer> multiplied_token){ // mark a coloured place
         HashMap<ArrayList<LinearComb>, Integer> mark = new HashMap<>();
         
@@ -35,26 +40,49 @@ public class Marking {
         marking.put(p, mark);
     }
     
+    /**
+     * Note: case of place of domaintype
+     * @param p the place that we want to mark 
+     * @param multiplied_token HashMap of ArrayList of linear combinations associated with their multiplicities
+     */
     public void mark_domained_place(Place p, HashMap<ArrayList<LinearComb>, Integer> multiplied_token){ // mark a domained place
         marking.put(p, multiplied_token);
     }
     
+    /**
+     * 
+     * @return 
+     */
     public Set<Place> get_all_marked_Places(){
         return marking.keySet();
     }
     
+    /**
+     * 
+     * @return 
+     */
     public HashMap<Place, HashMap<ArrayList<LinearComb>, Integer>> get_marking(){
         return marking;
     }
     
+    /**
+     * 
+     * @param p the place that we want to get its marking
+     * @return HashMap of place marking (colour-class/domain) type
+     * Note: the ArrayList of linear combination of colour-class typed place has only 1 element 
+     */
     public HashMap<ArrayList<LinearComb>, Integer> get_marking_of_place(Place p){
         return marking.get(p);
     }
     
-    public void update_initial_marking(Marking m0){
-        instance = m0;
-    }
+//    public void update_initial_marking(Marking m0){
+//        instance = m0;
+//    }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static Marking get_instance(){
         
         if(instance == null){
