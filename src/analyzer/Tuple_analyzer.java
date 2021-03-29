@@ -110,7 +110,7 @@ public class Tuple_analyzer {
                 element_t.put(create_All_from_index(place_name, element_index), mult);
             }else if(sn.find_variable(element) != null){ 
                 //add ordered projection with its multiplicity
-                element_t = this.update_or_add(element_t, pa.analyze_projection_element(tuple_element, transition_name), mult);
+                element_t = this.update_or_add(element_t, pa.analyze_projection_element(element, transition_name), mult);
             }else{
                 //add constant with its multiplicity
                 Subcl con = ca.analyze_constant_element(element);
@@ -219,34 +219,46 @@ public class Tuple_analyzer {
         
         if(ef instanceof Projection){ 
             Projection p1 = (Projection) ef;
-            for(ElementaryFunction map_element : element_m.keySet()){           
-                Projection p2 = (Projection) map_element;
+            
+            for(ElementaryFunction map_element : element_m.keySet()){
                 
-                if(p1.getIndex() == p2.getIndex()){
-                    element_m.put(ef, element_m.get(ef) + mult);
-                    found = true;
+                if(map_element instanceof Projection){
+                    Projection p2 = (Projection) map_element;
+
+                    if(p1.getIndex() == p2.getIndex()){
+                        element_m.put(ef, element_m.get(ef) + mult);
+                        found = true;
+                    }
                 }
             }
             
         }else if(ef instanceof Token){
             Token t1 = (Token) ef;
-            for(ElementaryFunction map_element : element_m.keySet()){           
+            
+            for(ElementaryFunction map_element : element_m.keySet()){   
+                
+                if(map_element instanceof Token){
                 Token t2 = (Token) map_element;
                 
-                if(t1.get_Token_value().equals(t2.get_Token_value())){
-                    element_m.put(ef, element_m.get(ef) + mult);
-                    found = true;
+                    if(t1.get_Token_value().equals(t2.get_Token_value())){
+                        element_m.put(ef, element_m.get(ef) + mult);
+                        found = true;
+                    }
                 }
             }
             
         }else{ //constant
             Subcl c1 = (Subcl) ef;
-            for(ElementaryFunction map_element : element_m.keySet()){           
-                Subcl c2 = (Subcl) map_element;
+            
+            for(ElementaryFunction map_element : element_m.keySet()){   
                 
-                if(c1.index() == c2.index()){
-                    element_m.put(ef, element_m.get(ef) + mult);
-                    found = true;
+                if(map_element instanceof Subcl){
+                    Subcl c2 = (Subcl) map_element;
+
+                    if(c1.index() == c2.index()){
+                        element_m.put(ef, element_m.get(ef) + mult);
+                        found = true;
+                    }
                 }
             }
         }

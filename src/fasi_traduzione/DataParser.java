@@ -28,7 +28,6 @@ import wncalculus.wnbag.LinearComb;
 public class DataParser { // will use SemanticAnalyzer
     
     private static SN sn;
-    private static SemanticAnalyzer sa;
     private static Place_syntax_table pst; 
     private static Variable_index_table vit;
     private static SyntaxTree snt;
@@ -38,7 +37,6 @@ public class DataParser { // will use SemanticAnalyzer
     
     private DataParser(){
        sn = SN.get_instance();
-       sa = SemanticAnalyzer.get_instance();
        pst = Place_syntax_table.get_instance();
        vit = Variable_index_table.get_instance();
        snt = SyntaxTree.get_instance();
@@ -165,7 +163,7 @@ public class DataParser { // will use SemanticAnalyzer
         }
         snt.add_synt_place(new Syntactic_place(place_name));
         //analyze place domain
-        p.set_node_domain(sa.analyze_place_domain(p));
+        p.set_node_domain(SemanticAnalyzer.get_instance().analyze_place_domain(p));
         sn.add_place(p);
     }
     

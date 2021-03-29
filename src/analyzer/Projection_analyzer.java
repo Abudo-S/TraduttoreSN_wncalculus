@@ -91,7 +91,8 @@ public class Projection_analyzer extends ElementAnalyzer{
             
             v.add_available_projection(pro, transition_name);
             sn.update_variable_via_projection(v);
-                            
+            
+            //System.out.println(v.get_name() + "," + pro.getIndex());
         }else{
             throw new NullPointerException("can't find first projection in " + proj);
         }
