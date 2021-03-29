@@ -36,6 +36,11 @@ public class TraduttoreSN_wncalculus {
         //sn_dt.print_nodes_connections();
     }
     
+    /**
+     * 
+     * @return String of scanned file name
+     * @throws UnsupportedFileException if the address of file given doesn't have extension "pnml"
+     */
     private static String scan_file_name() throws UnsupportedFileException{
         String file_name = "CPN 1.pnml";
         Scanner sc = new Scanner(System.in);
