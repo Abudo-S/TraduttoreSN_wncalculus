@@ -61,7 +61,8 @@ public class Marking_scanner extends ElementScanner{ //sub-element of Place_scan
         
         //scan tuple of tokens
         Pattern p = Pattern.compile(str_rx_TupleToken);
-        String[] mult_tuples_token = marking.split("\\+");
+        marking = marking.replaceAll(">\\s*\\s+", ">@");
+        String[] mult_tuples_token = marking.split("@");
         
         //check token type (color class || domain)
         if(mult_tuples_token[0].contains(",")){ //domain

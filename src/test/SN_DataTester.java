@@ -12,6 +12,7 @@ import struttura_sn.ArcAnnotation;
 import struttura_sn.Marking;
 import struttura_sn.Node;
 import struttura_sn.SN;
+import struttura_sn.Token;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.expr.Interval;
 import wncalculus.expr.Sort;
@@ -79,11 +80,17 @@ public class SN_DataTester {
             sn.get_V().stream().forEach(x -> System.out.println(x.get_name() + ": " + x.get_colourClass().name()));
             
             System.out.println("Places:");
-            sn.get_P().stream().forEach(x -> System.out.println(x.get_name()));
+            sn.get_P().stream().forEach(
+                    x -> {
+                        //Semantic_DataTester.get_instance().test_domain(x.get_name(), x.get_node_domain());
+                        System.out.println(x.get_name());
+                    }
+            );
             
             System.out.println("Transitions:");
             sn.get_T().stream().forEach(
                     x -> {
+                        //Semantic_DataTester.get_instance().test_domain(x.get_name(), x.get_node_domain());
                         System.out.print(x.get_name());   
                         Guard g = x.get_guard();
                         
@@ -236,7 +243,12 @@ public class SN_DataTester {
         
         comb_map.keySet().stream().forEach(
                 comb_map_element -> {
-                    System.out.print(comb_map.get(comb_map_element) + " * ");
+                    System.out.print(" " + comb_map.get(comb_map_element) + " * ");
+                    
+//                    if(comb_map_element instanceof Token){
+//                        Token t = (Token) comb_map_element;
+//                        System.out.print(t.get_Token_value());
+//                    }
                     System.out.print(comb_map_element.getClass().getName());
                 }
         );

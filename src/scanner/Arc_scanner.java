@@ -75,7 +75,7 @@ public class Arc_scanner extends ElementScanner{
         }
         
         Node ex_node = Arc_element.getElementsByTagName("hlinscription").item(0);
-        String ex_txt = "";
+        String ex_txt;
         String[] arc_expressions;
         
         if(ex_node.getNodeType() == Node.ELEMENT_NODE){
