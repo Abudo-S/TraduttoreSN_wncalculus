@@ -86,16 +86,15 @@ public class Semantic_DataTester { //for guards and tuples
      * @param transition_name the name of transition (that contains guard or with which this arc expression is connected that contains that guard)
      */
     public void test_semantic_arc(Map<WNtuple, Integer> tuple_bag_map, String arc_name ,String transition_name){
-        System.out.print("Arc name(" + arc_name + "): ");
-        
+        System.out.println("Arc name(" + arc_name + "): ");
+        System.out.println("STR arc expressions--->");
         tuple_bag_map.keySet().stream().forEach(
             tuple -> {
-                this.test_domain(arc_name, tuple.getDomain());
-                System.out.println("STR arc expressions--->");
+                this.test_domain(arc_name + "-tuple", tuple.getDomain());
                 this.test_semantic_arc_tuple(new ArrayList<LinearComb>(tuple.getComponents()), tuple.guard(), transition_name);
-                System.out.println("END arc expressions<---");
             }
         );
+        System.out.println("END arc expressions<---");
         System.out.println();
     }
     
@@ -130,7 +129,7 @@ public class Semantic_DataTester { //for guards and tuples
     private void test_semantic_linearcomb_elements(Map<ElementaryFunction, Integer> comb_elements){
         
         comb_elements.keySet().stream().forEach(
-                comb_element -> System.out.print(comb_elements.get(comb_element) + "* " + comb_element.getClass().getName())
+                comb_element -> System.out.print(" " + comb_elements.get(comb_element) + "* " + comb_element.getClass().getName())
         );
     }
     
@@ -139,7 +138,7 @@ public class Semantic_DataTester { //for guards and tuples
      * @param element_name the name of element that contains d
      * @param d the domain of tuple/transition
      */
-    public void test_domain(String element_name, Domain d){ //for arc-WNtuple/transition objects
+    public void test_domain(String element_name, Domain d){ //for arc-WNtuple/transition/place objects
         System.out.print("Domain of " + element_name + ": ");
         Map<Sort,Integer> domain_elements = (Map<Sort,Integer>) d.asMap();
         

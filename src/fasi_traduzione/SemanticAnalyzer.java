@@ -8,19 +8,8 @@ package fasi_traduzione;
 import analyzer.Guard_analyzer;
 import analyzer.ElementAnalyzer;
 import analyzer.Tuple_analyzer;
-import albero_sintattico.Syntactic_place;
-import albero_sintattico.Syntactic_predicate;
-import albero_sintattico.Syntactic_guard;
-import albero_sintattico.Syntactic_transition;
-import albero_sintattico.Syntactic_tuple;
-import albero_sintattico.SyntaxTree;
-import albero_sintattico.SyntacticNode;
-import albero_sintattico.Syntactic_arc;
-import struttura_sn.ArcAnnotation;
-import struttura_sn.Transition;
-import struttura_sn.Variable;
-import struttura_sn.SN;
-import struttura_sn.Place;
+import albero_sintattico.*;
+import struttura_sn.*;
 import java.util.*;
 import test.Semantic_DataTester;
 import java.util.regex.Matcher;
@@ -56,14 +45,26 @@ public class SemanticAnalyzer {
         this.domain_analyzed_variables = new ArrayList<>();
     }
     
+    /**
+     * 
+     * @param synt_tree 
+     */
     public void set_syntax_tree(final SyntaxTree synt_tree){
         snt = synt_tree;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public SyntaxTree get_syntax_tree(){
         return snt;
     }     
     
+    /**
+     * this method analyse all elements
+     * @throws NullPointerException if syntax tree is null
+     */
     public void analyze_syntax_tree() throws NullPointerException{
         
         if(snt == null){
@@ -118,12 +119,25 @@ public class SemanticAnalyzer {
         
     }
     
+    /**
+     * 
+     * @param name transition's name
+     * @param g transition's guard
+     * @param d transition's domain
+     * @return the created transition
+     */
     private Transition create_analyzed_transition(String name, Guard g, Domain d){
         Transition t = new Transition(name, g);
         t.set_node_domain(d);
         return t;
     }
     
+    /**
+     * 
+     * @param around_transition ArrayList of all syntactic arcs around transition that we need to analyse their tuples to find transition domain
+     * @param transition_guard the guard of transition that we need to analyse to find transition domain
+     * @return transition's domain
+     */
     private Domain analyze_transition_domain(ArrayList<Syntactic_arc> around_transition, Syntactic_guard transition_guard){
         //analyze transition guard
         Map<ColorClass,Integer> domain_elements = this.analyze_guard_colorclasses(new HashMap<ColorClass,Integer>(), transition_guard);
@@ -144,6 +158,12 @@ public class SemanticAnalyzer {
         return new Domain((HashMap<? extends Sort, Integer>) domain_elements);
     }
     
+    /**
+     * 
+     * @param domain_elements the Map that we are elaborating
+     * @param guard the syntactic guard that we want to analyse its colour classes
+     * @return the updated Map "domain_elements"
+     */
     private Map<ColorClass,Integer> analyze_guard_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_guard guard){ 
         //update domain_elements with new data
         if(guard != null){
@@ -172,6 +192,12 @@ public class SemanticAnalyzer {
         return domain_elements;
     }
     
+    /**
+     * 
+     * @param domain_elements the Map that we are elaborating
+     * @param tuple the syntactic tuple that we want to analyse its colour classes
+     * @return the updated Map "domain_elements"
+     */
     private Map<ColorClass,Integer> analyze_tuple_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_tuple tuple){
         //update domain_elements with new data
         String[] tuple_elements = tuple.get_tuple_elements();
@@ -194,6 +220,12 @@ public class SemanticAnalyzer {
         return domain_elements;
     }
     
+    /**
+     * 
+     * @param cc the colour class key that we want to update its multiplicity in Map "domain_elements"
+     * @param domain_elements the Map that we are elaborating
+     * @return the updated Map "domain_elements"
+     */
     private Map<ColorClass,Integer> domain_elements_updater(ColorClass cc, Map<ColorClass,Integer> domain_elements){
         
         if(cc != null){
@@ -215,7 +247,11 @@ public class SemanticAnalyzer {
         return domain_elements;
     }
     
-    
+    /**
+     * 
+     * @param p the place that we want to get its domain
+     * @return the analysed place's domain
+     */
     public Domain analyze_place_domain(Place p){ //possible colorclasses in a place
         Domain d = p.get_node_domain();
         
@@ -226,15 +262,16 @@ public class SemanticAnalyzer {
             if(d == null){ //if the place type isn't domain then it's colorclass
                 d = new Domain(sn.find_colorClass(place_type));
             }
-            
-            p.set_node_domain(d);
-            //update sn
-            sn.update_place(p);
         }
-        
+        //Semantic_DataTester.get_instance().test_domain(p.get_name(), d);
         return d;
     }    
         
+    /**
+     * 
+     * @param synt_place syntactic place from which a place will be analysed
+     * @return the created place
+     */
     private Place create_connected_place(Syntactic_place synt_place){
         Place p = sn.find_place(synt_place.get_name());
         HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_place.get_all_next(); //arcs from place to transitions
@@ -259,6 +296,11 @@ public class SemanticAnalyzer {
         return p;
     }
     
+    /**
+     * 
+     * @param synt_transition syntactic transition from which a transition will be analysed
+     * @return the created transition
+     */
     private Transition create_connected_transition(Syntactic_transition synt_transition){
         Transition t = sn.find_transition(synt_transition.get_name());
         HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_transition.get_all_next(); //arcs from transition to places
@@ -283,6 +325,14 @@ public class SemanticAnalyzer {
         return t;
     }
     
+    /**
+     * 
+     * @param synt_arc syntactic arc from which an arc annotation will be analysed 
+     * @param transition_name the name of transition connected to syntactic arc
+     * @param place_name the name of place connected to syntactic arc
+     * @param d the domain of tuples that appear on syntactic arc
+     * @return the created arc annotation
+     */
     private ArcAnnotation create_analyzed_arc(Syntactic_arc synt_arc, String transition_name, String place_name, Domain d){
         HashMap<Syntactic_tuple, Integer> multiplied_tuples = synt_arc.get_all_tuples();
         Map<WNtuple, Integer> tuple_bag_map =  new HashMap<>();
@@ -300,7 +350,13 @@ public class SemanticAnalyzer {
         return new ArcAnnotation(synt_arc.get_name(), new TupleBag(tuple_bag_map));
     }
     
-    private ColorClass analyze_projection_colorclass(String element){
+    /**
+     * 
+     * @param element the name of variable from which we want to get variable's type (colour class)
+     * @return the colour class found of element
+     * @throws NullPointerException if element isn't matched by the matcher
+     */
+    private ColorClass analyze_projection_colorclass(String element) throws NullPointerException{
         ColorClass cc = null;
         Pattern p = Pattern.compile(ElementAnalyzer.get_str_rx_element());
         Matcher m = p.matcher(element);
@@ -319,6 +375,10 @@ public class SemanticAnalyzer {
         return cc;
     }
     
+    /**
+     * 
+     * @return single static instance
+     */
     public static SemanticAnalyzer get_instance(){
 
         if(instance == null){
