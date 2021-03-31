@@ -14,6 +14,8 @@ import struttura_sn.Node;
 import struttura_sn.SN;
 import struttura_sn.Token;
 import wncalculus.classfunction.ElementaryFunction;
+import wncalculus.classfunction.Projection;
+import wncalculus.classfunction.Subcl;
 import wncalculus.expr.Interval;
 import wncalculus.expr.Sort;
 import wncalculus.guard.Guard;
@@ -143,14 +145,15 @@ public class SN_DataTester {
                         HashMap<Node, ArcAnnotation> next = place.get_next_nodes();
                         HashMap<Node, ArcAnnotation> inib = place.get_inib_nodes();
                         
-                        next.keySet().stream().forEach(next_node -> {
+                        next.keySet().stream().forEach(
+                                next_node -> {
                                     ArcAnnotation arc = next.get(next_node);
                                     System.out.print("-------- " + arc.get_name() + ": ");
                                     Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
                                      
                                     arc_tuples_map.keySet().stream().forEach(
                                             tuple -> {
-                                                System.out.print(arc_tuples_map.get(tuple) + " *[");
+                                                System.out.print(arc_tuples_map.get(tuple) + "*[");
                                                 Guard g = tuple.guard();
                                                 
                                                 if(g != null){
@@ -160,24 +163,25 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
-                                                System.out.print(" / ");
+                                                System.out.print("] ");
                                             }
                                     );
                                     
-                                    System.out.print("] -------> " + next_node.get_name());
+                                    System.out.print(" -------> " + next_node.get_name());
                                     System.out.println();
                                 }
                         );
                         
                         System.out.println(place.get_name() + ", Next inhibitors' nodes:");
-                        inib.keySet().stream().forEach(next_node -> {
+                        inib.keySet().stream().forEach(
+                                next_node -> {
                                     ArcAnnotation arc = inib.get(next_node);
                                     System.out.print("-------- " + arc.get_name() + ": ");
                                     Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
                                      
                                     arc_tuples_map.keySet().stream().forEach(
                                             tuple -> {
-                                                System.out.print(arc_tuples_map.get(tuple) + " *[");
+                                                System.out.print(arc_tuples_map.get(tuple) + "*[");
                                                 Guard g = tuple.guard();
                                                 
                                                 if(g != null){
@@ -187,11 +191,11 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
-                                                System.out.print(" / ");
+                                                System.out.print("] ");
                                             }
                                     );
                                     
-                                    System.out.print("] -------> " + next_node.get_name());
+                                    System.out.print(" -------> " + next_node.get_name());
                                     System.out.println();
                                 }
                         );
@@ -204,14 +208,15 @@ public class SN_DataTester {
                     System.out.println(transition.get_name() + ", Next nodes: ");
                         HashMap<Node, ArcAnnotation> next = transition.get_next_nodes();
                         
-                        next.keySet().stream().forEach(next_node -> {
+                        next.keySet().stream().forEach(
+                                next_node -> {
                                     ArcAnnotation arc = next.get(next_node);
                                     System.out.print("-------- " + arc.get_name() + ": ");
                                     Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
                                      
                                     arc_tuples_map.keySet().stream().forEach(
                                             tuple -> {
-                                                System.out.print(arc_tuples_map.get(tuple) + " *[");
+                                                System.out.print(arc_tuples_map.get(tuple) + "*[");
                                                 Guard g = tuple.guard();
                                                 
                                                 if(g != null){
@@ -221,11 +226,11 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
-                                                System.out.print(" / ");
+                                                System.out.print("] ");
                                             }
                                     );
                                     
-                                    System.out.print("] -------> " + next_node.get_name());
+                                    System.out.print(" -------> " + next_node.get_name());
                                     System.out.println();
                                 }
                         );
@@ -241,17 +246,28 @@ public class SN_DataTester {
         Map<? extends ElementaryFunction, Integer> comb_map = comb.asMap();
         System.out.print("(");
         
-        comb_map.keySet().stream().forEach(
-                comb_map_element -> {
-                    System.out.print(" " + comb_map.get(comb_map_element) + " * ");
-                    
-//                    if(comb_map_element instanceof Token){
-//                        Token t = (Token) comb_map_element;
-//                        System.out.print(t.get_Token_value());
-//                    }
-                    System.out.print(comb_map_element.getClass().getName());
+        int i = 0, size = comb_map.keySet().size();
+        for(ElementaryFunction comb_map_element : comb_map.keySet()){
+                System.out.print(" " + comb_map.get(comb_map_element) + "* ");
+
+                if(comb_map_element instanceof Token){
+                    Token t = (Token) comb_map_element;
+                    System.out.print(t.get_Token_value());
+
+                }else if(comb_map_element instanceof Projection){
+                    Projection p = (Projection) comb_map_element;
+                    System.out.print(p.toString());
+                }else { //constant
+                    Subcl con = (Subcl) comb_map_element;
+                    System.out.print(con.toString());
                 }
-        );
+                //System.out.print(comb_map_element.getClass().getName());
+                
+                if(i < size-1){
+                    System.out.print(" + ");
+                }
+                i++;
+        }
         
         System.out.print(")  ");
     }

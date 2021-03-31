@@ -18,7 +18,7 @@ import java.util.regex.*;
 //singleton
 public class Marking_scanner extends ElementScanner{ //sub-element of Place_scanner but it's treated as an element while scanning using scan_info() because it has a sub-tag "text" that contains place marking
     
-    private static final String str_rx_TupleToken = "(\\d*)<(\\d*[_a-zA-Z0-9]+([\\+-]\\d*[_a-zA-Z0-9]+)*)([,](\\d*[_a-zA-Z0-9]+)([\\+-]\\d*[_a-zA-Z0-9]+)*)*>";
+    private static final String str_rx_TupleToken = "(\\d*)<(\\d*[_a-zA-Z0-9]+([\\+-]\\d*[_a-zA-Z0-9]+)*)([,](\\d*[_a-zA-Z0-9]+)\\s*([\\+-]\\s*\\d*[_a-zA-Z0-9]+)*)*>";
     
     private static final String str_rx_multiplicity = "(\\d*)";
     //single instance
