@@ -53,7 +53,7 @@ public class SN_DataTester {
                             System.out.print("= ");
                             
                            for(var i = 0; i < intervals.length; i++){
-                               System.out.print(intervals[i].name());
+                               System.out.print(intervals[i].name() + intervals[i].toString());
                                
                                if(i != intervals.length-1){
                                    System.out.print(" + ");
@@ -64,6 +64,7 @@ public class SN_DataTester {
                         System.out.println();
                     }
             ); 
+            System.out.println();
             
             System.out.println("Domains:");
             sn.get_DC().stream().forEach(
@@ -77,17 +78,20 @@ public class SN_DataTester {
                         
                         System.out.println();
                     });
+            System.out.println();
             
             System.out.println("Variables:");
             sn.get_V().stream().forEach(x -> System.out.println(x.get_name() + ": " + x.get_colourClass().name()));
+            System.out.println();
             
             System.out.println("Places:");
             sn.get_P().stream().forEach(
                     x -> {
                         //Semantic_DataTester.get_instance().test_domain(x.get_name(), x.get_node_domain());
-                        System.out.println(x.get_name());
+                        System.out.println(x.get_name() + ": " + x.get_type());
                     }
             );
+            System.out.println();
             
             System.out.println("Transitions:");
             sn.get_T().stream().forEach(
@@ -103,6 +107,7 @@ public class SN_DataTester {
                         System.out.println();
                     }
             );
+            System.out.println();
             
             System.out.println("initial Marking:");    
             Marking m0 = sn.get_initial_marking();
@@ -125,6 +130,7 @@ public class SN_DataTester {
                         System.out.println("]");
                     }
             );
+            System.out.println();
             
         }catch(Exception e){
             System.out.println(e + " in SN_DataTester");
@@ -167,7 +173,7 @@ public class SN_DataTester {
                                             }
                                     );
                                     
-                                    System.out.print(" -------> " + next_node.get_name());
+                                    System.out.print("-------> " + next_node.get_name());
                                     System.out.println();
                                 }
                         );
@@ -195,7 +201,7 @@ public class SN_DataTester {
                                             }
                                     );
                                     
-                                    System.out.print(" -------> " + next_node.get_name());
+                                    System.out.print("-------> " + next_node.get_name());
                                     System.out.println();
                                 }
                         );
@@ -230,7 +236,7 @@ public class SN_DataTester {
                                             }
                                     );
                                     
-                                    System.out.print(" -------> " + next_node.get_name());
+                                    System.out.print("-------> " + next_node.get_name());
                                     System.out.println();
                                 }
                         );
