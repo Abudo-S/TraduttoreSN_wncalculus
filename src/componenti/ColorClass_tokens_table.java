@@ -24,9 +24,7 @@ public class ColorClass_tokens_table { //contains each colorclass available toke
     //single instance
     private static ColorClass_tokens_table instance = null; 
     
-    /**
-     * 
-     */
+    
     private ColorClass_tokens_table(){
         this.cc_subccs = new HashMap<>();
         this.subccs_values = new HashMap<>();
