@@ -155,7 +155,7 @@
 					</structure>
 				</type>
 				<hlinitialMarking>
-					<text>&lt;p2,r2-r1&gt;</text>
+					<text>&lt;p2,r2 + R&gt;</text>
 					<structure>
 						<tuple><subterm><useroperator declaration="p2"/></subterm><subterm><useroperator declaration="r2"/></subterm></tuple>
 					</structure>
@@ -244,7 +244,7 @@
 			<!-- List of arcs -->
 			<arc id="id1" source="P0" target="T0">
 				<hlinscription>
-					<text>[x1 = x &amp;&amp;  y1 != y ]&lt;x1,y1 + y2&gt; + [y in R]&lt;x,y&gt;</text>
+					<text>[x1 != x &amp;&amp;  y1 != y ]&lt;x1,y1 + y2&gt; + [y in R]&lt;x,y&gt;</text>
 					<structure>
 						<add><subterm><tuple><subterm><variable refvariable="x1"/></subterm><subterm><variable refvariable="y1"/></subterm></tuple></subterm><subterm><tuple><subterm><variable refvariable="x"/></subterm><subterm><variable refvariable="y"/></subterm></tuple></subterm></add>
 					</structure>
@@ -260,7 +260,7 @@
 			</arc>
 			<arc id="id3" source="P1" target="T1">
 				<hlinscription>
-					<text>2[ x = x1]&lt;x&gt;</text>
+					<text>2[ x != x1]&lt;x&gt;</text>
 					<structure>
 						<numberof><subterm><numberconstant value="2"><positive/></numberconstant></subterm><subterm><tuple><subterm><variable refvariable="x"/></subterm></tuple></subterm></numberof>
 					</structure>
@@ -268,7 +268,7 @@
 			</arc>
 			<arc id="id4" source="T1" target="P2">
 				<hlinscription>
-					<text>&lt;x,y1 - R&gt;</text>
+					<text>&lt;x,y1 - subR&gt;</text>
 					<structure>
 						<tuple><subterm><variable refvariable="x"/></subterm><subterm><variable refvariable="y1"/></subterm></tuple>
 					</structure>

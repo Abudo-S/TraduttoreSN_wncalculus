@@ -31,7 +31,7 @@ public class SN {
     private SN(){
         P = new ArrayList<>();
         T = new ArrayList<>();
-        C = new ArrayList<>(List.of(new ColorClass("Neutral"))); //C.get(0) is the Neutral colour
+        C = new ArrayList<>(List.of(ColorClass.create_neutral_cc("Neutral"))); //C.get(0) is the Neutral colour
         DC = new ArrayList<>();
         V = new ArrayList<>();
         m0 = Marking.get_instance();

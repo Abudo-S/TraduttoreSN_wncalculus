@@ -428,4 +428,12 @@ public final class ColorClass extends Sort implements Color {
         return this;
     }
     
+    /**
+     * 
+     * @param name neutral color class name, ex. Neutral/Black ...
+     * @return the created neutral color class
+     */
+    public static ColorClass create_neutral_cc(String name){ //added
+        return new ColorClass(name, new Interval(1,1), false);
+    }
 }
