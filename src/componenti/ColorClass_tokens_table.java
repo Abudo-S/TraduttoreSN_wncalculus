@@ -38,7 +38,7 @@ public class ColorClass_tokens_table { //contains each colorclass available toke
      * @param cc parent colour-class that we want to add its subclasses 
      * @param subccs ArrayList of of subclasses (case of partitioned colour class) or parent colour-class name (case of non partitioned colour-class)
      */
-    public void add_colorclass_values(String cc, ArrayList<String> subccs){
+    public void add_colorclass_subclasses(String cc, ArrayList<String> subccs){
         this.cc_subccs.put(cc, subccs);
     }
     

@@ -10,9 +10,8 @@ import struttura_sn.Place;
 import struttura_sn.Variable;
 import struttura_sn.Marking;
 import struttura_sn.SN;
-import componenti.Place_syntax_table;
+import componenti.*;
 import analyzer.Tuple_analyzer;
-import componenti.Variable_index_table;
 import test.XML_DataTester;
 import java.util.*;
 import wncalculus.expr.Interval;
@@ -30,6 +29,7 @@ public class DataParser { // will use SemanticAnalyzer
     private static SN sn;
     private static Place_syntax_table pst; 
     private static Variable_index_table vit;
+    private static ColorClass_tokens_table cc_tt;
     private static SyntaxTree snt;
     private static Marking m0;
     //single instance
@@ -39,6 +39,7 @@ public class DataParser { // will use SemanticAnalyzer
        sn = SN.get_instance();
        pst = Place_syntax_table.get_instance();
        vit = Variable_index_table.get_instance();
+       cc_tt = ColorClass_tokens_table.get_instance();
        snt = SyntaxTree.get_instance();
        m0 = Marking.get_instance();
     }
@@ -53,6 +54,9 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, start, end, circular);
         sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
+        //add class_name to cc_tt as implicit color class that its tokens will be estimated later
+        cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(List.of(class_name)));
+        cc_tt.set_explicit_cc_flag(class_name, false);
     }
     
     /**
@@ -64,18 +68,23 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){ //finite enumeration color class
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, token_names, circular);
         sn.add_colorClass(new ColorClass(class_name, new Interval(token_names.size(), token_names.size()), circular)); //takes an interval of Arraylist size exactly 
+        //add class_name to cc_tt as explicit color class that its tokens won't be estimated (because there's an existing explicit ArrayList of tokens names)
+        cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(List.of(class_name)));
+        cc_tt.set_explicit_cc_flag(class_name, true);
+        cc_tt.add_cc_tokens_values(class_name, token_names);
     }
     
     /**
      * Note: in case of colour-class's data exists in tag "pratition"
      * @param class_name the name class that will be added
-     * @param subclasses explicit/implicit tokens of subclasses that belongs to colour classes
+     * @param subclasses HashMap explicit/implicit tokens of subclasses names with its values that belongs to colour classes
      * @param circular true if colour class is circular/ordered, false otherwise 
      */
     //HashMap<String, ArrayList<String>> : HashMap<subclass_name, ArrayList of available tokens>
     public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses, boolean circular){ //partitioned color class
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, subclasses, circular);
         Interval[] intervals = new Interval[subclasses.size()];
+        cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(subclasses.keySet()));
         
         int i = 0;
         for(String subclass_name : subclasses.keySet()){
@@ -87,14 +96,20 @@ public class DataParser { // will use SemanticAnalyzer
                 intervals[i] = new Interval(
                                Integer.parseInt(e_lb.substring(e_lb.indexOf("=")+1)),
                                Integer.parseInt(e_ub.substring(e_ub.indexOf("=")+1))
-                );
-                
+                );    
+                //add subclass_name to cc_tt as implicit color class that its tokens will be estimated later
+                cc_tt.set_explicit_cc_flag(subclass_name, false);
             }else{ //finite enumeration(useroperator tag)
                 intervals[i] = new Interval(subclass_tokens.size(), subclass_tokens.size());
+                //add subclass_name to cc_tt as explicit color class that its tokens won't be estimated (because there's an existing explicit ArrayList of tokens names)
+                cc_tt.set_explicit_cc_flag(subclass_name, false);
+                cc_tt.add_cc_tokens_values(subclass_name, subclass_tokens);
             }
             
             intervals[i].set_name(subclass_name);
             i++;
+            
+            
         }
         
         sn.add_colorClass(new ColorClass(class_name, intervals, circular));
