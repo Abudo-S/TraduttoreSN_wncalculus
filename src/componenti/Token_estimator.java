@@ -99,7 +99,38 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private ArrayList<Token> estimate_tokens(Interval inter, ColorClass cc) throws RuntimeException{ //tag "finiteintrange" where inter's lb != ub
         ArrayList<Token> tokens = this.find_created_cc_tokens(cc);
+        ArrayList<String> tokens_names = (ArrayList<String>) tokens.stream().map(t -> t.get_Token_value()).collect(Collectors.toList());
+        //update tokens with remaining tokens following inter's size
+        if(inter.lb() == inter.ub()){
+            throw new RuntimeException("Calling Token_estimator/estimate_tokens() for tags that are different from \"finiteintrange\": " + inter.name() + ", " + cc.name());
+        }
+        int size = inter.size();
         
+        if(size == -1){
+            throw new RuntimeException("Calling Token_estimator/estimate_tokens() for an unbounded interval" + inter.name() + ", " + cc.name());
+        }
+        
+        String prefix = cc.name() + "_ct";
+        if(!tokens.isEmpty()){
+            prefix = this.find_token_prefix(tokens.get(0).get_Token_value());
+        }
+        
+        for(var i = 0; i < size; i++){
+            String t_name = prefix;
+            
+            for(var j = inter.lb(); j <= inter.ub() - i; j++){
+                t_name += j;
+                
+                if(!tokens_names.contains(t_name)){ //stop loop if token name is acceptable
+                    break;
+                }
+            }
+            tokens.add(new Token(t_name, cc));
+            
+            if(tokens.size() == size){
+               break;
+            }
+        }
         
         return tokens;
     }
