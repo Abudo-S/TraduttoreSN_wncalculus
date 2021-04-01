@@ -106,7 +106,31 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private ArrayList<Token> find_created_cc_tokens(ColorClass cc){
         ArrayList<Token> tokens = new ArrayList<>();
+        Place_syntax_table pst = Place_syntax_table.get_instance();
         
+        for(Place place : this.marking.keySet()){
+            ArrayList<String> ccs_names = pst.get_place_values(place.get_name());
+            
+            if(ccs_names.contains(cc.name())){
+                HashMap<ArrayList<LinearComb>,Integer> multiplied_tokens_tuples = this.marking.get(place);
+                
+                for(var i = 0; i < ccs_names.size(); i++){
+                    
+                    if(cc.name().equals(ccs_names.get(i))){ //linear-comb index in marking tuple
+                        
+                        for(ArrayList<LinearComb> comb_list : multiplied_tokens_tuples.keySet()){
+                            Map<ElementaryFunction, Integer> comb_elements = (Map<ElementaryFunction, Integer>) comb_list.get(i).asMap();
+                            
+                            comb_elements.keySet().stream().filter(
+                                    comb_element -> comb_element instanceof Token
+                            ).forEach(
+                                    comb_element -> tokens.add((Token) comb_element)
+                            );
+                        }
+                    }
+                }
+            }
+        }
         
         return tokens;
     }
