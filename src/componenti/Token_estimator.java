@@ -5,13 +5,18 @@
  */
 package componenti;
 
+import eccezioni.BreakconditionException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import struttura_sn.Marking;
 import struttura_sn.Place;
 import struttura_sn.SN;
 import struttura_sn.Token;
+import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.color.ColorClass;
 import wncalculus.expr.Interval;
 import wncalculus.wnbag.LinearComb;
@@ -25,19 +30,19 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private final ColorClass_tokens_table cc_tt;
     private HashMap<Place, HashMap<ArrayList<LinearComb>,Integer>> marking;
+    private SN sn;
     //single instance
     private static Token_estimator instance = null; 
     
     private Token_estimator(){
         cc_tt = ColorClass_tokens_table.get_instance();
         marking = Marking.get_instance().get_marking();
+        sn = SN.get_instance();
     }
     
     public ArrayList<Token> get_estimated_cc_tokens(String cc_name){ //colorclass/sub-colorclass name
-        SN sn = SN.get_instance();
-        
         ColorClass cc = sn.find_colorClass(cc_name);
-        ArrayList<Token> tokens = new ArrayList<>();
+        ArrayList<Token> tokens;
         
         if(cc == null){
             HashMap<Interval, ColorClass> associated_interval = this.search_subclass(cc_name);
@@ -52,7 +57,6 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     }
     
     private HashMap<Interval, ColorClass> search_subclass(String subcc_name) throws NullPointerException{ //hashmap of one element
-        SN sn = SN.get_instance();
         ArrayList<ColorClass> colorclasses = sn.get_C();
 
         for(ColorClass colorclass : colorclasses){
@@ -76,32 +80,87 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         ArrayList<String> tokens_names = cc_tt.get_subcc_values(cc_name);
         
         if(tokens_names == null || tokens_names.isEmpty()){ //tokens of subclass "inter" are implicitly expressed and should be estimated
-                //estimate subclass tokens
-                tokens = this.estimate_tokens(inter);
-            }else{ //tokens of subclass "inter" are explicitly expressed
-            
-                for(String token_name : tokens_names){
-                    Token t = this.find_initial_marking_token(token_name);
+            //estimate subclass tokens
+            tokens = this.estimate_tokens(inter, cc);
+        }else{ //tokens of subclass "inter" are explicitly expressed
 
-                    if(t == null){
-                        t = new Token(token_name, cc);
-                    }
-                    tokens.add(t);
+            for(String token_name : tokens_names){
+                Token t = this.find_initial_marking_token(token_name, cc);
+
+                if(t == null){
+                    t = new Token(token_name, cc);
                 }
+                tokens.add(t);
             }
+        }
         
         return tokens;
     }
     
-    private ArrayList<Token> estimate_tokens(Interval inter){
-        ArrayList<Token> tokens = new ArrayList<>();
-        //to be completed
+    private ArrayList<Token> estimate_tokens(Interval inter, ColorClass cc) throws RuntimeException{ //tag "finiteintrange" where inter's lb != ub
+        ArrayList<Token> tokens = this.find_created_cc_tokens(cc);
+        
+        
         return tokens;
     }
     
-    private Token find_initial_marking_token(String token_name){ //find token if exists in initial marking
-        //to be completed
-        return null;
+    private ArrayList<Token> find_created_cc_tokens(ColorClass cc){
+        ArrayList<Token> tokens = new ArrayList<>();
+        
+        
+        return tokens;
+    }
+    
+    private Token find_initial_marking_token(String token_name, ColorClass cc){ //find token if exists in initial marking
+        Token[] t_wrapper = new Token[1];
+        
+        try{
+            this.marking.keySet().stream().filter(
+                    place -> place.get_type().equals(cc.name()) || sn.find_domain(place.get_type()).asMap().containsKey(cc)
+            ).forEach(
+                    place -> {
+                        HashMap<ArrayList<LinearComb>,Integer> multiplied_tokens_tuples = this.marking.get(place);
+
+                        multiplied_tokens_tuples.keySet().stream().forEach(
+                                tokens_tuple -> {
+
+                                    tokens_tuple.stream().forEach(
+                                            comb -> {
+                                                Map<ElementaryFunction, Integer> comb_elements = (Map<ElementaryFunction, Integer>) comb.asMap();
+
+                                                comb_elements.keySet().forEach(
+                                                        comb_element -> {
+
+                                                            if(comb_element instanceof Token){
+                                                                Token t = (Token) comb_element; 
+
+                                                                if(t.get_Token_value().equals(token_name)){
+                                                                     t_wrapper[0] = t;
+                                                                     throw new BreakconditionException();
+                                                                }
+                                                            }
+                                                        }
+                                                );
+                                            }
+                                    );
+                                }
+                        );
+                    }
+            );
+        }catch(BreakconditionException bce){}
+        
+        return t_wrapper[0];
+    }
+    
+    private String find_token_prefix(String example) throws NullPointerException{
+        Pattern p = Pattern.compile(example);
+        Matcher m = p.matcher("(.*)(\\d+)");
+        
+        if(m.find()){
+            return m.group(0);
+        }
+        
+        throw new NullPointerException("Can't match token's prefix: " + example);
     }
     
     /**
