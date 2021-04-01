@@ -119,7 +119,7 @@ public class Guard_analyzer{
                 String op3 = predicate_txt.get(2);
                 
                 switch (operation){
-                    case "=":
+                    case "==":
                         g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name), true, d);
                         break;
                     case "!=":

@@ -244,7 +244,7 @@
 			<!-- List of arcs -->
 			<arc id="id1" source="P0" target="T0">
 				<hlinscription>
-					<text>[x1 != x &amp;&amp;  y1 != y ]&lt;x1,y1 + y2&gt; + [y in R]&lt;x,y&gt;</text>
+					<text>[x1 == x &amp;&amp;  y1 != y ]&lt;x1,y1 + y2&gt; + [y in R]&lt;x,y&gt;</text>
 					<structure>
 						<add><subterm><tuple><subterm><variable refvariable="x1"/></subterm><subterm><variable refvariable="y1"/></subterm></tuple></subterm><subterm><tuple><subterm><variable refvariable="x"/></subterm><subterm><variable refvariable="y"/></subterm></tuple></subterm></add>
 					</structure>

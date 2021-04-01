@@ -19,7 +19,7 @@ public class Predicate_scanner{ //sub-element of Guard_scanner
     private static Predicate_scanner instance = null;
     
     private static final String str_rx_predicate = "((\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)"
-                                                 + "\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
+                                                 + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
                                                  + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
     
     private static final String str_rx_inverter = "\\s*[\\[]\\s*[!]\\s*[(]*\\s*[_a-zA-Z]+[_a-zA-Z0-9]*";
