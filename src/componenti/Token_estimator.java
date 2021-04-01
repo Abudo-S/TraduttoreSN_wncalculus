@@ -33,6 +33,41 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         marking = Marking.get_instance().get_marking();
     }
     
+    
+    
+    private ArrayList<Token> get_cc_tokens(String cc_name, Interval inter, ColorClass cc){ //colorclass/sub-colorclass
+        ArrayList<Token> tokens = new ArrayList<>();
+        ArrayList<String> tokens_names = cc_tt.get_subcc_values(cc_name);
+        
+        if(tokens_names == null || tokens_names.isEmpty()){ //tokens of subclass "inter" are implicitly expressed and should be estimated
+                //estimate subclass tokens
+                tokens = this.estimate_tokens(inter);
+            }else{ //tokens of subclass "inter" are explicitly expressed
+            
+                for(String token_name : tokens_names){
+                    Token t = this.find_initial_marking_token(token_name);
+
+                    if(t == null){
+                        t = new Token(token_name, cc);
+                    }
+                    tokens.add(t);
+                }
+            }
+        
+        return tokens;
+    }
+    
+    private ArrayList<Token> estimate_tokens(Interval inter){
+        ArrayList<Token> tokens = new ArrayList<>();
+        //to be completed
+        return tokens;
+    }
+    
+    private Token find_initial_marking_token(String token_name){ //find token if exists in initial marking
+        //to be completed
+        return null;
+    }
+    
     /**
      * 
      * @return single static instance
