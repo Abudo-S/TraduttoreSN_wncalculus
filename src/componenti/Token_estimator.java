@@ -33,7 +33,27 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         marking = Marking.get_instance().get_marking();
     }
     
+
     
+    private HashMap<Interval, ColorClass> search_subclass(String subcc_name) throws NullPointerException{ //hashmap of one element
+        SN sn = SN.get_instance();
+        ArrayList<ColorClass> colorclasses = sn.get_C();
+
+        for(ColorClass colorclass : colorclasses){
+            Interval[] subclasses = colorclass.getConstraints();
+
+            for(Interval subclass : subclasses){
+                
+                if(subclass.name().equals(subcc_name)){
+                    HashMap<Interval, ColorClass> associated_interval = new HashMap<>(); 
+                    associated_interval.put(subclass, colorclass);
+                    return associated_interval;
+                }
+            }
+        }
+        
+        throw new NullPointerException("Can't find suclass: " + subcc_name);
+    }
     
     private ArrayList<Token> get_cc_tokens(String cc_name, Interval inter, ColorClass cc){ //colorclass/sub-colorclass
         ArrayList<Token> tokens = new ArrayList<>();
