@@ -7,6 +7,7 @@ package componenti;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import struttura_sn.SN;
 
 /**
  *
@@ -62,8 +63,14 @@ public class ColorClass_tokens_table { //contains each colorclass available toke
      * 
      * @param cc sub-colour-class / colour-class that we want know its tokens values
      * @return ArrayList of explicit tokens if exist (case of tags "finiteenumeration" & "useroperator"), null otherwise (case of tag "finiteintrange")
+     * @throws NullPointerException if cc is neither colour-class name nor sub-colour-class name
      */
-    public ArrayList<String> get_subcc_values(String cc){
+    public ArrayList<String> get_subcc_values(String cc) throws NullPointerException{
+        SN sn = SN.get_instance();
+        
+        if(sn.find_colorClass(cc) == null && sn.find_subcolorclass(cc) == null){
+            throw new NullPointerException("Searching for unknown colorclass/sub-colorclass: " + cc);
+        }
         
         if(!subccs_values_exist.containsKey(cc) || !this.is_cc_explicit(cc)){ //assume that subclass isn't explicitly expressed if its keys doesn't exist in "subccs_values_exist"
             return null;
