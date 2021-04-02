@@ -37,7 +37,9 @@ public class ColorClass_scanner extends ElementScanner{
      */
     @Override
     public void scan_info(Element color_class) throws NullPointerException{
-        if(color_class.getElementsByTagName("finiteintrange").getLength()>0){
+        NodeList nl = color_class.getElementsByTagName("finiteintrange"); //launched SaxParseException if its length is directly checked in if-condition
+        
+        if(nl.getLength()>0){
             this.scan_finiterange(color_class);
             
         }else if(color_class.getElementsByTagName("finiteenumeration").getLength()>0){
@@ -125,7 +127,9 @@ public class ColorClass_scanner extends ElementScanner{
                     }
                 }
                 
-                if(subclass.getElementsByTagName("finiteintrange").getLength()>0){
+                NodeList nl = color_class.getElementsByTagName("finiteintrange"); //launched SaxParseException if its length is directly checked in if-condition
+                
+                if(nl.getLength()>0){
                     int rangStart, rangEnd;
                     Node fing = color_class.getElementsByTagName("finiteintrange").item(0);
         
