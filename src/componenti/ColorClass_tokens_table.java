@@ -8,6 +8,7 @@ package componenti;
 import java.util.ArrayList;
 import java.util.HashMap;
 import struttura_sn.SN;
+import wncalculus.color.ColorClass;
 
 /**
  *
@@ -65,11 +66,28 @@ public class ColorClass_tokens_table { //contains each colorclass available toke
      * @return ArrayList of explicit tokens if exist (case of tags "finiteenumeration" & "useroperator"), null otherwise (case of tag "finiteintrange")
      * @throws NullPointerException if cc is neither colour-class name nor sub-colour-class name
      */
-    public ArrayList<String> get_subcc_values(String cc) throws NullPointerException{
+    public ArrayList<String> get_cc_subcc_values(String cc) throws NullPointerException{
         SN sn = SN.get_instance();
+        ColorClass colorclass = sn.find_colorClass(cc);
         
-        if(sn.find_colorClass(cc) == null && sn.find_subcolorclass(cc) == null){
+        if(colorclass == null && sn.find_subcolorclass(cc) == null){
             throw new NullPointerException("Searching for unknown colorclass/sub-colorclass: " + cc);
+        }
+        
+        if(colorclass != null){ //case of colorclass
+            ArrayList<String> all_subccs_values = new ArrayList<>();
+
+            this.cc_subccs.get(cc).stream().forEach(
+                    subclass -> {
+                        this.subccs_values.keySet().stream().filter(
+                                subcc -> this.subccs_values_exist.get(subclass)
+                        ).forEach(
+                                subcc -> all_subccs_values.addAll(this.subccs_values.get(subcc))
+                        );
+                    }
+            );
+            
+            return all_subccs_values;
         }
         
         if(!subccs_values_exist.containsKey(cc) || !this.is_cc_explicit(cc)){ //assume that subclass isn't explicitly expressed if its keys doesn't exist in "subccs_values_exist"

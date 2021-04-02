@@ -9,21 +9,12 @@
 			<structure>
 				<declarations>
 					<!-- Declaration of user-defined color classes (sorts) -->
-					<namedsort id="Processo" name="Processo">
-						<finiteenumeration>
-							<feconstant id="p1" name="p1"/>
-							<feconstant id="p2" name="p2"/>
-							<feconstant id="p3" name="p3"/>
-							<feconstant id="p4" name="p4"/>
-							<feconstant id="p5" name="p5"/>
-							<feconstant id="p6" name="p6"/>
-						</finiteenumeration>
+					<namedsort id="Processo" name="Processo" ordered="true">
+							<finiteintrange start="1" end="6"/>
 					</namedsort>
-					<partition id="Risorsa" name="Risorsa" ordered="true">
+					<partition id="Risorsa" name="Risorsa" ordered="false">
 					             <partitionelement id="R" name="R">
-							<useroperator declaration="r1" />
-							<useroperator declaration="r2" />
-							<useroperator declaration="r3" />
+							<finiteintrange start="1" end="3"/>
 						     </partitionelement>
 						     <partitionelement id="subR" name="subR">
 							<useroperator declaration="r4" />

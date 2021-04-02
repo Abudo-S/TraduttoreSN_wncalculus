@@ -7,6 +7,7 @@ package componenti;
 
 import eccezioni.BreakconditionException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -18,6 +19,7 @@ import struttura_sn.SN;
 import struttura_sn.Token;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.color.ColorClass;
+import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
 import wncalculus.wnbag.LinearComb;
 
@@ -29,8 +31,8 @@ import wncalculus.wnbag.LinearComb;
 public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private final ColorClass_tokens_table cc_tt;
-    private HashMap<Place, HashMap<ArrayList<LinearComb>,Integer>> marking;
-    private SN sn;
+    private final HashMap<Place, HashMap<ArrayList<LinearComb>,Integer>> marking;
+    private final SN sn;
     //single instance
     private static Token_estimator instance = null; 
     
@@ -77,7 +79,7 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private ArrayList<Token> get_cc_tokens(String cc_name, Interval inter, ColorClass cc){ //colorclass/sub-colorclass
         ArrayList<Token> tokens = new ArrayList<>();
-        ArrayList<String> tokens_names = cc_tt.get_subcc_values(cc_name);
+        ArrayList<String> tokens_names = cc_tt.get_cc_subcc_values(cc_name);
         
         if(tokens_names == null || tokens_names.isEmpty()){ //tokens of subclass "inter" are implicitly expressed and should be estimated
             //estimate subclass tokens
@@ -114,7 +116,7 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         if(!tokens.isEmpty()){
             prefix = this.find_token_prefix(tokens.get(0).get_Token_value());
         }
-        
+        //System.out.println(Arrays.toString(tokens_names.toArray()));
         for(var i = 0; i < size; i++){
             String t_name = prefix;
             
@@ -122,10 +124,12 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
                 t_name += j;
                 
                 if(!tokens_names.contains(t_name)){ //stop loop if token name is acceptable
+                    tokens.add(new Token(t_name, cc));
                     break;
                 }
+                
+                t_name = prefix;
             }
-            tokens.add(new Token(t_name, cc));
             
             if(tokens.size() == size){
                break;
@@ -139,29 +143,31 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         ArrayList<Token> tokens = new ArrayList<>();
         Place_syntax_table pst = Place_syntax_table.get_instance();
         
-        for(Place place : this.marking.keySet()){
-            ArrayList<String> ccs_names = pst.get_place_values(place.get_name());
-            
-            if(ccs_names.contains(cc.name())){
-                HashMap<ArrayList<LinearComb>,Integer> multiplied_tokens_tuples = this.marking.get(place);
-                
-                for(var i = 0; i < ccs_names.size(); i++){
+        this.marking.keySet().stream().forEach(
+                place -> {
+                    ArrayList<String> ccs_names = pst.get_place_values(place.get_name());
                     
-                    if(cc.name().equals(ccs_names.get(i))){ //linear-comb index in marking tuple
-                        
-                        for(ArrayList<LinearComb> comb_list : multiplied_tokens_tuples.keySet()){
-                            Map<ElementaryFunction, Integer> comb_elements = (Map<ElementaryFunction, Integer>) comb_list.get(i).asMap();
-                            
-                            comb_elements.keySet().stream().filter(
-                                    comb_element -> comb_element instanceof Token
-                            ).forEach(
-                                    comb_element -> tokens.add((Token) comb_element)
-                            );
+                    if (ccs_names.contains(cc.name())) {
+                        HashMap<ArrayList<LinearComb>,Integer> multiplied_tokens_tuples = this.marking.get(place);
+
+                        for(var i = 0; i < ccs_names.size(); i++){
+
+                            if(cc.name().equals(ccs_names.get(i))){ //linear-comb index in marking tuple
+
+                                for(ArrayList<LinearComb> comb_list : multiplied_tokens_tuples.keySet()){
+                                    Map<ElementaryFunction, Integer> comb_elements = (Map<ElementaryFunction, Integer>) comb_list.get(i).asMap();
+
+                                    comb_elements.keySet().stream().filter(
+                                            comb_element -> comb_element instanceof Token
+                                    ).forEach(
+                                            comb_element -> tokens.add((Token) comb_element)
+                                    );
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
+        );
         
         return tokens;
     }
@@ -171,7 +177,20 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         
         try{
             this.marking.keySet().stream().filter(
-                    place -> place.get_type().equals(cc.name()) || sn.find_domain(place.get_type()).asMap().containsKey(cc)
+                    place -> {
+                        
+                        if(place.get_type().equals(cc.name())){
+                            return true;
+                        }else{
+                            Domain d = sn.find_domain(place.get_type());
+                            
+                            if(d != null && d.asMap().containsKey(cc)){
+                                return true;
+                            }
+                        }
+                       
+                        return false;
+                    }
             ).forEach(
                     place -> {
                         HashMap<ArrayList<LinearComb>,Integer> multiplied_tokens_tuples = this.marking.get(place);
@@ -208,11 +227,11 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     }
     
     private String find_token_prefix(String example) throws NullPointerException{
-        Pattern p = Pattern.compile(example);
-        Matcher m = p.matcher("(.*)(\\d+)");
+        Pattern p = Pattern.compile("(.*)(\\d+)");
+        Matcher m = p.matcher(example);
         
-        if(m.find()){
-            return m.group(0);
+        if(m.find()){ 
+            return m.group(1);
         }
         
         throw new NullPointerException("Can't match token's prefix: " + example);

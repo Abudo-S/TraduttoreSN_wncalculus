@@ -102,7 +102,7 @@ public class DataParser { // will use SemanticAnalyzer
             }else{ //finite enumeration(useroperator tag)
                 intervals[i] = new Interval(subclass_tokens.size(), subclass_tokens.size());
                 //add subclass_name to cc_tt as explicit color class that its tokens won't be estimated (because there's an existing explicit ArrayList of tokens names)
-                cc_tt.set_explicit_cc_flag(subclass_name, false);
+                cc_tt.set_explicit_cc_flag(subclass_name, true);
                 cc_tt.add_cc_tokens_values(subclass_name, subclass_tokens);
             }
             

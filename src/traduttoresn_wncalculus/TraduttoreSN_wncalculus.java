@@ -5,13 +5,16 @@
  */
 package traduttoresn_wncalculus;
 
+import componenti.Token_estimator;
 import fasi_traduzione.DataParser;
 import fasi_traduzione.XMLScanner;
 import fasi_traduzione.SemanticAnalyzer;
 import eccezioni.UnsupportedFileException;
+import java.util.ArrayList;
 import test.SN_DataTester;
 import test.SyntaxTree_DataTester;
 import java.util.Scanner;
+import struttura_sn.Token;
 
 /**
  *
@@ -34,6 +37,12 @@ public class TraduttoreSN_wncalculus {
         SN_DataTester sn_dt = SN_DataTester.get_instance(); //for data testing
         //sn_dt.SN_all_data();
         //sn_dt.print_nodes_connections();
+        Token_estimator te = Token_estimator.get_instance();
+        ArrayList<Token> tokens = te.get_estimated_cc_tokens("Processo");
+        
+//        tokens.stream().forEach(
+//                token -> System.out.println(token.get_Token_value())
+//        );
     }
     
     /**

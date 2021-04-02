@@ -37,16 +37,15 @@ public class ColorClass_scanner extends ElementScanner{
      */
     @Override
     public void scan_info(Element color_class) throws NullPointerException{
-        NodeList nl = color_class.getElementsByTagName("finiteintrange"); //launched SaxParseException if its length is directly checked in if-condition
         
-        if(nl.getLength()>0){
-            this.scan_finiterange(color_class);
-            
-        }else if(color_class.getElementsByTagName("finiteenumeration").getLength()>0){
+        if(color_class.getElementsByTagName("finiteenumeration").getLength()>0){
             this.scan_finiteenumeration(color_class);
             
         }else if(color_class.getElementsByTagName("partitionelement").getLength()>0){
             this.scan_partitionedclass(color_class);
+            
+        }else if(color_class.getElementsByTagName("finiteintrange").getLength()>0){
+            this.scan_finiterange(color_class);
             
         }else if(color_class.getElementsByTagName("usersort").getLength()>0){
             //do nothing, will be handled by Domain_scanner
@@ -127,11 +126,10 @@ public class ColorClass_scanner extends ElementScanner{
                     }
                 }
                 
-                NodeList nl = color_class.getElementsByTagName("finiteintrange"); //launched SaxParseException if its length is directly checked in if-condition
-                
-                if(nl.getLength()>0){
+                NodeList fing_nl = subclass.getElementsByTagName("finiteintrange");
+                if(fing_nl.getLength() > 0){
                     int rangStart, rangEnd;
-                    Node fing = color_class.getElementsByTagName("finiteintrange").item(0);
+                    Node fing = fing_nl.item(0);
         
                     if(fing.getNodeType() == Node.ELEMENT_NODE){
                         Element finiteintrange = (Element) fing;
