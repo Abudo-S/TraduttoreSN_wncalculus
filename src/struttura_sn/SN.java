@@ -7,8 +7,10 @@ package struttura_sn;
 
 import java.util.ArrayList;
 import java.util.List;
+import wncalculus.classfunction.Subcl;
 import wncalculus.expr.Domain;
 import wncalculus.color.ColorClass;
+import wncalculus.expr.Interval;
 
 /**
  *
@@ -127,6 +129,27 @@ public class SN {
                 return c;
             }
         }
+        return null;
+    }
+    
+    /**
+     * 
+     * @param name the name of colour class that we want to search
+     * @return sub colour-class sub if found, null otherwise
+     */
+    public Interval find_subcolorclass(String name){
+        
+        for(ColorClass c : SN.C){
+            Interval[] intervals = c.getConstraints();
+            
+            for (Interval interval : intervals) {
+                
+                if (interval.name().equals(name)) {
+                    return interval;
+                }
+            }
+        }
+        
         return null;
     }
     
