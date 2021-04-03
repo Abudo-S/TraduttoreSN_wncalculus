@@ -7,7 +7,7 @@ package wncalculus.expr;
  */
   public final class Interval implements Comparable<Interval> {
         
-        private String name = "Undefined Interval"; //added, could be "undefined interval" if it's not declared or interval set hasn't set yet
+        private String name = "Undefined interval"; //added, could be "undefined interval" if it's not declared or interval set hasn't set yet
        
         private final int lb, ub;//interval bounds
         

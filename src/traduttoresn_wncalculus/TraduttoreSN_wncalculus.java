@@ -11,10 +11,13 @@ import fasi_traduzione.XMLScanner;
 import fasi_traduzione.SemanticAnalyzer;
 import eccezioni.UnsupportedFileException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import test.SN_DataTester;
 import test.SyntaxTree_DataTester;
 import java.util.Scanner;
+import struttura_sn.SN;
 import struttura_sn.Token;
+import wncalculus.expr.Interval;
 
 /**
  *
@@ -37,12 +40,33 @@ public class TraduttoreSN_wncalculus {
         SN_DataTester sn_dt = SN_DataTester.get_instance(); //for data testing
         //sn_dt.SN_all_data();
         //sn_dt.print_nodes_connections();
-        Token_estimator te = Token_estimator.get_instance();
-        ArrayList<Token> tokens = te.get_estimated_cc_tokens("Processo");
         
-//        tokens.stream().forEach(
-//                token -> System.out.println(token.get_Token_value())
-//        );
+        //estimate all colorclasses tokens
+        Token_estimator te = Token_estimator.get_instance();
+        SN.get_instance().get_C().stream().forEach(
+                cc -> {
+                    print_estimated_tokens(cc.name(), te); 
+                }
+        );
+        
+        //estimate all sub-colorclasses colorclasses tokens
+        SN.get_instance().get_C().stream().forEach(
+                cc -> {
+                    Interval[] subccs = cc.getConstraints();
+                    
+                    Arrays.stream(subccs).forEach(
+                        subcc -> {
+                            String subcc_name = subcc.name();
+                            
+                            if(!subcc_name.contains("Undefined interval")){
+                                print_estimated_tokens(subcc_name, te); 
+                            }
+                            
+                        } 
+                    );
+                }
+        );
+        
     }
     
     /**
@@ -53,7 +77,7 @@ public class TraduttoreSN_wncalculus {
     private static String scan_file_name() throws UnsupportedFileException{
         String file_name = "CPN 1.pnml";
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter file name with ext (.pnml) to be translated into unfolded symmetric net:");
+        System.out.println("Enter file name with ext (.pnml) to be translated into an unfolded symmetric net:");
         System.out.println("Note: if you want to use the default file name 'CPN 1.pnml', press \"1\":");        
         String str_name = sc.nextLine();
         
@@ -67,6 +91,20 @@ public class TraduttoreSN_wncalculus {
         }
         
         return file_name;
+    }
+    
+    /**
+     * 
+     * @param cc_subcc_name colour class/sub colour-class that we want to estimates its tokens
+     * @param te Token_estimator that will be used for the process of estimation
+     */
+    private static void print_estimated_tokens(String cc_subcc_name, Token_estimator te){
+        ArrayList<Token> tokens = te.get_estimated_cc_tokens(cc_subcc_name);
+        
+        System.out.println("Tokens(cc/subcc) of " + cc_subcc_name + ":");
+        tokens.stream().forEach(
+                token -> System.out.println(token.get_Token_value())
+        );
     }
     
 }

@@ -76,16 +76,19 @@ public class ColorClass_tokens_table { //contains each colorclass available toke
         
         if(colorclass != null){ //case of colorclass
             ArrayList<String> all_subccs_values = new ArrayList<>();
-
-            this.cc_subccs.get(cc).stream().forEach(
-                    subclass -> {
-                        this.subccs_values.keySet().stream().filter(
-                                subcc -> this.subccs_values_exist.get(subclass)
-                        ).forEach(
-                                subcc -> all_subccs_values.addAll(this.subccs_values.get(subcc))
-                        );
-                    }
-            );
+            ArrayList<String> subccs = this.cc_subccs.get(cc);
+            
+            if(subccs != null){
+                subccs.stream().forEach(
+                        subclass -> {
+                            this.subccs_values.keySet().stream().filter(
+                                    subcc -> this.subccs_values_exist.get(subclass)
+                            ).forEach(
+                                    subcc -> all_subccs_values.addAll(this.subccs_values.get(subcc))
+                            );
+                        }
+                );
+             }
             
             return all_subccs_values;
         }

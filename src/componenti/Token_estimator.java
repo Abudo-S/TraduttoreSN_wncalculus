@@ -32,34 +32,38 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private final ColorClass_tokens_table cc_tt;
     private final HashMap<Place, HashMap<ArrayList<LinearComb>,Integer>> marking;
+    private final Marking_tokens_table mtt;
     private final SN sn;
     //single instance
     private static Token_estimator instance = null; 
     
     private Token_estimator(){
-        cc_tt = ColorClass_tokens_table.get_instance();
-        marking = Marking.get_instance().get_marking();
-        sn = SN.get_instance();
+        this.cc_tt = ColorClass_tokens_table.get_instance();
+        this.marking = Marking.get_instance().get_marking();
+        this.mtt = Marking_tokens_table.get_instance();
+        this.sn = SN.get_instance();
     }
     
     public ArrayList<Token> get_estimated_cc_tokens(String cc_name){ //colorclass/sub-colorclass name
-        ColorClass cc = sn.find_colorClass(cc_name);
-        ArrayList<Token> tokens;
+        ColorClass cc = this.sn.find_colorClass(cc_name);
+        ArrayList<Token> tokens = new ArrayList<>();
         
         if(cc == null){
             HashMap<Interval, ColorClass> associated_interval = this.search_subclass(cc_name);
             Interval inter = associated_interval.keySet().iterator().next();
             tokens = this.get_cc_tokens(cc_name, inter, associated_interval.get(inter));
         }else{
-            Interval inter = cc.getConstraint(1);
-            tokens = this.get_cc_tokens(cc_name, inter, cc);
+
+            for(Interval inter : cc.getConstraints()){
+              tokens.addAll(this.get_cc_tokens(inter.name(), inter, cc));
+            }
         }
         
         return tokens;
     }
     
     private HashMap<Interval, ColorClass> search_subclass(String subcc_name) throws NullPointerException{ //hashmap of one element
-        ArrayList<ColorClass> colorclasses = sn.get_C();
+        ArrayList<ColorClass> colorclasses = this.sn.get_C();
 
         for(ColorClass colorclass : colorclasses){
             Interval[] subclasses = colorclass.getConstraints();
@@ -79,7 +83,8 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private ArrayList<Token> get_cc_tokens(String cc_name, Interval inter, ColorClass cc){ //colorclass/sub-colorclass
         ArrayList<Token> tokens = new ArrayList<>();
-        ArrayList<String> tokens_names = cc_tt.get_cc_subcc_values(cc_name);
+        ArrayList<String> tokens_names = this.cc_tt.get_cc_subcc_values(cc_name);
+        //System.out.println(cc.name() + ","+cc_name + Arrays.toString(tokens_names.toArray()));
         
         if(tokens_names == null || tokens_names.isEmpty()){ //tokens of subclass "inter" are implicitly expressed and should be estimated
             //estimate subclass tokens
@@ -103,9 +108,9 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         ArrayList<Token> tokens = this.find_created_cc_tokens(cc);
         ArrayList<String> tokens_names = (ArrayList<String>) tokens.stream().map(t -> t.get_Token_value()).collect(Collectors.toList());
         //update tokens with remaining tokens following inter's size
-        if(inter.lb() == inter.ub()){
-            throw new RuntimeException("Calling Token_estimator/estimate_tokens() for tags that are different from \"finiteintrange\": " + inter.name() + ", " + cc.name());
-        }
+//        if(inter.lb() == inter.ub()){
+//            throw new RuntimeException("Calling Token_estimator/estimate_tokens() for tags that are different from \"finiteintrange\": " + inter.name() + ", " + cc.name());
+//        }
         int size = inter.size();
         
         if(size == -1){
@@ -116,23 +121,27 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         if(!tokens.isEmpty()){
             prefix = this.find_token_prefix(tokens.get(0).get_Token_value());
         }
-        //System.out.println(Arrays.toString(tokens_names.toArray()));
-        for(var i = 0; i < size; i++){
-            String t_name = prefix;
+        //System.out.println(inter.name() + Arrays.toString(tokens_names.toArray()));
+        if(tokens.size() != size){
             
-            for(var j = inter.lb(); j <= inter.ub() - i; j++){
-                t_name += j;
-                
-                if(!tokens_names.contains(t_name)){ //stop loop if token name is acceptable
-                    tokens.add(new Token(t_name, cc));
-                    break;
+            for(var i = 0; i < size; i++){
+                String t_name = prefix;
+
+                for(var j = inter.lb(); j <= inter.ub(); j++){
+                    t_name += j;
+
+                    if(!tokens_names.contains(t_name)){ //stop loop if token name is acceptable
+                        tokens.add(new Token(t_name, cc));
+                        tokens_names.add(t_name); //reserve that name
+                        break;
+                    }
+
+                    t_name = prefix;
                 }
-                
-                t_name = prefix;
-            }
-            
-            if(tokens.size() == size){
-               break;
+
+                if(tokens.size() == size){
+                   break;
+                }
             }
         }
         
@@ -141,8 +150,21 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private ArrayList<Token> find_created_cc_tokens(ColorClass cc){
         ArrayList<Token> tokens = new ArrayList<>();
-        Place_syntax_table pst = Place_syntax_table.get_instance();
+//        ArrayList<String> available_tokens = this.cc_tt.get_cc_subcc_values(cc.name());
+//        
+//        available_tokens.stream().forEach(
+//                available_token -> {
+//                    Token t = mtt.get_created_similar_token(available_token);
+//                    
+//                    if(t == null){
+//                        t = new Token(available_token, cc);
+//                    }
+//                    tokens.add(t);
+//                }
+//        );
         
+        //another solution based on place syntax table but it won't need Marking tokens table & ColorClass tokens table 
+        Place_syntax_table pst = Place_syntax_table.get_instance();
         this.marking.keySet().stream().forEach(
                 place -> {
                     ArrayList<String> ccs_names = pst.get_place_values(place.get_name());
@@ -160,7 +182,13 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
                                     comb_elements.keySet().stream().filter(
                                             comb_element -> comb_element instanceof Token
                                     ).forEach(
-                                            comb_element -> tokens.add((Token) comb_element)
+                                            comb_element -> {
+                                                Token t = (Token) comb_element;
+                                                
+                                                if(!tokens.contains(t)){ //add if token doesn't exist in ArrayList "tokens"
+                                                    tokens.add(t);
+                                                }
+                                            }
                                     );
                                 }
                             }
@@ -173,16 +201,31 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     }
     
     private Token find_initial_marking_token(String token_name, ColorClass cc){ //find token if exists in initial marking
-        Token[] t_wrapper = new Token[1];
+        Token[] t_wrapper = new Token[1];        
         
         try{
+//            ArrayList<String> available_tokens = this.cc_tt.get_cc_subcc_values(cc.name());
+//            System.out.println(token_name + Arrays.toString(available_tokens.toArray()));
+//            available_tokens.stream().filter(
+//                    available_token -> available_token.equals(token_name)
+//            ).forEach(
+//                    available_token -> {
+//                        t_wrapper[0] = mtt.get_created_similar_token(available_token);
+//
+//                        if(t_wrapper[0] != null){
+//                            t_wrapper[0] = new Token(available_token, cc);
+//                            throw new BreakconditionException();
+//                        }  
+//                    }
+//            );
+            //another solution based on place syntax table but it won't need Marking tokens table & ColorClass tokens table 
             this.marking.keySet().stream().filter(
                     place -> {
                         
                         if(place.get_type().equals(cc.name())){
                             return true;
                         }else{
-                            Domain d = sn.find_domain(place.get_type());
+                            Domain d = this.sn.find_domain(place.get_type());
                             
                             if(d != null && d.asMap().containsKey(cc)){
                                 return true;
