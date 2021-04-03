@@ -6,6 +6,7 @@
 package analyzer;
 
 import componenti.Place_syntax_table;
+import componenti.Marking_tokens_table;
 import eccezioni.UnsupportedLinearCombElement;
 import test.Semantic_DataTester;
 import java.util.*;
@@ -146,7 +147,7 @@ public class Tuple_analyzer {
      */
     public LinearComb analyze_marking_tuple_element(String tuple_element, String place_name, int element_index){ //used for marking tuple
         Map<ElementaryFunction, Integer> element_m = new HashMap<>();
-        
+        Marking_tokens_table cmtt = Marking_tokens_table.get_instance();
         Pattern p = Pattern.compile(str_rx_comb_element);
         Matcher m = p.matcher(tuple_element);        
 
@@ -172,7 +173,14 @@ public class Tuple_analyzer {
                     if(con != null){ //add constant with its multiplicity
                         element_m = this.update_or_add(element_m, con, mult);
                     }else if(sn.find_variable(element) == null){ //if element isn't a constant then it's a color token (check if it isn't a variable)
-                        element_m = this.update_or_add(element_m, new Token(element, sn.find_colorClass(pst.get_place_values(place_name).get(element_index))), mult);
+                        Token t = cmtt.get_created_similar_token(element);
+                        
+                        if(t == null){
+                            t = new Token(element, sn.find_colorClass(pst.get_place_values(place_name).get(element_index)));
+                            cmtt.add_created_token(t);
+                        }
+                        
+                        element_m = this.update_or_add(element_m, t, mult);
                     }else{
                         throw new UnsupportedLinearCombElement("Can't add this element in a linear combination of marking tuple: " + element);    
                     }
