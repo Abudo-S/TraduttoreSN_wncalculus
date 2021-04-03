@@ -12,6 +12,7 @@ import struttura_sn.Marking;
 import struttura_sn.SN;
 import componenti.*;
 import analyzer.Tuple_analyzer;
+import eccezioni.UnsupportedElementNameException;
 import test.XML_DataTester;
 import java.util.*;
 import wncalculus.expr.Interval;
@@ -53,6 +54,7 @@ public class DataParser { // will use SemanticAnalyzer
      */
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, start, end, circular);
+        this.check_name(class_name, "Neutral");
         sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
         //add class_name to cc_tt as implicit color class that its tokens will be estimated later
         cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(List.of(class_name)));
@@ -67,6 +69,7 @@ public class DataParser { // will use SemanticAnalyzer
      */
     public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){ //finite enumeration color class
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, token_names, circular);
+        this.check_name(class_name, "Neutral");
         sn.add_colorClass(new ColorClass(class_name, new Interval(token_names.size(), token_names.size()), circular)); //takes an interval of Arraylist size exactly 
         //add class_name to cc_tt as explicit color class that its tokens won't be estimated (because there's an existing explicit ArrayList of tokens names)
         cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(List.of(class_name)));
@@ -83,11 +86,13 @@ public class DataParser { // will use SemanticAnalyzer
     //HashMap<String, ArrayList<String>> : HashMap<subclass_name, ArrayList of available tokens>
     public void add_ColorClass(String class_name, HashMap<String, ArrayList<String>> subclasses, boolean circular){ //partitioned color class
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, subclasses, circular);
+        this.check_name(class_name, "Neutral");
         Interval[] intervals = new Interval[subclasses.size()];
         cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(subclasses.keySet()));
         
         int i = 0;
         for(String subclass_name : subclasses.keySet()){
+            this.check_name(subclass_name, "Undefined interval");
             ArrayList<String> subclass_tokens = subclasses.get(subclass_name);
                     
             if(subclass_tokens.get(0).contains("lb=")){ //range
@@ -108,8 +113,7 @@ public class DataParser { // will use SemanticAnalyzer
             
             intervals[i].set_name(subclass_name);
             i++;
-            
-            
+        
         }
         
         sn.add_colorClass(new ColorClass(class_name, intervals, circular));
@@ -133,6 +137,7 @@ public class DataParser { // will use SemanticAnalyzer
      */
     public void add_Domain(String domain_name, ArrayList<String> colorclasses){
         //XML_DataTester.get_instance().test_add_Domain(domain_name, colorclasses);
+        this.check_name(domain_name, "Undefined domain");
         HashMap<ColorClass, Integer> product_sort = new HashMap<>();
 
 //GreatSpn tool doesn't allow the (1<n) * color class muliplicity        
@@ -409,6 +414,18 @@ public class DataParser { // will use SemanticAnalyzer
 //        return multiplied_tuples;
 //    }
     
+    /**
+     * 
+     * @param name the name that we want to check
+     * @param unsupportedname the undesirable string
+     * @throws UnsupportedElementNameException if these two strings are equal then an exception will be thrown
+     */
+    private void check_name(String name, String unsupportedname) throws UnsupportedElementNameException{
+        
+        if(name.equals(unsupportedname)){
+            throw new UnsupportedElementNameException("Trying to write forbidden element name: " + "name");
+        }
+    }
     /**
      * 
      * @return filled syntax tree
