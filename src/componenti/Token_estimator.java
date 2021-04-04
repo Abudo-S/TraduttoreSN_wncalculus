@@ -8,7 +8,6 @@ package componenti;
 import eccezioni.BreakconditionException;
 import eccezioni.UnsupportedElementNameException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -32,7 +31,7 @@ import wncalculus.wnbag.LinearComb;
 public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private final ColorClass_tokens_table cc_tt;
-    private final HashMap<Place, HashMap<ArrayList<LinearComb>,Integer>> marking;
+    //private final HashMap<Place, HashMap<ArrayList<LinearComb>,Integer>> marking;
     private final Marking_tokens_table mtt;
     private final SN sn;
     //single instance
@@ -40,11 +39,16 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
     
     private Token_estimator(){
         this.cc_tt = ColorClass_tokens_table.get_instance();
-        this.marking = Marking.get_instance().get_marking();
+        //this.marking = Marking.get_instance().get_marking();
         this.mtt = Marking_tokens_table.get_instance();
         this.sn = SN.get_instance();
     }
     
+    /**
+     * 
+     * @param cc_name the name of colour class/sub-colour class that we want to search/estimate its color tokens
+     * @return ArrayList of tokens found/created
+     */
     public ArrayList<Token> get_estimated_cc_tokens(String cc_name){ //colorclass/sub-colorclass name
         ColorClass cc = this.sn.find_colorClass(cc_name);
         ArrayList<Token> tokens = new ArrayList<>();
@@ -70,6 +74,12 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         return tokens;
     }
     
+    /**
+     * 
+     * @param subcc_name the name of sub-colour class that we want to found its object
+     * @return HashMap of one element (found sub-colour class associated with its parent colour class)
+     * @throws NullPointerException if the given name doesn't match any sub-colour class name
+     */
     private HashMap<Interval, ColorClass> search_subclass(String subcc_name) throws NullPointerException{ //hashmap of one element
         ArrayList<ColorClass> colorclasses = this.sn.get_C();
 
@@ -89,6 +99,13 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         throw new NullPointerException("Can't find suclass: " + subcc_name);
     }
     
+    /**
+     * 
+     * @param cc_subcc_name the name of sub-colour class/Non partitioned colour class that we want to know its tokens
+     * @param inter Interval object of sub-colour class/Non partitioned colour class that will be used in tokens estimation if needed
+     * @param cc colour class that we be used to extract its created initial-marking tokens or for creating new tokens found
+     * @return ArrayList of tokens found/created
+     */
     private ArrayList<Token> get_subcc_tokens(String cc_subcc_name ,Interval inter, ColorClass cc){ //sub-colorclass
         ArrayList<Token> tokens = new ArrayList<>();
         ArrayList<String> tokens_names = this.cc_tt.get_cc_subcc_values(cc_subcc_name);
@@ -112,6 +129,13 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         return tokens;
     }
     
+    /**
+     * 
+     * @param inter Interval object of sub-colour class that will be used in tokens estimation if needed
+     * @param cc colour class that we be used to extract its created initial-marking tokens or for creating new tokens found
+     * @return ArrayList of found/estimated tokens
+     * @throws RuntimeException if sub-colour class interval is unbounded which can't be estimated 
+     */
     private ArrayList<Token> estimate_tokens(Interval inter, ColorClass cc) throws RuntimeException{ //tag "finiteintrange" where inter's lb != ub
         ArrayList<Token> tokens = this.find_created_subcc_tokens(inter, cc);
         ArrayList<String> tokens_names = (ArrayList<String>) tokens.stream().map(t -> t.get_Token_value()).collect(Collectors.toList());
@@ -156,6 +180,12 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         return tokens;
     }
     
+    /**
+     * 
+     * @param inter Interval object of sub-colour class/Non partitioned colour class that we want to find its created initial-marking tokens
+     * @param cc colour class that we be used to extract its created initial-marking tokens
+     * @return ArrayList of created tokens
+     */
     private ArrayList<Token> find_created_subcc_tokens(Interval inter, ColorClass cc){
         ArrayList<Token> tokens = new ArrayList<>();
         ArrayList<Token> tokens_to_test = this.mtt.get_all_cc_tokens(cc);  
@@ -179,6 +209,13 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         return tokens;
     }
     
+    /**
+     * 
+     * @param token_name the name of color token that we want to seach for it in initial marking table "mtt"
+     * @param cc colour class that we be used to create new tokens found
+     * @param available_tokens ArrayList of all color tokens available in cc
+     * @return the token found, null otherwise
+     */
     private Token find_initial_marking_token(String token_name, ColorClass cc, ArrayList<String> available_tokens){ //find token if exists in initial marking
         Token[] t_wrapper = new Token[1];        
         
@@ -247,6 +284,14 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         return t_wrapper[0];
     }
     
+    /**
+     * 
+     * @param example token's value that we will use as a model to find its prefix for similar tokens creation
+     * @param inter sub-colour class that will be used to validate "example" before returning the prefix usable in token estimation
+     * @return the prefix found
+     * @throws NullPointerException if prefix isn't extracted
+     * @throws UnsupportedElementNameException  if example's data violate subclass's conditions or the prefix terminate with a number that could be matched as interval number
+     */
     private String find_token_prefix(String example, Interval inter) throws NullPointerException, UnsupportedElementNameException{
         Pattern p = Pattern.compile("(.*)(\\d+)");
         Matcher m = p.matcher(example);
