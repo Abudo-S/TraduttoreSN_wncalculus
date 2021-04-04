@@ -6,6 +6,7 @@
 package componenti;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import struttura_sn.SN;
 import wncalculus.color.ColorClass;
@@ -78,15 +79,11 @@ public class ColorClass_tokens_table { //contains each colorclass available toke
             ArrayList<String> all_subccs_values = new ArrayList<>();
             ArrayList<String> subccs = this.cc_subccs.get(cc);
             
-            if(subccs != null){
-                subccs.stream().forEach(
-                        subclass -> {
-                            this.subccs_values.keySet().stream().filter(
-                                    subcc -> this.subccs_values_exist.get(subclass)
-                            ).forEach(
-                                    subcc -> all_subccs_values.addAll(this.subccs_values.get(subcc))
-                            );
-                        }
+            if(subccs != null || !cc.equals("Neutral")){
+                subccs.stream().filter(
+                        subclass -> this.subccs_values_exist.get(subclass)
+                ).forEach(
+                    subclass -> all_subccs_values.addAll(this.subccs_values.get(subclass))
                 );
              }
             
