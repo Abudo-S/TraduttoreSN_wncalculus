@@ -21,7 +21,7 @@ import org.w3c.dom.*;
  */
 
 //singleton
-//will be a part of factory pattern
+//part of factory pattern with (scanner)
 public class XMLScanner {
 //    //Guard: \s*(!)?[(]*\s*[(]*predicate[)]*\s*[)]*(([&]{2}|[|]{2})[(]*\s*[(]*predicate[)]*\s*[)]*)*[)]*\s*
 //    //predicate: (\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)

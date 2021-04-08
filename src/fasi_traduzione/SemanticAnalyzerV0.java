@@ -28,15 +28,15 @@ import wncalculus.util.ComplexKey;
  *
  * @author dell
  */
-//replaced by SemanticAnalyzer (Note: SemanticAnalyzer is built from SemanticAnalyzerV2)
+//replaced by SemanticAnalyzer (Note: SemanticAnalyzer is built from SemanticAnalyzerV0)
 //singleton
-public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expressions & guards/tuples
+public class SemanticAnalyzerV0 { //check/analyze the semantic of arc expressions & guards/tuples
     
     private static SN sn;
     //single instance
-    private static SemanticAnalyzerV2 instance = null;
+    private static SemanticAnalyzerV0 instance = null;
     
-    private SemanticAnalyzerV2(){
+    private SemanticAnalyzerV0(){
         sn = SN.get_instance();
     }
     
@@ -288,10 +288,10 @@ public class SemanticAnalyzerV2 { //check/analyze the semantic of arc expression
         return ck.hashCode();
     }
         
-    public static SemanticAnalyzerV2 get_instance(){
+    public static SemanticAnalyzerV0 get_instance(){
         
         if(instance == null){
-            instance = new SemanticAnalyzerV2();
+            instance = new SemanticAnalyzerV0();
         }
         
         return instance;

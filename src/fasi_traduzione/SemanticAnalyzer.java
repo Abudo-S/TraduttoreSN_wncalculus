@@ -25,7 +25,7 @@ import wncalculus.expr.Sort;
  *
  * @author dell
  */
-//part of 2 factory patterns (Albero_sintattico & Analyzer) 
+//part of 2 factory patterns (albero_sintattico & analyzer) 
 //singleton
 public class SemanticAnalyzer {
     
