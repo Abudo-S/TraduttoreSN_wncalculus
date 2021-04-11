@@ -63,6 +63,8 @@ public class Arc_scanner extends ElementScanner{
         ArrayList<Boolean> invert_guards = new ArrayList<>();
         ArrayList<String[]> tuples_elements = new ArrayList<>();
         ArrayList<Integer> tuples_mult = new ArrayList<>();
+        ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> filters = new ArrayList<>();
+        ArrayList<Boolean> invert_filters = new ArrayList<>();
         
         //arc attributes
         String arc_name = Arc_element.getAttribute("id");
@@ -100,6 +102,11 @@ public class Arc_scanner extends ElementScanner{
                 arc_expression = arc_expression.replaceFirst("\\s*[\\]]\\s*<\\s*", "@");
                 String[] arc_expression_data = arc_expression.split("@"); //may have 2 elements [0]: multiplicity with guard if exists, [1]: tuple internal elements
                 //System.out.println(Arrays.toString(arc_expression_data));
+                
+                //temporally added
+                    filters.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
+                    invert_filters.add(Boolean.FALSE);
+                //
                 
                 if(arc_expression_data.length == 1){ //case of tuple only
                     p = Pattern.compile(str_multOftuple2);
@@ -152,7 +159,7 @@ public class Arc_scanner extends ElementScanner{
         }
         
         //call DataParser function to create Marking of extracted data
-        dp.add_Arc(arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
+        dp.add_Arc(arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult, filters, invert_filters);
     }
     
     /**
