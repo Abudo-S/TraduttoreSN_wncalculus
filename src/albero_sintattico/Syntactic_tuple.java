@@ -12,6 +12,7 @@ package albero_sintattico;
 public class Syntactic_tuple { //element of Syntactic_arc
     
     private Syntactic_guard sg;
+    private Syntactic_guard sfilter;
     private final String[] tuple_elements;
     
     /**
@@ -32,10 +33,26 @@ public class Syntactic_tuple { //element of Syntactic_arc
     
     /**
      * 
+     * @param sfilter syntactic guard of this tuple object
+     */
+    public void set_syntactic_filter(Syntactic_guard sfilter){
+        this.sfilter = sfilter;
+    }
+    
+    /**
+     * 
      * @return syntactic guard of this tuple object
      */
     public Syntactic_guard get_syntactic_guard(){
         return this.sg;
+    }
+    
+    /**
+     * 
+     * @return syntactic filter of this tuple object
+     */
+    public Syntactic_guard get_syntactic_filter(){
+        return this.sfilter;
     }
     
     /**
