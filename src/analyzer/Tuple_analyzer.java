@@ -59,7 +59,7 @@ public class Tuple_analyzer {
      */
     //WNtuple object is consisted of linearcomb which is consisted of projections and subcl(constent)
     //tuples_elements list contains linearcombs
-    public WNtuple analyze_arc_tuple(Guard g, String[] tuple_elements, String transition_name, String place_name, Domain d){
+    public WNtuple analyze_arc_tuple(Guard g, Guard filter, String[] tuple_elements, String transition_name, String place_name, Domain d){
         ArrayList<LinearComb> tuple_combs = new ArrayList<>();
         
         //fill tuple_combs
@@ -79,7 +79,7 @@ public class Tuple_analyzer {
 //        );
 //        System.out.println(place_name + "," + tuple_combs.size() + "," + transition_name);
         //Semantic_DataTester.get_instance().test_semantic_arc_tuple(tuple_combs, g, transition_name);
-        return new WNtuple(null, tuple_combs, g, d, false);
+        return new WNtuple(filter, tuple_combs, g, d, false);
     }
     
     /**

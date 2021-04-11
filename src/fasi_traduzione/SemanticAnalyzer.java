@@ -341,7 +341,9 @@ public class SemanticAnalyzer {
         multiplied_tuples.keySet().stream().forEach(
                 synt_tuple -> tuple_bag_map.put(
                         ta.analyze_arc_tuple(
-                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d), synt_tuple.get_tuple_elements(),transition_name, place_name, d
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d),
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_filter(), synt_arc.get_name(), d),
+                                synt_tuple.get_tuple_elements(),transition_name, place_name, d
                         ), multiplied_tuples.get(synt_tuple)
                 )
         );

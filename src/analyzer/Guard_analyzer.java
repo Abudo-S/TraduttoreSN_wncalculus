@@ -77,7 +77,6 @@ public class Guard_analyzer{
                 if(guard.get_invert_guard()){
                     res = Neg.factory(res);
                 }
-
             
             //Semantic_DataTester.get_instance().test_semantic_guard(separated_predicates, res);
         }
@@ -183,10 +182,7 @@ public class Guard_analyzer{
      * @param d the domain of transition (that contains guard or with which an arc expression is connected that contains that guard)
      * @return the analysed guard
      */
-    private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation, Domain d){
-        
-
-        
+    private Guard analyze_equality_guard(Projection p1, Projection p2, boolean operation, Domain d){        
         return Equality.builder(p1, p2, operation, d);
     }
     
