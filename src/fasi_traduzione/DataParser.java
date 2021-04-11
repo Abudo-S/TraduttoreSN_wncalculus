@@ -333,15 +333,20 @@ public class DataParser { // will use SemanticAnalyzer
      * @param arc_type transiting/inhibitor arc
      * @param from the name of starting node of arc
      * @param to the name of ending node of arc
-     * @param guards ordered ArrayList of all guards existing on arc
+     * @param guards ordered ArrayList of all guards existing on arc associated with the same ordering of tuples_element
      * @param invert_guards ordered ArrayList of all inverters that belong to guards
      * @param tuples_elements ordered ArrayList of all tuples with which ArrayList "guards" is associated 
      * @param tuples_mult ordered ArrayList of all multiplicities associated with tuples 
+     * @param filters ordered ArrayList of all filters existing on arc associated with the same ordering of tuples_element
+     * @param invert_filters ordered ArrayList of all inverters that belong to filters
+     * Note: filter's syntax is the same syntax of guard
+     * Note: our considered syntax of arc expression is "[guard] </tuple> [filter]"
      */
     //an Arc can have array of guards related with tuples
     //TupleBag contains WNtuples, each of them has a multiplicity and a guard
     public void add_Arc(String Arc_name, String arc_type, String from, String to, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> guards,
-    ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult){ //type = "tarc/inhibitor"
+    ArrayList<Boolean> invert_guards, ArrayList<String[]> tuples_elements, ArrayList<Integer> tuples_mult, ArrayList<LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>> filters,
+    ArrayList<Boolean> invert_filters){ //type = "tarc/inhibitor"
         
         //XML_DataTester.get_instance().test_add_Arc(Arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult);
         Syntactic_place synt_p = snt.find_synt_place(from);
@@ -351,6 +356,7 @@ public class DataParser { // will use SemanticAnalyzer
         for(var i = 0; i < tuples_elements.size(); i++){
             Syntactic_tuple syntc_tuple = new Syntactic_tuple(tuples_elements.get(i));
             syntc_tuple.set_syntactic_guard(this.get_synt_guard(guards.get(i), invert_guards.get(i)));
+            syntc_tuple.set_syntactic_filter(this.get_synt_guard(filters.get(i), invert_filters.get(i)));
             synt_arc.add_multiplied_tuple(syntc_tuple, tuples_mult.get(i));
         } 
                 
