@@ -56,6 +56,8 @@ public class Arc_scanner extends ElementScanner{
     /**
      * 
      * @param Arc_element arc-element's tag from which we retrieve arc expression 
+     * Note: filter's syntax is the same syntax of guard
+     * Note: our considered syntax of arc expression is "[guard] </tuple> [filter]"
      */
     private void scan_arc(Element Arc_element){
         //arc expressions
@@ -99,15 +101,14 @@ public class Arc_scanner extends ElementScanner{
             for(String arc_expression : arc_expressions){
                 tuple_mult = 1;
                 //separate multiplied arc-tuple/function from its associated guard if exists 
-                arc_expression = arc_expression.replaceFirst("\\s*[\\]]\\s*<\\s*", "@");
+                arc_expression = arc_expression.replaceAll("\\s*[\\]]\\s*<\\s*", "@").replaceAll("\\s*>\\s*[\\[]\\s*", "@");
                 String[] arc_expression_data = arc_expression.split("@"); //may have 2 elements [0]: multiplicity with guard if exists, [1]: tuple internal elements
                 //System.out.println(Arrays.toString(arc_expression_data));
                 
-                //temporally added
-                    filters.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
-                    invert_filters.add(Boolean.FALSE);
-                //
-                
+//                //temporally added
+//                    filters.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
+//                    invert_filters.add(Boolean.FALSE);
+//                //
                 if(arc_expression_data.length == 1){ //case of tuple only
                     p = Pattern.compile(str_multOftuple2);
                     m = p.matcher(arc_expression_data[0]);
@@ -121,43 +122,133 @@ public class Arc_scanner extends ElementScanner{
                     String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[0]);
                     tuples_elements.add(tuple_elements);
                     tuples_mult.add(tuple_mult);
+                    
+                    //guard doesn't exist
                     guards.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
                     invert_guards.add(Boolean.FALSE);
                     
-                }else{ //case of guarded tuple
+                    //filter doesn't exist
+                    filters.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
+                    invert_filters.add(Boolean.FALSE);
+                    
+                }else{ //case of guarded/filtered tuple                   
                     p = Pattern.compile(str_multOftuple);
                     m = p.matcher(arc_expression_data[0]);
+                    
+                    if(arc_expression_data[0].contains("[") && arc_expression_data.length == 2){ //case of guarded tuple
+                        
+                        if(m.find()){ //multiplicity of function/tuple
+                            tuple_mult = Integer.parseInt(m.group(1).replaceAll("\\s*", ""));
+                            arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple, "[");
+                        }
+                        tuples_mult.add(tuple_mult);
+                    
+                        p = Pattern.compile(str_invertOfguard);
+                        m = p.matcher(arc_expression_data[0]);
 
-                    if(m.find()){ //multiplicity of function/tuple
-                        tuple_mult = Integer.parseInt(m.group(1).replaceAll("\\s*", ""));
-                        arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple, "[");
-                    }
-                    tuples_mult.add(tuple_mult);
+                        if(m.find()){ //invert guard
+                            invert_guards.add(Boolean.TRUE);
+                            arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_invertOfguard, "[");
 
-                    p = Pattern.compile(str_invertOfguard);
-                    m = p.matcher(arc_expression_data[0]);
+                        }else{
+                            invert_guards.add(Boolean.FALSE);
+                        }
 
-                    if(m.find()){ //invert guard
-                        invert_guards.add(Boolean.TRUE);
-                        arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_invertOfguard, "[");
+                        //guard of function/tuple
+                        arc_expression_data[0] = arc_expression_data[0].replaceFirst("[\\[]", "");
+                        Guard_scanner g_sc = Guard_scanner.get_instance();
+                        guards.add(g_sc.scan_guard(arc_expression_data[0])); 
 
-                    }else{
+                        //extract tuple elements
+                        Tuple_scanner t_sc = Tuple_scanner.get_instance();
+                        String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[1]);
+                        tuples_elements.add(tuple_elements);
+                        
+                        //filter doesn't exist
+                        filters.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
+                        invert_filters.add(Boolean.FALSE);
+                         
+                    }else if(arc_expression_data[0].contains("<") && arc_expression_data.length == 2){//case of filtered tuple
+                        p = Pattern.compile(str_multOftuple2);
+                        m = p.matcher(arc_expression_data[0]);
+
+                        if(m.find()){ //multiplicity of function/tuple
+                            tuple_mult = Integer.parseInt(m.group(1).replaceAll("\\s*", ""));
+                            arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple2, "<");
+                        } 
+                        //extract tuple elements
+                        Tuple_scanner t_sc = Tuple_scanner.get_instance();
+                        String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[0]);
+                        tuples_elements.add(tuple_elements);
+                        tuples_mult.add(tuple_mult);
+                        
+                        //guard doesn't exist
+                        guards.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
                         invert_guards.add(Boolean.FALSE);
+                        
+                        p = Pattern.compile(str_invertOfguard);
+                        m = p.matcher(arc_expression_data[1]);
+
+                        if(m.find()){ //invert filter
+                            invert_filters.add(Boolean.TRUE);
+                            arc_expression_data[1] = arc_expression_data[1].replaceFirst(str_invertOfguard, "[");
+
+                        }else{
+                            invert_filters.add(Boolean.FALSE);
+                        }
+
+                        //filter of function/tuple
+                        arc_expression_data[1] = arc_expression_data[1].replaceFirst("[\\[]", "");
+                        Guard_scanner g_sc = Guard_scanner.get_instance();
+                        filters.add(g_sc.scan_guard(arc_expression_data[1])); 
+                        
+                    }else{ //guarded and filtered tuple
+                        
+                        if(m.find()){ //multiplicity of function/tuple
+                            tuple_mult = Integer.parseInt(m.group(1).replaceAll("\\s*", ""));
+                            arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple, "[");
+                        }
+                        tuples_mult.add(tuple_mult);
+                    
+                        p = Pattern.compile(str_invertOfguard);
+                        m = p.matcher(arc_expression_data[0]);
+
+                        if(m.find()){ //invert guard
+                            invert_guards.add(Boolean.TRUE);
+                            arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_invertOfguard, "[");
+
+                        }else{
+                            invert_guards.add(Boolean.FALSE);
+                        }
+
+                        //guard of function/tuple
+                        arc_expression_data[0] = arc_expression_data[0].replaceFirst("[\\[]", "");
+                        Guard_scanner g_sc = Guard_scanner.get_instance();
+                        guards.add(g_sc.scan_guard(arc_expression_data[0])); 
+
+                        //extract tuple elements
+                        Tuple_scanner t_sc = Tuple_scanner.get_instance();
+                        String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[1]);
+                        tuples_elements.add(tuple_elements);
+                        
+                        m = p.matcher(arc_expression_data[2]);
+
+                        if(m.find()){ //invert filter
+                            invert_filters.add(Boolean.TRUE);
+                            arc_expression_data[2] = arc_expression_data[2].replaceFirst(str_invertOfguard, "[");
+
+                        }else{
+                            invert_filters.add(Boolean.FALSE);
+                        }
+
+                        //filter of function/tuple
+                        arc_expression_data[2] = arc_expression_data[2].replaceFirst("[\\[]", "");
+                        filters.add(g_sc.scan_guard(arc_expression_data[2]));  
+                        
                     }
-
-                    //guard of function/tuple
-                    arc_expression_data[0] = arc_expression_data[0].replaceFirst("[\\[]", "");
-                    Guard_scanner g_sc = Guard_scanner.get_instance();
-                    guards.add(g_sc.scan_guard(arc_expression_data[0])); 
-
-                    //extract tuple elements
-                    Tuple_scanner t_sc = Tuple_scanner.get_instance();
-                    String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[1]);
-                    tuples_elements.add(tuple_elements);
                 }
             }
         }
-        
         //call DataParser function to create Marking of extracted data
         dp.add_Arc(arc_name, arc_type, from, to, guards, invert_guards, tuples_elements, tuples_mult, filters, invert_filters);
     }
