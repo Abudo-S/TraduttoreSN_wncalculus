@@ -169,6 +169,12 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
+                                                Guard f = tuple.filter();
+                                                
+                                                if(f != null){
+                                                    System.out.print("filter #" + f.toString() + "# ");
+                                                }
+                                                
                                                 System.out.print("] ");
                                             }
                                     );
@@ -197,6 +203,11 @@ public class SN_DataTester {
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
                                                 );
+                                                Guard f = tuple.filter();
+                                                
+                                                if(f != null){
+                                                    System.out.print("filter #" + f.toString() + "# ");
+                                                }
                                                 System.out.print("] ");
                                             }
                                     );
@@ -205,7 +216,7 @@ public class SN_DataTester {
                                     System.out.println();
                                 }
                         );
-                        System.out.println("End of inhibitors:");
+                        System.out.println("End of inhibitors.");
                         System.out.println();
                 }
         );
@@ -231,7 +242,13 @@ public class SN_DataTester {
                                                 
                                                 tuple.getComponents().stream().forEach(
                                                         comb_element -> this.print_linear_comb(comb_element)
-                                                );
+                                                ); 
+                                                Guard f = tuple.filter();
+                                                
+                                                if(f != null){
+                                                    System.out.print("filter #" + f.toString() + "# ");
+                                                }
+                                                
                                                 System.out.print("] ");
                                             }
                                     );
