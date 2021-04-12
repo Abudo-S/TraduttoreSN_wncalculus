@@ -48,7 +48,7 @@ public class SyntaxTree_DataTester {
                                 System.out.print("-------- " + next.get(synt_next).get_name() + ": ");
                                 Syntactic_arc synt_arc = next.get(synt_next);
                                 System.out.print("inib?" + synt_arc.get_type() + ", ");
-                                HashMap<Syntactic_tuple, Integer> tuples_map = synt_arc.get_all_tuples();
+                                LinkedHashMap<Syntactic_tuple, Integer> tuples_map = synt_arc.get_all_tuples();
                                 
                                 tuples_map.keySet().stream().forEach(
                                         synt_tuple -> {
@@ -82,6 +82,30 @@ public class SyntaxTree_DataTester {
                                                     tp_element -> System.out.print(tp_element + ",")
                                             );
                                             System.out.print(") ");
+                                            
+                                            Syntactic_guard synt_filter = synt_tuple.get_syntactic_filter();
+                                            System.out.print((synt_guard.get_invert_guard() == true)? "filter !#" : "filter #");
+                                            
+                                            LinkedHashMap<Syntactic_predicate, String> separated_predicates1 = synt_filter.get_separated_predicates();
+                                            
+                                            separated_predicates1.keySet().stream().forEach(
+                                                    separated_p -> {
+                                                            System.out.print((separated_p.get_invert_guard() == true)? "predicate !% " : "predicate % ");
+                                                            ArrayList<String> p_elements = separated_p.get_predicate_elements();
+                                                            
+                                                            p_elements.stream().forEach(
+                                                                    element -> System.out.print(element + " ")
+                                                            );
+                                                            
+                                                            String seperator = separated_predicates.get(separated_p);
+                                                            System.out.print("% ");
+                                                            
+                                                            if(seperator != null && !seperator.isEmpty()){
+                                                                System.out.print(" " + seperator + " ");
+                                                            }  
+                                                        }
+                                            );
+                                            System.out.print("# ");
                                         }
                                 );
                                 System.out.print("] -------> " + synt_next.get_name());
@@ -102,7 +126,7 @@ public class SyntaxTree_DataTester {
                                 System.out.print("-------- " + next.get(synt_next).get_name() + ": ");
                                 Syntactic_arc synt_arc = next.get(synt_next);
                                 System.out.print("inib?" + synt_arc.get_type() + ", ");
-                                HashMap<Syntactic_tuple, Integer> tuples_map = synt_arc.get_all_tuples();
+                                LinkedHashMap<Syntactic_tuple, Integer> tuples_map = synt_arc.get_all_tuples();
                                 
                                 tuples_map.keySet().stream().forEach(
                                         synt_tuple -> {
@@ -136,6 +160,30 @@ public class SyntaxTree_DataTester {
                                                     tp_element -> System.out.print(tp_element + ",")
                                             );
                                             System.out.print(")");
+                                            
+                                            Syntactic_guard synt_filter = synt_tuple.get_syntactic_filter();
+                                            System.out.print((synt_guard.get_invert_guard() == true)? "filter !#" : "filter #");
+                                            
+                                            LinkedHashMap<Syntactic_predicate, String> separated_predicates1 = synt_filter.get_separated_predicates();
+                                            
+                                            separated_predicates1.keySet().stream().forEach(
+                                                    separated_p -> {
+                                                            System.out.print((separated_p.get_invert_guard() == true)? "predicate !% " : "predicate % ");
+                                                            ArrayList<String> p_elements = separated_p.get_predicate_elements();
+                                                            
+                                                            p_elements.stream().forEach(
+                                                                    element -> System.out.print(element + " ")
+                                                            );
+                                                            
+                                                            String seperator = separated_predicates.get(separated_p);
+                                                            System.out.print("% ");
+                                                            
+                                                            if(seperator != null && !seperator.isEmpty()){
+                                                                System.out.print(" " + seperator + " ");
+                                                            }  
+                                                        }
+                                            );
+                                            System.out.print("# ");
                                         }                                       
                                 );
                                 System.out.print(")] -------> " + synt_next.get_name());
