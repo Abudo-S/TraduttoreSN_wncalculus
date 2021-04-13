@@ -5,6 +5,7 @@
  */
 package struttura_sn;
 
+import eccezioni.BreakconditionException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import wncalculus.classfunction.Projection;
@@ -19,7 +20,7 @@ public class Variable { //a projection is a variable in arc expression
     private final String variable_name;
     private final ColorClass colour_type;
     //private HashMap<Arc, Projection> available_projections_a; //all projections of variable that are written on arcs, will be empty while variable declaration
-    private HashMap<Transition, ArrayList<Projection>> available_projections_t; //all projections of variable that are written on transition, will be empty while variable declaration
+    private ArrayList<Projection> available_projections; //all projections of variable that are written on/around transitions, will be empty while variable declaration
     //Note: ArrayList<Projection> of a transition may contains x, x++, x--
     
     /**
@@ -30,7 +31,7 @@ public class Variable { //a projection is a variable in arc expression
     public Variable(String variable_name, ColorClass colour_type){
         this.variable_name = variable_name;
         this.colour_type = colour_type;
-        this.available_projections_t = new HashMap<>();
+        this.available_projections = new ArrayList<>();
     }
     
     /**
@@ -52,74 +53,55 @@ public class Variable { //a projection is a variable in arc expression
     /**
      * 
      * @param p an available created projection that refers to this variable
-     * @param transition_name the name of transition associated with projection (p)
      */
-    public void add_available_projection(Projection p, String transition_name){
-        this.available_projections_t.keySet().stream().filter(
-                t -> t.get_name().equals(transition_name)
-        ).forEach(
-                t -> {
-                        ArrayList<Projection> available_p = this.available_projections_t.get(t);
-                        available_p.add(p);
-                        this.available_projections_t.put(t, available_p);
-                     }
-        );
+    private void add_available_projection(Projection p){
+        this.available_projections.add(p);
     }
+    
+//    /**
+//     * 
+//     * @param index the index that we want to check if exists in available projections
+//     * @return true if index is found, false otherwise
+//     */
+//    public boolean check_if_index_exists(int index){    
+//        
+//        for(Projection proj : this.available_projections){
+//            
+//            if(proj.getIndex() == index){
+//                return true;
+//            }
+//        }
+//        
+//        return false;
+//    }
+    
     
     /**
      * 
      * @param index the index that we want to check if exists in available projections
-     * @param transition_name the name of transition associated with projection's index
-     * @return true if index is found, false otherwise
-     */
-    public boolean check_if_index_exists(int index, String transition_name){    
-        ArrayList<Projection> projs;
-        //System.out.println(available_projections_t.size());
-        for(Transition t : this.available_projections_t.keySet()){
-            
-            if(t.get_name().equals(transition_name)){
-                projs = this.available_projections_t.get(t);
-                
-                for(Projection pro : projs){
-
-                    if(pro.getIndex() == index){
-                        return true;
-                    }
-                }
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * 
-     * @param index the index that we want to check if exists in available projections
-     * @param transition_name the name of transition associated with projection's index
-     * @param cc the colour class associated with index and successor_flag, from them we create a new projection if isn't available in available_projections_t
      * @param successor_flag 1 in case of ++, -1 in case of --, 0 otherwise
      * @return 
      */
-    public Projection get_available_projection(int index, String transition_name, ColorClass cc, int successor_flag){
+    public Projection get_available_projection(int index, int successor_flag){
         Projection[] p_wrapper = new Projection[1];
         
-        this.available_projections_t.keySet().stream().filter(
-                t ->  t.get_name().equals(transition_name)
-        ).forEach(
-                t -> {
-                        ArrayList<Projection> available_p = this.available_projections_t.get(t);
-                        
-                        p_wrapper[0] = available_p.stream().filter(
-                                projection -> projection.getIndex().equals(index) && projection.getSucc() == successor_flag
-                        ).findFirst().orElse(null);
-                     }
-        );
-        
-        if(p_wrapper[0] == null){
-           p_wrapper[0] = Projection.builder(index, -1, cc); 
+        try{
+            this.available_projections.stream().forEach(
+                    proj-> {
+
+                        if(proj.getIndex() == index && proj.getSucc() == successor_flag){
+                            p_wrapper[0] = proj;
+                            throw new BreakconditionException();
+                        }
+                    }
+            );
+        }catch(BreakconditionException e){
+            return p_wrapper[0];
         }
         
-        return p_wrapper[0];
+        Projection pro = Projection.builder(index, successor_flag, this.colour_type);
+        this.add_available_projection(pro);
+        return pro;
     }
     
 }

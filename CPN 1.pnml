@@ -278,7 +278,7 @@
 					<position x="297" y="50"/>
 				</graphics>
 				<hlinscription>
-					<text>&lt;x,y1&gt;</text>
+					<text>&lt;x,y1&gt; [y !in R]</text>
 					<structure>
 						<tuple><subterm><variable refvariable="x"/></subterm><subterm><variable refvariable="y1"/></subterm></tuple>
 					</structure>
