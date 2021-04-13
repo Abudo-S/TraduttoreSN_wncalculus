@@ -75,7 +75,6 @@ public class Variable { //a projection is a variable in arc expression
 //        return false;
 //    }
     
-    
     /**
      * 
      * @param index the index that we want to check if exists in available projections

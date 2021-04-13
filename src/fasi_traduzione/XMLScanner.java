@@ -40,9 +40,10 @@ public class XMLScanner {
 //    */
 //    marking tuple of tokens: (\d*)([_a-zA-Z0-9]+)([,]([_a-zA-Z0-9]+))*
     
-    private static XMLScanner instance = null;
     private String file_address; 
     private Document doc;
+    //single instance
+    private static XMLScanner instance = null;
     
     /**
      * 
@@ -162,9 +163,13 @@ public class XMLScanner {
         }
     }
     
-//    public void set_file_address(final String address){
-//        this.file_address = address;
-//    }
+    /**
+     * 
+     * @return the address entered of file
+     */
+    public String get_file_address(){
+        return this.file_address;
+    }
     
     /**
      * 

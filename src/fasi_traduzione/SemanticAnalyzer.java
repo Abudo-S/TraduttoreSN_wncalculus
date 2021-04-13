@@ -154,6 +154,7 @@ public class SemanticAnalyzer {
                 //find projections colorclasses
                 domain_elements = this.analyze_tuple_colorclasses(domain_elements, synt_tuple);
                 domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_guard());
+                //will be removed
                 domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_filter());//filter
             }
         }
