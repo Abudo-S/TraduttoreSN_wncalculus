@@ -64,7 +64,7 @@ public class Tuple_analyzer {
         
         //fill tuple_combs
         for(var i = 0; i < tuple_elements.length; i++){
-            tuple_combs.add(this.analyze_tuple_element(tuple_elements[i], transition_name, place_name, i));
+            tuple_combs.add(this.analyze_tuple_element(tuple_elements[i], transition_name, place_name, i, d));
         }
         
 //        System.out.println(sn.find_colorClass("Risorsa").getConstraints()[0].lb());      
@@ -90,7 +90,7 @@ public class Tuple_analyzer {
      * @return linear combination of found ElementaryFunctions and their multiplicity
      * Note: ElementaryFunction is (All, Projection, Subcl) here
      */
-    private LinearComb analyze_tuple_element(String tuple_element, String transition_name, String place_name, int element_index){ //used for arc expression tuple 
+    private LinearComb analyze_tuple_element(String tuple_element, String transition_name, String place_name, int element_index, Domain d){ //used for arc expression tuple 
         Map<ElementaryFunction, Integer> element_t = new HashMap<>();
         Pattern p = Pattern.compile(str_rx_comb_element);
         Matcher m = p.matcher(tuple_element);        
@@ -111,7 +111,7 @@ public class Tuple_analyzer {
                 element_t.put(create_All_from_index(place_name, element_index), mult);
             }else if(sn.find_variable(element) != null){ 
                 //add ordered projection with its multiplicity
-                element_t = this.update_or_add(element_t, pa.analyze_projection_element(element, transition_name), mult);
+                element_t = this.update_or_add(element_t, pa.analyze_projection_element(element, transition_name, d), mult);
             }else{
                 //add constant with its multiplicity
                 Subcl con = ca.analyze_constant_element(element);

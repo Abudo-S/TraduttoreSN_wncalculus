@@ -9,6 +9,7 @@ import analyzer.Guard_analyzer;
 import analyzer.ElementAnalyzer;
 import analyzer.Tuple_analyzer;
 import albero_sintattico.*;
+import componenti.Variable_index_table;
 import struttura_sn.*;
 import java.util.*;
 import test.Semantic_DataTester;
@@ -31,6 +32,7 @@ public class SemanticAnalyzer {
     
     private static SN sn;
     private static SyntaxTree snt;
+    private static Variable_index_table vit;
     private final Guard_analyzer ga;
     private final Tuple_analyzer ta;
     //cache
@@ -40,8 +42,9 @@ public class SemanticAnalyzer {
     
     private SemanticAnalyzer(){
         sn = SN.get_instance();
-        ga = Guard_analyzer.get_instance();
-        ta = Tuple_analyzer.get_instance();
+        vit = Variable_index_table.get_instance();
+        this.ga = Guard_analyzer.get_instance();
+        this.ta = Tuple_analyzer.get_instance();
         this.domain_analyzed_variables = new ArrayList<>();
     }
     
@@ -99,7 +102,9 @@ public class SemanticAnalyzer {
                     );
                     
                     //add domained_transition
-                    Domain d = this.analyze_transition_domain(around_transition, synt_transition.get_syntactic_guard());
+                    Domain d = this.analyze_transition_domain(around_transition, synt_transition.get_syntactic_guard(), synt_transition.get_name());
+                    //prepare transition's table of variabile indices
+                    vit.initialize_transition_cc(synt_transition.get_name(), d);
                     Transition t = this.create_analyzed_transition(
                             synt_transition.get_name(), ga.analyze_guard_of_predicates(synt_transition.get_syntactic_guard(), synt_transition.get_name(), d), d
                     );
@@ -108,7 +113,6 @@ public class SemanticAnalyzer {
                     sn.update_transition(this.create_connected_transition(synt_transition));
                     //reset list "around_transition" for the next transition
                     around_transition.removeAll(around_transition);
-                    
                     //Semantic_DataTester.get_instance().test_domain(t.get_name(), d);
                 }
         );
@@ -138,20 +142,22 @@ public class SemanticAnalyzer {
      * @param transition_guard the guard of transition that we need to analyse to find transition domain
      * @return transition's domain
      */
-    private Domain analyze_transition_domain(ArrayList<Syntactic_arc> around_transition, Syntactic_guard transition_guard){
+    private Domain analyze_transition_domain(ArrayList<Syntactic_arc> around_transition, Syntactic_guard transition_guard, String t_name){
         //analyze transition guard
         Map<ColorClass,Integer> domain_elements = this.analyze_guard_colorclasses(new HashMap<ColorClass,Integer>(), transition_guard);
         
         //analyze all arcs that exist around transition 
         for(Syntactic_arc synt_arc : around_transition){
-            HashMap<Syntactic_tuple,Integer> arc_tuples = synt_arc.get_all_tuples();
+            LinkedHashMap<Syntactic_tuple,Integer> arc_tuples = synt_arc.get_all_tuples();
             
             for(Syntactic_tuple synt_tuple : arc_tuples.keySet()){
                 //find projections colorclasses
                 domain_elements = this.analyze_tuple_colorclasses(domain_elements, synt_tuple);
                 domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_guard());
+                domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_filter());//filter
             }
         }
+        //System.out.println(t_name + "," + Arrays.toString(this.domain_analyzed_variables.toArray()));
         //reset list of projection indices "domain_analyzed_variables" for next transition 
         this.domain_analyzed_variables = new ArrayList<>();
                     
@@ -173,19 +179,11 @@ public class SemanticAnalyzer {
                 ArrayList<String> predicate_elements = synt_predicate.get_predicate_elements();
                 //projections may appear in the first and the third elements, Note: it won't appear in the second element because it's a predicate-operation 
                 String var_name = predicate_elements.get(0);
-                
-                if(!this.domain_analyzed_variables.contains(var_name)){
-                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(var_name), domain_elements);
-                    this.domain_analyzed_variables.add(var_name);
-                }
+                domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(var_name), domain_elements);
 
                 if(predicate_elements.size() > 2){ //3 elements predicate
                     var_name = predicate_elements.get(2);
-                    
-                    if(!this.domain_analyzed_variables.contains(var_name)){
-                        domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(var_name), domain_elements);
-                        this.domain_analyzed_variables.add(var_name);
-                    }
+                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(var_name), domain_elements);
                 }
             }
         }
@@ -201,18 +199,14 @@ public class SemanticAnalyzer {
     private Map<ColorClass,Integer> analyze_tuple_colorclasses(Map<ColorClass,Integer> domain_elements, Syntactic_tuple tuple){
         //update domain_elements with new data
         String[] tuple_elements = tuple.get_tuple_elements();
-        
+
         for(String tuple_element : tuple_elements){
-            String[] combs_of_elements = tuple_element.split(Tuple_analyzer.get_str_rx_comb_operation());
-            
+            String[] combs_of_elements = tuple_element.split("\\s*[\\+-]\\s*");
+
             for(String comb : combs_of_elements){
                 
                 if(sn.find_variable(comb) != null){
-                    
-                    if(!this.domain_analyzed_variables.contains(comb)){
-                        domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(comb), domain_elements);
-                        this.domain_analyzed_variables.add(comb);
-                    }
+                    domain_elements = this.domain_elements_updater(this.analyze_projection_colorclass(comb), domain_elements);
                 }
             }
         }
@@ -334,15 +328,15 @@ public class SemanticAnalyzer {
      * @return the created arc annotation
      */
     private ArcAnnotation create_analyzed_arc(Syntactic_arc synt_arc, String transition_name, String place_name, Domain d){
-        HashMap<Syntactic_tuple, Integer> multiplied_tuples = synt_arc.get_all_tuples();
-        Map<WNtuple, Integer> tuple_bag_map =  new HashMap<>();
-        
+        LinkedHashMap<Syntactic_tuple, Integer> multiplied_tuples = synt_arc.get_all_tuples();
+        Map<WNtuple, Integer> tuple_bag_map =  new LinkedHashMap<>();
+  
         //fill tuple_bag_map
         multiplied_tuples.keySet().stream().forEach(
                 synt_tuple -> tuple_bag_map.put(
                         ta.analyze_arc_tuple(
-                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), synt_arc.get_name(), d),
-                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_filter(), synt_arc.get_name(), d),
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), transition_name, d),
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_filter(), transition_name, d),
                                 synt_tuple.get_tuple_elements(),transition_name, place_name, d
                         ), multiplied_tuples.get(synt_tuple)
                 )
@@ -355,6 +349,7 @@ public class SemanticAnalyzer {
     /**
      * 
      * @param element the name of variable from which we want to get variable's type (colour class)
+     * @param t_name the name of transition that we want to add its variable in Variable index table
      * @return the colour class found of element
      * @throws NullPointerException if element isn't matched by the matcher
      */
@@ -365,8 +360,15 @@ public class SemanticAnalyzer {
         
         if(m.find()){
             Variable v = sn.find_variable(m.group(1));
-            
+
             if(v != null){
+                
+                if(!this.domain_analyzed_variables.contains(element)){
+                    this.domain_analyzed_variables.add(element);
+                }else{
+                    return cc;
+                }
+                
                 cc = v.get_colourClass();
             }
             

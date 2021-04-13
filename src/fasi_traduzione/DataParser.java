@@ -127,7 +127,6 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_Variable(String variable_name, String variable_type){ //type = color class
         //XML_DataTester.get_instance().test_add_Variable(variable_name, variable_type);
         sn.add_variable(new Variable(variable_name, sn.find_colorClass(variable_type)));
-        vit.add_cc_var_name(variable_type, variable_name);
     }    
     
     /**
@@ -377,6 +376,7 @@ public class DataParser { // will use SemanticAnalyzer
                 synt_p.add_next(synt_t, synt_arc);
             }
         }
+        
         //update syntactic place/transition list
         snt.update_synt_p_t(synt_p, synt_t);
     }

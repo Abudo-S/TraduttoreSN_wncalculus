@@ -10,7 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import struttura_sn.SN;
 import struttura_sn.Variable;
+import test.Semantic_DataTester;
 import wncalculus.classfunction.Projection;
+import wncalculus.expr.Domain;
 
 /**
  *
@@ -36,60 +38,44 @@ public class Projection_analyzer extends ElementAnalyzer{
      * @throws NullPointerException if projection's text isn't matched by the matcher
      * @throws RuntimeException if the projection is a predecessor/successor and projection's colour class isn't circular/ordered
      */
-    public Projection analyze_projection_element(String proj, String transition_name) throws NullPointerException, RuntimeException{
+    public Projection analyze_projection_element(String proj, String transition_name, Domain d) throws NullPointerException, RuntimeException{
         Pattern p = Pattern.compile(str_rx_element);
         Matcher m = p.matcher(proj.replaceAll("\\s+", ""));
         Projection pro;
-        int index;
-        
+
         if(m.find()){
             Variable v = sn.find_variable(m.group(1));
             String variable_name = v.get_name();
             String circ_op = m.group(2);
-            index = vit.get_variable_index(variable_name);
-            //System.out.println(index + "," + v.get_colourClass());
+
             if(circ_op.equals("")){
                 //index = this.generate_projection_index(variable_name, 0);
-                //check if projection already exists
-                if(v.check_if_index_exists(index, transition_name)){
-                    return v.get_available_projection(index, transition_name, v.get_colourClass(), 0);
-                }
-                
-                pro = Projection.builder(index, 0, v.get_colourClass());
+                pro = v.get_available_projection(vit.get_variable_index(transition_name, variable_name, d), 0);
+
             }else{
                 
                 if(circ_op.contains("++")){
-                    //index = this.generate_projection_index(variable_name, 1);
-                    //check if projection already exists
-                    if(v.check_if_index_exists(index, transition_name)){
-                        return v.get_available_projection(index, transition_name, v.get_colourClass(), 1);
-                    }
+                    //index = this.generate_projection_index(variable_name, 1);  
                     
                     if(!v.get_colourClass().isOrdered()){
                         throw new RuntimeException("Trying to assign successor to variable: " + v.get_name() + ", while its colorclass isn't circular/ordered"); 
                     }
                     
-                    pro = Projection.builder(index, 1, v.get_colourClass());
+                    pro = v.get_available_projection(vit.get_variable_index(transition_name, variable_name, d), 1);
 
                 }else if(circ_op.contains("--")){
                     //index = this.generate_projection_index(variable_name, -1);
-                    //check if projection already exists
-                    if(v.check_if_index_exists(index, transition_name)){
-                        return v.get_available_projection(index, transition_name, v.get_colourClass(), -1);
-                    }
                     
                     if(!v.get_colourClass().isOrdered()){
                         throw new RuntimeException("Trying to assign predecessor to variable: " + v.get_name() + ", while its colorclass isn't circular/ordered"); 
                     }
                                         
-                    pro = Projection.builder(index, -1, v.get_colourClass());
+                    pro = v.get_available_projection(vit.get_variable_index(transition_name, variable_name, d), 1);
 
                 }else{
                     throw new NullPointerException("Can't find successor/predecessor in " + proj);
                 }       
             }
-            
-            v.add_available_projection(pro, transition_name);
             sn.update_variable_via_projection(v);
             
             //System.out.println(v.get_name() + "," + pro.getIndex());

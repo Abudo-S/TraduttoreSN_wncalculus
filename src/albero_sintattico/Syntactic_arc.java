@@ -5,7 +5,7 @@
  */
 package albero_sintattico;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 /**
  *
  * @author dell
@@ -14,7 +14,7 @@ public class Syntactic_arc{
     
     private final String name;
     private boolean inhibitor;
-    private HashMap<Syntactic_tuple, Integer> multiplied_tuples;
+    private LinkedHashMap<Syntactic_tuple, Integer> multiplied_tuples;
     
     /**
      * 
@@ -22,7 +22,7 @@ public class Syntactic_arc{
      */
     public Syntactic_arc(String name){
         this.name = name;
-        this.multiplied_tuples = new HashMap<>();
+        this.multiplied_tuples = new LinkedHashMap<>();
     }
     
     /**
@@ -38,7 +38,7 @@ public class Syntactic_arc{
      * 
      * @return HashMap of syntactic tuples associated with their multiplicity
      */
-    public HashMap<Syntactic_tuple, Integer> get_all_tuples(){
+    public LinkedHashMap<Syntactic_tuple, Integer> get_all_tuples(){
         return this.multiplied_tuples;
     }
     

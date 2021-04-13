@@ -31,14 +31,15 @@ public class Tuple_scanner { //sub-element of Arc_scanner
      * @throws RuntimeException 
      */
     public String[] scan_tuple(String tuple) throws RuntimeException{
-        Pattern p = Pattern.compile(str_rx_tuple);
+        tuple = tuple.replaceAll("\\s*<\\s*", "").replaceAll("\\s*>\\s*", "").replaceAll("\\s+", "");
+        
+        Pattern p = Pattern.compile(str_rx_tuple);     
         Matcher m = p.matcher(tuple);
         
         if(! m.find()){
             throw new RuntimeException("Can't match tuple: " + tuple);
         }
-        tuple = tuple.replaceAll("\\s*<\\s*", "").replaceAll("\\s*>\\s*", "").replaceAll("\\s+", "");
-        
+
         return tuple.split(",");
     }
     

@@ -41,7 +41,7 @@ public class Guard_analyzer{
      */
     public Guard analyze_guard_of_predicates(Syntactic_guard guard, String transition_name,  Domain d){
         Guard next_p = null, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
-        
+
         if(guard != null){
             LinkedHashMap<Syntactic_predicate,String> separated_predicates = guard.get_separated_predicates();
 
@@ -49,34 +49,33 @@ public class Guard_analyzer{
                 return this.analyze_true_false_guard(true, d);
             }
 
+            Iterator<Syntactic_predicate> it = separated_predicates.keySet().iterator(); //iterate predicates after and/or operation
+            it.next(); //ignore first predicate
 
-                Iterator<Syntactic_predicate> it = separated_predicates.keySet().iterator(); //iterate predicates after and/or operation
-                it.next(); //ignore first predicate
+            for(Syntactic_predicate predicate : separated_predicates.keySet()){
 
-                for(Syntactic_predicate predicate : separated_predicates.keySet()){
+                if(next_p == null){ //first cycle
+                    res = this.analyze_predicate(predicate, transition_name, d);
 
-                    if(next_p == null){ //first cycle
-                        res = this.analyze_predicate(predicate, transition_name, d);
-
-                        if(it.hasNext()){
-                            next_p = this.analyze_predicate(it.next(), transition_name, d);
-                        }else{
-                            break;
-                        }                    
+                    if(it.hasNext()){
+                        next_p = this.analyze_predicate(it.next(), transition_name, d);
                     }else{
+                        break;
+                    }                    
+                }else{
 
-                        if(it.hasNext()){
-                            next_p = this.analyze_predicate(it.next(), transition_name, d);
-                        }else{
-                            break;
-                        }
+                    if(it.hasNext()){
+                        next_p = this.analyze_predicate(it.next(), transition_name, d);
+                    }else{
+                        break;
                     }
-                    res = this.analyze_and_or_guard(res, next_p, separated_predicates.get(predicate));
-                }            
-                //check if inverted
-                if(guard.get_invert_guard()){
-                    res = Neg.factory(res);
                 }
+                res = this.analyze_and_or_guard(res, next_p, separated_predicates.get(predicate));
+            }            
+            //check if inverted
+            if(guard.get_invert_guard()){
+                res = Neg.factory(res);
+            }
             
             //Semantic_DataTester.get_instance().test_semantic_guard(separated_predicates, res);
         }
@@ -111,7 +110,7 @@ public class Guard_analyzer{
              //equality || membership
             }else{ //3 elements predicate -> projection, operation, projection/constant 
                 //1st element
-                Projection p1 = pa.analyze_projection_element(p_txt, transition_name);
+                Projection p1 = pa.analyze_projection_element(p_txt, transition_name, d);
                 //2nd element
                 String operation = predicate_txt.get(1).replaceAll("\\s+","");
                 //3rd element
@@ -119,10 +118,10 @@ public class Guard_analyzer{
                 
                 switch (operation){
                     case "==":
-                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name), true, d);
+                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name, d), true, d);
                         break;
                     case "!=":
-                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name), false, d);
+                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name, d), false, d);
                         break;
                     case "in":
                         g = this.analyze_membership_guard(p1, ca.analyze_constant_element(op3), true, d);
@@ -195,9 +194,7 @@ public class Guard_analyzer{
      * @return the analysed guard
      */ 
     private Guard analyze_membership_guard(Projection p1, Subcl constant, boolean operation, Domain d){
-        
-
-         
+        //Semantic_DataTester.get_instance().test_domain(String.valueOf(p1.getIndex()), d);
         return Membership.build(p1, constant, operation, d);
     }
     
