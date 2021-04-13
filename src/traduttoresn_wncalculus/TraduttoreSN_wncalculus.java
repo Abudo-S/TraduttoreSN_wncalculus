@@ -17,6 +17,7 @@ import test.SyntaxTree_DataTester;
 import java.util.Scanner;
 import struttura_sn.SN;
 import struttura_sn.Token;
+import test.Semantic_DataTester;
 import wncalculus.expr.Interval;
 
 /**
@@ -37,6 +38,7 @@ public class TraduttoreSN_wncalculus {
         sa.analyze_syntax_tree();
         SyntaxTree_DataTester st_dt = SyntaxTree_DataTester.get_instance(); //for data testing
         //st_dt.SyntaxTree_all_data();
+        //Semantic_DataTester.get_instance().print_all_proj_indices();
         SN_DataTester sn_dt = SN_DataTester.get_instance(); //for data testing
         //sn_dt.SN_all_data();
         //sn_dt.print_nodes_connections();

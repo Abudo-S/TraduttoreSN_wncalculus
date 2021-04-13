@@ -6,7 +6,9 @@
 package test;
 
 import albero_sintattico.Syntactic_predicate;
+import componenti.Variable_index_table;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import wncalculus.classfunction.ElementaryFunction;
@@ -146,6 +148,35 @@ public class Semantic_DataTester { //for guards and tuples
                 domain_element -> System.out.print(domain_elements.get(domain_element) + "*(" + domain_element.name() + ") * ")
         );
         System.out.println();
+    }
+    
+    /**
+     * prints all class variables indices corresponding to transitions
+     */
+    public void print_all_proj_indices(){
+        Variable_index_table vit = Variable_index_table.get_instance();
+        
+        HashMap<String, HashMap<String, HashMap<String, Integer>>> all = vit.get_all_reserved_indices();
+        
+        all.keySet().stream().forEach(
+                transition_name -> {
+                    HashMap<String, HashMap<String, Integer>> cc_vars_indices = all.get(transition_name);
+                    System.out.println();
+                    System.out.println(transition_name + ":--->> ");
+                    
+                    cc_vars_indices.keySet().forEach(
+                            cc -> {
+                                HashMap<String, Integer> vars_indices = cc_vars_indices.get(cc);
+                                
+                                vars_indices.keySet().stream().forEach(
+                                        var ->{
+                                            System.out.println(var + " :" +vars_indices.get(var));
+                                        }
+                                );
+                            }
+                    );
+                }
+        );
     }
     
     /**
