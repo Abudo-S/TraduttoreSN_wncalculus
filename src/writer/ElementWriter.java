@@ -5,7 +5,10 @@
  */
 package writer;
 
+import eccezioni.UnsupportedELementdataException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.w3c.dom.Document;
 
 /**
@@ -29,6 +32,13 @@ public abstract class ElementWriter {
     
     /**
      * 
+     * @param element_info ArrayList of element's data that will be added to pnml document
+     * @throws UnsupportedELementdataException if one of element_info internal data can't be transformed in pnml format
+     */
+    public void write_info(ArrayList<String> element_info) throws UnsupportedELementdataException{}
+    
+    /**
+     * 
      * @param e_data all required data to create an element
      */
     public void add_element_data(ArrayList<String> e_data){
@@ -41,5 +51,22 @@ public abstract class ElementWriter {
      */
     public ArrayList<ArrayList<String>> get_element_data(){
         return this.element_data;
+    }
+    
+    /**
+     * 
+     * @param single_datum element of ArrayList from which we will extract it value
+     * @return the value extracted if found, Undefined value otherwise
+     */
+    public String seperate_usable_value(String single_datum){
+        String value = "Undefined value";
+        Pattern p = Pattern.compile(".+@=(.+)");
+        Matcher m = p.matcher(single_datum);
+        
+        if(m.find()){
+            value = m.group(1);
+        }
+        
+        return value;
     }
 }

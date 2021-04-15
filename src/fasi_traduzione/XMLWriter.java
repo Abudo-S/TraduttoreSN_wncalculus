@@ -5,6 +5,8 @@
  */
 package fasi_traduzione;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import org.w3c.dom.Document;
 
 /**
@@ -25,7 +27,14 @@ public class XMLWriter {
      * @param file_address the address of file that will be generated
      */
     private XMLWriter(String file_address){
-        this.file_address = file_address + "_generated";
+        Pattern p = Pattern.compile("(.*)[.]pnml");
+        Matcher m = p.matcher(file_address);
+        
+        if(m.find()){
+            file_address = m.group(1);
+        }
+        
+        this.file_address = file_address + "_generated.pnml";
     }
     
     /**

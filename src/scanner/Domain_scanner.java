@@ -56,6 +56,7 @@ public class Domain_scanner extends ElementScanner{
         
         for(var i = 0; i< classes_decl.getLength(); i++){
             Node class_decl = classes_decl.item(i);
+            
             if(class_decl.getNodeType() == Node.ELEMENT_NODE){
                 Element color_class = (Element) class_decl;
                 classes.add(color_class.getAttribute("declaration"));
