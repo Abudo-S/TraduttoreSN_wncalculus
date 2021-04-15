@@ -7,6 +7,7 @@ package writer;
 
 import eccezioni.UnsupportedELementdataException;
 import java.util.ArrayList;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import static writer.ElementWriter.doc;
@@ -41,7 +42,23 @@ public class Transition_writer extends ElementWriter{
                             Element name = doc.createElement(single_datum);
                             name.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
                             transition.setAttribute("id", single_datum);
-                            break;                           
+                            transition.appendChild(name);
+                            break; 
+                        case "graphics":
+                            Element graphics = doc.createElement(single_datum);
+                            Attr position = doc.createAttribute("position");
+                            String[] xy = this.separate_usable_x_y(single_datum);
+                            position.setUserData("x", xy[0] , null);
+                            position.setUserData("y", xy[1] , null);
+                            graphics.setAttributeNode(position);
+                            /*another solution
+//                            Element position = doc.createElement("position");
+//                            position.setAttribute("x", xy[0]);
+//                            position.setAttribute("y", xy[1]);
+//                            graphics.appendChild(position);
+                            */
+                            transition.appendChild(graphics);
+                            break;
                         default:
                             throw new UnsupportedELementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }

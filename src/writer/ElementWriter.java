@@ -69,4 +69,17 @@ public abstract class ElementWriter {
         
         return value;
     }
+    
+    public String[] separate_usable_x_y(String single_datum){
+        String[] xy = new String[]{"0","0"};
+        Pattern p = Pattern.compile("x=(\\d+)y=(\\d+)");
+        Matcher m = p.matcher(single_datum);
+        
+        if(m.find()){
+            xy[0] = m.group(1);
+            xy[1] = m.group(2);
+        }
+        
+        return xy;
+    }
 }
