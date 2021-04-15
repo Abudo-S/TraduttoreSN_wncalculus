@@ -7,7 +7,10 @@ package writer;
 
 import eccezioni.UnsupportedELementdataException;
 import java.util.ArrayList;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import static writer.ElementWriter.doc;
 
 /**
  *
@@ -29,7 +32,40 @@ public class Arc_writer extends ElementWriter{
      */
     @Override
     public void write_info(ArrayList<String> element_info) throws UnsupportedELementdataException{
-        
+        Element arc = doc.createElement("place");
+        doc.appendChild(arc);
+                
+        element_info.stream().forEach(single_datum -> {
+                    
+                    switch(single_datum){
+                        case "id":
+                            arc.setAttribute("id", single_datum);
+                            break;
+                        case "source":
+                            arc.setAttribute("source",this.seperate_usable_value(single_datum));
+                            break;
+                        case "target":
+                            arc.setAttribute("target",this.seperate_usable_value(single_datum));
+                            break;
+                        case "type": //inhibitor/transiting arc
+                            String arc_type = this.seperate_usable_value(single_datum);
+                            
+                            if(arc_type.equals("inhibitor")){
+                                Attr type = doc.createAttribute("type");
+                                type.setValue("inhibitor");
+                                arc.setAttributeNode(type);
+                            }
+                            break;
+                        case "hlinscription":
+                            Element hlinscription = doc.createElement("hlinscription");
+                            hlinscription.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                            arc.appendChild(hlinscription);
+                            break;
+                        default:
+                            throw new UnsupportedELementdataException("Can't transform one of element data in pnml: " + single_datum);
+                    }
+                }
+        );
     }
     
     /**
