@@ -337,6 +337,7 @@ public class SemanticAnalyzer {
                 synt_tuple -> tuple_bag_map.put(
                         ta.analyze_arc_tuple(
                                 ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), transition_name, d),
+                                //filter's domain is different
                                 ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_filter(), transition_name, d),
                                 synt_tuple.get_tuple_elements(),transition_name, place_name, d
                         ), multiplied_tuples.get(synt_tuple)

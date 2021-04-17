@@ -7,7 +7,6 @@ package scanner;
 
 import java.util.*;
 import java.util.regex.*;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -20,18 +19,13 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
     
     private static Guard_scanner instance = null; 
             
-    private static final String str_rx_guard = "((\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)"
-                                             + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
-                                             + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)"
-                                             + "(\\s*([&]{2}|[|]{2})((\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?"
-                                             + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*(<=|>=|<|>|=|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*"
-                                             + "([_a-zA-Z]+[_a-zA-Z0-9]*(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*))*";
+    private static final String str_rx_guard = Guard_scanner.str_rx_predicate + "((\\s*([&]{2}|[|]{2}))*" + Guard_scanner.str_rx_predicate + ")*"; 
     
-    private static final String str_rx_predicate = "((\\s*[(]*\\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)"
-                                                 + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*"
-                                                 + "(\\s*[+]\\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
+    private static final String str_rx_predicate = "((\\s*[(]*\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]*[\\[]\\d+[\\]])([+]{2}|[-]{2})?)"
+                                                 + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]*[\\[]\\d+[\\]])"
+                                                 + "([+]{2}|[-]{2})?)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
     
-    private static final String str_rx_inverter = "\\s*[\\[]\\s*[!]\\s*[(]*\\s*[_a-zA-Z]+[_a-zA-Z0-9]*";
+    private static final String str_rx_inverter = "\\s*[\\[]\\s*[!]\\s*[(]*\\s*[_a-zA-Z0-9]*";
 
     private static final String str_rx_separator = "([&]{2}|[|]{2})";
     
@@ -46,10 +40,8 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
      */
     public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(Element Guard_element){
         String guard = this.get_guard_txt(Guard_element);           
-        guard = "[" + guard + "]";
         //remove invert-guard
-        guard = guard.replaceFirst(str_rx_inverter, "").replaceFirst("\\s*[)]\\s*[]]\\s*", guard).replaceFirst("[\\[]", "").replaceFirst("[\\]]", "");
-        
+        guard = guard.replaceFirst(str_rx_inverter, "");
         return this.scan_guard(guard);
     }
     

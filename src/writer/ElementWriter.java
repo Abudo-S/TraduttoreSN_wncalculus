@@ -58,7 +58,7 @@ public abstract class ElementWriter {
      * @param single_datum element of ArrayList from which we will extract it value
      * @return the value extracted if found, Undefined value otherwise
      */
-    public String seperate_usable_value(String single_datum){
+    protected String seperate_usable_value(String single_datum){
         String value = "Undefined value";
         Pattern p = Pattern.compile(".+@=(.+)");
         Matcher m = p.matcher(single_datum);
@@ -70,7 +70,7 @@ public abstract class ElementWriter {
         return value;
     }
     
-    public String[] separate_usable_x_y(String single_datum){
+    protected String[] separate_usable_x_y(String single_datum){
         String[] xy = new String[]{"0","0"};
         Pattern p = Pattern.compile("x=(\\d+)y=(\\d+)");
         Matcher m = p.matcher(single_datum);

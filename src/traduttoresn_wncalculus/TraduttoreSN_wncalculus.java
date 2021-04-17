@@ -29,7 +29,7 @@ public class TraduttoreSN_wncalculus {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         //test
         XMLScanner xml_sc = XMLScanner.get_instance(scan_file_name());
         xml_sc.scan_file_data();

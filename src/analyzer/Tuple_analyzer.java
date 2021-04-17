@@ -32,7 +32,7 @@ public class Tuple_analyzer {
     
     //private static final String str_rx_circ_projection= "\\s*(\\d*)\\s*([_a-zA-Z]+[_a-zA-Z0-9]*)(([\\+]{2}|[-]{2}))"; //str_rx_element may match "All"
     //group1 = (n), group2 = (variable_name), group6 = (+|-)    
-    private static final String str_rx_comb_element = "\\s*(\\d*)\\s*(" + ElementAnalyzer.get_str_rx_element() + ")" + Tuple_analyzer.str_rx_comb_operation; 
+    private static final String str_rx_comb_element = "\\s*(\\d*)\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*)(([\\\\+]{2}|[-]{2})?))" + Tuple_analyzer.str_rx_comb_operation; 
     private static final String str_rx_comb_operation = "\\s*([\\+-])?\\s*";
     private final Projection_analyzer pa;
     private final Constant_analyzer ca;

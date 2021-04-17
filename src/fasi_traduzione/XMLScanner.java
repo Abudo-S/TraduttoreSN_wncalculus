@@ -5,6 +5,7 @@
  */
 package fasi_traduzione;
 
+import java.io.IOException;
 import scanner.Place_scanner;
 import scanner.Arc_scanner;
 import scanner.Domain_scanner;
@@ -14,6 +15,7 @@ import scanner.Variable_scanner;
 import java.util.ArrayList;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -25,11 +27,11 @@ import org.w3c.dom.*;
 public class XMLScanner {
 //    //Guard: \s*(!)?[(]*\s*[(]*predicate[)]*\s*[)]*(([&]{2}|[|]{2})[(]*\s*[(]*predicate[)]*\s*[)]*)*[)]*\s*
 //    //predicate: (\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)
-//    \s*(<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)
+//    \s*(<=|>=|<|>|==|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)
 //    //Guard uses predicate:
 //    /* 
 //    ((\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*
-//    (<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)|\s*[(]*\s*
+//    (<=|>=|<|>|==|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)|\s*[(]*\s*
 //    (True|False)[)]*\s*)(\s*([&]{2}|[|]{2})((\s*[(]*\s*([_a-zA-Z]+[_a-zA-Z0-9]*([+]{2}|[-]{2})?(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*
 //    (<=|>=|<|>|=|!\s*=|\s+in\s+|\s*!\s*in\s+)\s*([_a-zA-Z]+[_a-zA-Z0-9]*(\s*[+]\s*[_a-zA-Z]+[_a-zA-Z0-9]*)*)\s*[)]*\s*)|\s*[(]*\s*(True|False)[)]*\s*))*
 //    */ 
@@ -50,7 +52,7 @@ public class XMLScanner {
      * @param file_address the address of file that will be scanned
      * @throws NullPointerException if the file_address passed is null
      */
-    private XMLScanner(String file_address) throws NullPointerException{ // xml file of pnml format
+    private XMLScanner(String file_address) throws NullPointerException, ParserConfigurationException, SAXException, IOException{ // xml file of pnml format
         
         try{
             this.file_address = file_address;
@@ -174,9 +176,10 @@ public class XMLScanner {
     /**
      * 
      * @param address the address of file that will be scanned
+     * @throws NullPointerException if the file_address passed is null
      * @return single static instance
      */
-    public static XMLScanner get_instance(final String address){
+    public static XMLScanner get_instance(final String address) throws NullPointerException, ParserConfigurationException, SAXException, IOException{
         
         if(instance == null){
             instance = new XMLScanner(address);
