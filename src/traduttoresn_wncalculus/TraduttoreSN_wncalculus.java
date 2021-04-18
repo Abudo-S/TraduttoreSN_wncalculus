@@ -33,15 +33,15 @@ public class TraduttoreSN_wncalculus {
         //test
         XMLScanner xml_sc = XMLScanner.get_instance(scan_file_name());
         xml_sc.scan_file_data();
+        SyntaxTree_DataTester st_dt = SyntaxTree_DataTester.get_instance(); //for data testing
+        //st_dt.SyntaxTree_all_data();
         SemanticAnalyzer sa = SemanticAnalyzer.get_instance();
         sa.set_syntax_tree(DataParser.get_syntax_tree());
         sa.analyze_syntax_tree();
-        SyntaxTree_DataTester st_dt = SyntaxTree_DataTester.get_instance(); //for data testing
-        //st_dt.SyntaxTree_all_data();
         //Semantic_DataTester.get_instance().print_all_proj_indices();
         SN_DataTester sn_dt = SN_DataTester.get_instance(); //for data testing
         //sn_dt.SN_all_data();
-        //sn_dt.print_nodes_connections();
+        sn_dt.print_nodes_connections();
         
         //estimate all colorclasses tokens
         Token_estimator te = Token_estimator.get_instance();

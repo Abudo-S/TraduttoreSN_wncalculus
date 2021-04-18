@@ -39,7 +39,7 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
      * @return 
      */
     public LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> scan_guard(Element Guard_element){
-        String guard = this.get_guard_txt(Guard_element);           
+        String guard = this.get_guard_txt(Guard_element);      
         //remove invert-guard
         guard = guard.replaceFirst(str_rx_inverter, "");
         return this.scan_guard(guard);
@@ -73,6 +73,7 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
         if(Guard.isEmpty()){
             throw new NullPointerException("Can't add an empty guard");
         }
+        Guard = Guard.replaceAll("[\\[]|[\\]]", "").replaceAll("#\\^", "\\[").replaceAll("\\^#", "\\]");
         //predicates with their separators
         return this.get_guard_map(Guard);
     }
@@ -85,7 +86,7 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
      */
     private LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> get_guard_map(String Guard) throws RuntimeException{ //map of (not-)inverted predicates with their separators
         LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = new LinkedHashMap<>();
-        
+
         try{
             //(inverted)predicates with their separators
             Pattern p = Pattern.compile(str_rx_guard);

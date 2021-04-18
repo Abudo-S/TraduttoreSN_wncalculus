@@ -58,6 +58,14 @@ public class Variable { //a projection is a variable in arc expression
         this.available_projections.add(p);
     }
     
+    /**
+     * 
+     * @return ArrayList of all created projections of this variable
+     */
+    public ArrayList<Projection> get_available_projections(){
+        return this.available_projections;
+    }
+    
 //    /**
 //     * 
 //     * @param index the index that we want to check if exists in available projections

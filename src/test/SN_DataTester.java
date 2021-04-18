@@ -13,6 +13,7 @@ import struttura_sn.Marking;
 import struttura_sn.Node;
 import struttura_sn.SN;
 import struttura_sn.Token;
+import wncalculus.classfunction.All;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
@@ -280,7 +281,10 @@ public class SN_DataTester {
                 }else if(comb_map_element instanceof Projection){
                     Projection p = (Projection) comb_map_element;
                     System.out.print(p.toString());
-                }else { //constant
+                }else if(comb_map_element instanceof All){ //All
+                    All all = (All) comb_map_element;
+                    System.out.print(all.toString());
+                }else{ //constant
                     Subcl con = (Subcl) comb_map_element;
                     System.out.print(con.toString());
                 }

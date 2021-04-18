@@ -36,7 +36,7 @@ public class Tuple_scanner { //sub-element of Arc_scanner
         Pattern p = Pattern.compile(str_rx_tuple);     
         Matcher m = p.matcher(tuple);
         
-        if(! m.find()){
+        if(!m.find()){
             throw new RuntimeException("Can't match tuple: " + tuple);
         }
 
