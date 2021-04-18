@@ -6,6 +6,7 @@
 package scanner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.*;
@@ -85,11 +86,11 @@ public class Arc_scanner extends ElementScanner{
         if(ex_node.getNodeType() == Node.ELEMENT_NODE){
             Element ex = (Element) ex_node;
             ex_txt = ex.getElementsByTagName("text").item(0).getTextContent();
-            //System.out.println(ex_txt);
+            Tuple_scanner t_sc = Tuple_scanner.get_instance();
             
             //separate arc expressions
-            ex_txt = ex_txt.replaceAll("\\s*>\\s*[+]\\s*", "@");
-            arc_expressions = ex_txt.split("@");
+            ex_txt = ex_txt.replaceAll("\\s*>\\s*[+]\\s*", "#@#");
+            arc_expressions = ex_txt.split("#@#");
             //System.out.println(Arrays.toString(arc_expressions));
             
             //extract arc_expression data
@@ -100,15 +101,17 @@ public class Arc_scanner extends ElementScanner{
             //fill guards, invert_guards, tuples_elements
             for(String arc_expression : arc_expressions){
                 tuple_mult = 1;
+                //secure that filter's predicates with [i] won't be removed
+                p = Pattern.compile(".*@[\\[](\\d+)[\\]].*");
+                m = p.matcher(arc_expression);
+
+                if(m.find()){
+                    arc_expression = arc_expression.replaceAll("\\[(\\d+)\\]", "#^" + m.group(1) + "^#");
+                }
                 //separate multiplied arc-tuple/function from its associated guard if exists 
-                arc_expression = arc_expression.replaceAll("\\s*[\\]]\\s*<\\s*", "@").replaceAll("\\s*>\\s*[\\[]\\s*", "@");
-                String[] arc_expression_data = arc_expression.split("@"); //may have 2 elements [0]: multiplicity with guard if exists, [1]: tuple internal elements
-                //System.out.println(Arrays.toString(arc_expression_data));
-                
-//                //temporally added
-//                    filters.add(new LinkedHashMap<HashMap<ArrayList<String>, Boolean>, String>());
-//                    invert_filters.add(Boolean.FALSE);
-//                //
+                arc_expression = arc_expression.replaceAll("\\s*[\\]]\\s*<\\s*", "#@#").replaceAll("\\s*>\\s*[\\[]\\s*", "#@#");
+                String[] arc_expression_data = arc_expression.split("#@#"); //may have 2 elements [0]: multiplicity with guard if exists, [1]: tuple internal elements
+
                 if(arc_expression_data.length == 1){ //case of tuple only
                     p = Pattern.compile(str_multOftuple2);
                     m = p.matcher(arc_expression_data[0]);
@@ -118,7 +121,6 @@ public class Arc_scanner extends ElementScanner{
                         arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple2, "<");
                     } 
                     //extract tuple elements
-                    Tuple_scanner t_sc = Tuple_scanner.get_instance();
                     String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[0]);
                     tuples_elements.add(tuple_elements);
                     tuples_mult.add(tuple_mult);
@@ -134,7 +136,7 @@ public class Arc_scanner extends ElementScanner{
                 }else{ //case of guarded/filtered tuple                   
                     p = Pattern.compile(str_multOftuple);
                     m = p.matcher(arc_expression_data[0]);
-                    
+                                            
                     if(arc_expression_data[0].contains("[") && arc_expression_data.length == 2){ //case of guarded tuple
                         
                         if(m.find()){ //multiplicity of function/tuple
@@ -160,7 +162,6 @@ public class Arc_scanner extends ElementScanner{
                         guards.add(g_sc.scan_guard(arc_expression_data[0])); 
 
                         //extract tuple elements
-                        Tuple_scanner t_sc = Tuple_scanner.get_instance();
                         String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[1]);
                         tuples_elements.add(tuple_elements);
                         
@@ -177,7 +178,6 @@ public class Arc_scanner extends ElementScanner{
                             arc_expression_data[0] = arc_expression_data[0].replaceFirst(str_multOftuple2, "<");
                         } 
                         //extract tuple elements
-                        Tuple_scanner t_sc = Tuple_scanner.get_instance();
                         String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[0]);
                         tuples_elements.add(tuple_elements);
                         tuples_mult.add(tuple_mult);
@@ -227,7 +227,6 @@ public class Arc_scanner extends ElementScanner{
                         guards.add(g_sc.scan_guard(arc_expression_data[0])); 
 
                         //extract tuple elements
-                        Tuple_scanner t_sc = Tuple_scanner.get_instance();
                         String[] tuple_elements = t_sc.scan_tuple(arc_expression_data[1]);
                         tuples_elements.add(tuple_elements);
                         

@@ -7,17 +7,21 @@ package analyzer;
 
 import componenti.Place_syntax_table;
 import componenti.Marking_tokens_table;
+import componenti.Variable_index_table;
 import eccezioni.UnsupportedLinearCombElement;
+import java.nio.charset.Charset;
 import test.Semantic_DataTester;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import struttura_sn.SN;
 import struttura_sn.Token;
+import struttura_sn.Variable;
 import wncalculus.classfunction.All;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
+import wncalculus.color.ColorClass;
 import wncalculus.expr.Domain;
 import wncalculus.guard.Guard;
 import wncalculus.wnbag.LinearComb;
@@ -38,6 +42,8 @@ public class Tuple_analyzer {
     private final Constant_analyzer ca;
     private static Place_syntax_table pst;
     private static SN sn;
+    //cache
+    private String last_filter_var_name = "";
     //single instance
     private static Tuple_analyzer instance = null;
     
@@ -51,6 +57,7 @@ public class Tuple_analyzer {
     /**
      * 
      * @param g the guard of tuple
+     * @param filter the filter of tuple
      * @param tuple_elements all tuple elements
      * @param transition_name the name of transition with which an arc expression is connected and contains that tuple
      * @param place_name the place should is connected with tuple and tuple should follow its colour class ordering to create ClassFunction (All) if it's needed
@@ -111,7 +118,7 @@ public class Tuple_analyzer {
                 element_t.put(create_All_from_index(place_name, element_index), mult);
             }else if(sn.find_variable(element) != null){ 
                 //add ordered projection with its multiplicity
-                element_t = this.update_or_add(element_t, pa.analyze_projection_element(element, transition_name, d), mult);
+                element_t = this.update_or_add(element_t, pa.analyze_projection_element(element, transition_name, null, d), mult);
             }else{
                 //add constant with its multiplicity
                 Subcl con = ca.analyze_constant_element(element);
@@ -255,7 +262,7 @@ public class Tuple_analyzer {
                 }
             }
             
-        }else{ //constant
+        }else if(ef instanceof Subcl){ //constant
             Subcl c1 = (Subcl) ef;
             
             for(ElementaryFunction map_element : element_m.keySet()){   
@@ -264,6 +271,20 @@ public class Tuple_analyzer {
                     Subcl c2 = (Subcl) map_element;
 
                     if(c1.index() == c2.index()){
+                        element_m.put(ef, element_m.get(ef) + mult);
+                        found = true;
+                    }
+                }
+            }
+        }else{ //All
+            All all1 = (All) ef;
+            
+            for(ElementaryFunction map_element : element_m.keySet()){   
+                
+                if(map_element instanceof All){
+                    All all2 = (All) map_element;
+                
+                    if(all1.getSort().name().equals(all2.getSort().name())){
                         element_m.put(ef, element_m.get(ef) + mult);
                         found = true;
                     }
@@ -278,6 +299,108 @@ public class Tuple_analyzer {
         return element_m;
     }
     
+    /**
+     * 
+     * @param element tuple element that we want to know its colour-classes
+     * @return LinkedHashMap of all available colour-class and their multiplicity in a tuple element
+     */
+    public HashMap<ColorClass, Integer> analyze_t_element_cc(String element, String place_name, int cc_index){
+        HashMap<ColorClass, Integer> element_cc = new LinkedHashMap<>();
+        String[] element_vars = element.split(str_rx_comb_operation);
+        ArrayList<String> analyzed_vars = new ArrayList<>();
+        
+        Arrays.stream(element_vars).forEach(
+                element_var -> {
+                    Variable v = sn.find_variable(element_var);
+                    
+                    if(v != null && !analyzed_vars.contains(element_var)){
+                        ColorClass cc = v.get_colourClass();
+                        
+                        if(element_cc.containsKey(cc)){
+                            element_cc.put(cc, element_cc.get(cc) + 1);
+                        }else{
+                            element_cc.put(cc, 1);
+                        }
+                    }
+                }
+        );
+        
+        if(analyzed_vars.isEmpty()){
+            element_cc.put(sn.find_colorClass(pst.get_place_values(place_name).get(cc_index)), 1);
+        }
+        
+        return element_cc;
+    }
+    
+    /**
+     * 
+     * @param tuple_elements all elements of a tuple
+     * @param place_name the name of place that will be used to get its Syntax in case of reading All/Subcl without variable in the same tuple element
+     * @return ArrayList of found variables in these tuple element
+     * Note: this method is dedicated to filters to an ArrayList of available variables in tuple for analysing filter's syntax @[i]/@C/@C[i] 
+     */
+    public ArrayList<String> get_tuple_vars_names(String[] tuple_elements, String place_name){
+        ArrayList<String> vars = new ArrayList<>();
+        
+        for(int i = 0; i < tuple_elements.length; i++){
+            String[] element_vars = tuple_elements[i].split(str_rx_comb_operation);
+            ArrayList<String> analyzed_vars = new ArrayList<>();
+            boolean[] stimate_var_wrapper = new boolean[]{true};
+
+            Arrays.stream(element_vars).forEach(
+                    element_var -> {
+                        Variable v = sn.find_variable(element_var);
+
+                        if(v != null && !analyzed_vars.contains(element_var)){
+                            vars.add(element_var);
+                            analyzed_vars.add(element_var);
+                            stimate_var_wrapper[0] = false;
+                        }
+
+                        if(analyzed_vars.contains(element_var)){
+                            stimate_var_wrapper[0] = false;
+                        }
+                    }
+            );
+
+            if(stimate_var_wrapper[0] == true){
+                ColorClass cc = sn.find_colorClass(pst.get_place_values(place_name).get(i));
+                int n_times = 3; //limit of loop cycles
+                Variable v = this.get_random_var(cc);
+                
+                if(v == null){
+                    sn.add_variable(new Variable(this.random_name(), cc));
+                }
+                //try to get another variable if it's recently used by a filter's element
+                while(this.last_filter_var_name.equals(v.get_name()) && n_times > 0){
+                    v = this.get_random_var(cc);
+                    n_times--;
+                }
+               vars.add(v.get_name());
+            }
+        }
+        
+        return vars;
+    }
+    
+    private Variable get_random_var(ColorClass cc){
+        return sn.get_V().stream().filter(
+                      var -> var.get_colourClass().name().equals(cc.name())
+                ).findAny().orElse(null);
+    }
+    
+    private String random_name(){
+        String chars = "abcdefjhijklmnopqrstuvwxyz";
+        StringBuilder strbuilder = new StringBuilder();
+        Random rnd = new Random();
+        
+        while (strbuilder.length() < 5) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * chars.length());
+            strbuilder.append(chars.charAt(index));
+        }
+        
+        return strbuilder.toString();
+    }
     /**
      * 
      * @return regex of combination between 2 elements
