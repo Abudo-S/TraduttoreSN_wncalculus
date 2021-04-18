@@ -106,7 +106,7 @@ public class SemanticAnalyzer {
                     //prepare transition's table of variabile indices
                     vit.initialize_transition_cc(synt_transition.get_name(), d);
                     Transition t = this.create_analyzed_transition(
-                            synt_transition.get_name(), ga.analyze_guard_of_predicates(synt_transition.get_syntactic_guard(), synt_transition.get_name(), d), d
+                            synt_transition.get_name(), ga.analyze_guard_of_predicates(synt_transition.get_syntactic_guard(), synt_transition.get_name(), null, d), d
                     );
                     sn.add_transition(t);
                     //connect transition by arcs
@@ -154,10 +154,9 @@ public class SemanticAnalyzer {
                 //find projections colorclasses
                 domain_elements = this.analyze_tuple_colorclasses(domain_elements, synt_tuple);
                 domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_guard());
-                //will be removed
-                domain_elements = this.analyze_guard_colorclasses(domain_elements, synt_tuple.get_syntactic_filter());//filter
             }
         }
+
         //System.out.println(t_name + "," + Arrays.toString(this.domain_analyzed_variables.toArray()));
         //reset list of projection indices "domain_analyzed_variables" for next transition 
         this.domain_analyzed_variables = new ArrayList<>();
@@ -261,7 +260,27 @@ public class SemanticAnalyzer {
         //Semantic_DataTester.get_instance().test_domain(p.get_name(), d);
         return d;
     }    
+    
+    public Domain analyze_tuple_codomain(String name, String[] tuple_elements, String place_name){
+        HashMap<ColorClass, Integer> domain_elements = new HashMap<>();
         
+        for(var i = 0; i < tuple_elements.length; i++){
+            HashMap<ColorClass, Integer> t_element_ccs = ta.analyze_t_element_cc(tuple_elements[i], place_name, i);
+
+            t_element_ccs.keySet().stream().forEach(
+                    cc -> {
+
+                        if(domain_elements.containsKey(cc)){
+                            domain_elements.put(cc, domain_elements.get(cc) + t_element_ccs.get(cc));
+                        }else{
+                            domain_elements.put(cc, t_element_ccs.get(cc));
+                        }
+                    }
+            );
+       }
+        
+        return new Domain(domain_elements);
+    }    
     /**
      * 
      * @param synt_place syntactic place from which a place will be analysed
@@ -334,14 +353,16 @@ public class SemanticAnalyzer {
   
         //fill tuple_bag_map
         multiplied_tuples.keySet().stream().forEach(
-                synt_tuple -> tuple_bag_map.put(
+                synt_tuple ->  
+                    tuple_bag_map.put(
                         ta.analyze_arc_tuple(
-                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(), transition_name, d),
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_guard(),  transition_name, null, d),
                                 //filter's domain is different
-                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_filter(), transition_name, d),
+                                ga.analyze_guard_of_predicates(synt_tuple.get_syntactic_filter(), transition_name, ta.get_tuple_vars_names(synt_tuple.get_tuple_elements(), place_name)
+                                                              , this.analyze_tuple_codomain(synt_arc.get_name(), synt_tuple.get_tuple_elements(), place_name)),
                                 synt_tuple.get_tuple_elements(),transition_name, place_name, d
                         ), multiplied_tuples.get(synt_tuple)
-                )
+                    )
         );
         //Semantic_DataTester.get_instance().test_semantic_arc(tuple_bag_map, synt_arc.get_name(), transition_name);
         
