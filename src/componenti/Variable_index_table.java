@@ -20,11 +20,15 @@ import wncalculus.expr.Domain;
 public class Variable_index_table { //used for assigning projections' indices for each transition 
     //HashMap<t_name, HashMap<cc_name, HashMap<var_name, int>>> -> HashMap of all reserved indices of a certain colour-class variables for a transition
     private HashMap<String, HashMap<String, HashMap<String, Integer>>> t_reserved_cc_var_indices; //all reserved indices of a certain transition variables of the same colorclass
+    private HashMap<Domain, HashMap<String, Integer>> filters_vars_indices;
+    private static SN sn;
     //single instance
     private static Variable_index_table instance = null;
     
     private Variable_index_table(){
         this.t_reserved_cc_var_indices = new HashMap<>();
+        this.filters_vars_indices = new HashMap<>();
+        sn = SN.get_instance();
     }
     
     /**
@@ -55,14 +59,19 @@ public class Variable_index_table { //used for assigning projections' indices fo
      * @param tran the transition that we want to search in its variables
      * @param var variable name that we want to get its index to create a projection
      * @param d the domain of transition (used before transition's creation)
+     * @param isFilter true if the variable is a filter's variable
      * @return the index available
      * @throws NullPointerException if variable or transition isn't found
      * @throws RuntimeException if this method can't assign an index
      * Note: +1 is added because that library wncalculus doesn't allow creating a projection with index 0 
      * Note: wncalculus doesn't allow creating projection index out of its colour-class's multiplicity in transition domain
      */
-    public int get_variable_index(String tran, String var, Domain d) throws NullPointerException, RuntimeException{
-        SN sn = SN.get_instance();        
+    public int get_variable_index(String tran, String var, Domain d, boolean isFilter) throws NullPointerException, RuntimeException{     
+
+        if(isFilter){
+            return this.get_filter_var_index(var, d);
+        }
+ 
         Variable v = sn.find_variable(var);   
 
         if(v != null){
@@ -104,17 +113,95 @@ public class Variable_index_table { //used for assigning projections' indices fo
                     }
                 }
             }
-            String cc_name = v.get_colourClass().name();
-                HashMap<String, HashMap<String, Integer>> cc_t_vars = this.t_reserved_cc_var_indices.get(tran);
-                HashMap<String, Integer> vars_indices = cc_t_vars.get(cc_name);
-                vars_indices.keySet().stream().forEach(
-                        vr -> System.out.println(vr + "," + vars_indices.get(vr) + "," + tran)
-                );
+//            String cc_name = v.get_colourClass().name();
+//                HashMap<String, HashMap<String, Integer>> cc_t_vars = this.t_reserved_cc_var_indices.get(tran);
+//                HashMap<String, Integer> vars_indices = cc_t_vars.get(cc_name);
+//                
+//                vars_indices.keySet().stream().forEach(
+//                        vr -> System.out.println(vr + "," + vars_indices.get(vr) + "," + tran)
+//                );
             throw new RuntimeException("Can't assign an index to : " + var + " around/in " + tran);
         }
         
         throw new NullPointerException("Can't find variable: " + var);
     }
+    
+    /**
+     * 
+     * @param var variable name that we want to get its index to create a projection
+     * @param d filter's domain
+     * @return the index generated/found
+     * @throws NullPointerException if couldn't find a variable with name as var/ if couldn't assign filter's variable index
+     */
+    public int get_filter_var_index(String var, Domain d) throws NullPointerException{
+
+        if(this.filters_vars_indices.containsKey(d)){
+            HashMap<String, Integer> f_d_vars= this.filters_vars_indices.get(d);
+            
+            if(f_d_vars.containsKey(var)){
+                return f_d_vars.get(var);
+            }
+            Variable v = sn.find_variable(var);
+            
+            if(v == null){
+                throw new NullPointerException("Can't find filter_variable: " + var);
+            }
+            
+            int mult = d.mult(v.get_colourClass());
+            for(var i = 1; i <= mult; i++){
+                
+                if(!f_d_vars.containsValue(mult)){
+                    f_d_vars.put(var, mult);
+                    this.filters_vars_indices.put(d, f_d_vars);
+                    return i;
+                }
+            }
+            
+        }else{
+            HashMap<String, Integer> map = new HashMap<>();
+            map.put(var, 1);
+            this.filters_vars_indices.put(d, map);
+            return 1;
+        }
+        
+        throw new NullPointerException("Can't assign filter variable index:" + var);
+    }
+    
+//    public String find_var_of_cc(String cc_name, Domain d){
+//        HashMap<String, Integer> vars_indices = this.filters_vars_indices.get(d);
+//         
+//        for(String var_name : vars_indices.keySet()){
+//            Variable v = sn.find_variable(var_name);
+//            
+//            if(v != null){
+//                if(v.get_colourClass().name().equals(cc_name)){
+//                    return var_name;
+//                }
+//            }
+//        }
+//         
+//        return null;
+//    }
+    
+    /**
+     * 
+     * @param index the index for which we search in reserved indices of transition
+     * @param t_name transition's name
+     * @param cc_name the name of colour class that we want to get its created variables around transition
+     * @return appropriate variable's name if found, null otherwise
+     */
+//    public String get_t_var_of_filter_v_index(int index, String t_name, String cc_name){
+//        HashMap<String, Integer> cc_vars_indices = this.t_reserved_cc_var_indices.get(t_name).get(cc_name);
+//        
+//        for(String var : cc_vars_indices.keySet()){
+//            
+//            if(cc_vars_indices.get(var) == index){
+//                return var;
+//            }
+//        }
+//        
+//        return null;
+//    }
             
     //successor_flag = 1 in case of ++, -1 in case of --, 0 otherwise
 //    private int generate_projection_index(String variable_name, int successor_flag){
