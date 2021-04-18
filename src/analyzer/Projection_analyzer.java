@@ -6,8 +6,10 @@
 package analyzer;
 
 import componenti.Variable_index_table;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import struttura_sn.SN;
 import struttura_sn.Variable;
 import test.Semantic_DataTester;
@@ -34,23 +36,60 @@ public class Projection_analyzer extends ElementAnalyzer{
      * 
      * @param proj projection's text that is found in the entered pnml file
      * @param transition_name the name of transition (that contains projection or with which an arc expression is connected that contains that projection)
+     * @param tuple_vars_names all variables in tuple (Not repeated in the same linear combination)
+     * @param d transition's domain that we use while analyzing projection index using Variable index table
      * @return the analysed projection
      * @throws NullPointerException if projection's text isn't matched by the matcher
      * @throws RuntimeException if the projection is a predecessor/successor and projection's colour class isn't circular/ordered
      */
-    public Projection analyze_projection_element(String proj, String transition_name, Domain d) throws NullPointerException, RuntimeException{
+    public Projection analyze_projection_element(String proj, String transition_name, ArrayList<String> tuple_vars_names, Domain d) throws NullPointerException, RuntimeException{
         Pattern p = Pattern.compile(str_rx_element);
         Matcher m = p.matcher(proj.replaceAll("\\s+", ""));
         Projection pro;
 
         if(m.find()){
-            Variable v = sn.find_variable(m.group(1));
-            String variable_name = v.get_name();
-            String circ_op = m.group(2);
+            String var_pro = m.group(1);
+            String circ_op = m.group(5);
+            //check filter's syntax if exists
+            p = Pattern.compile("[@]([_a-zA-Z0-9]*)[\\[](\\d+)[\\]]");
+            m = p.matcher(var_pro);
+            boolean isFilter = false;
+            //filter's syntax
+            if(m.find()){ 
+                isFilter = true;
+                var_pro = m.group(1);
+                String f_var_index = m.group(2);
+                
+                if(var_pro == null || var_pro.isEmpty()){ //@[i]               
+                    var_pro = tuple_vars_names.get(Integer.parseInt(f_var_index));
+                    
+                }else{ //@C || @C[i]     
+                    final String var_pro2 = var_pro;
+                    
+                    if(f_var_index == null || f_var_index.isEmpty()){ //@C
+                        
+                        var_pro = tuple_vars_names.stream().filter(
+                                var_name -> sn.find_variable(var_name).get_colourClass().getClass().getName().equals(var_pro2)
+                        ).findFirst().orElse("");
 
+                    }else{ //@C[i]
+                        tuple_vars_names = tuple_vars_names.stream().filter(
+                                var_name -> sn.find_variable(var_name).get_colourClass().getClass().getName().equals(var_pro2)
+                        ).collect(Collectors.toCollection(ArrayList::new));
+                        
+                        var_pro = tuple_vars_names.get(Integer.parseInt(f_var_index));
+                    }
+                }    
+            }
+            
+            Variable v = sn.find_variable(var_pro);
+            //if v == null, choose a variable
+            String variable_name = v.get_name();
+            int index = vit.get_variable_index(transition_name, variable_name, d, isFilter);
+            
             if(circ_op.equals("")){
                 //index = this.generate_projection_index(variable_name, 0);
-                pro = v.get_available_projection(vit.get_variable_index(transition_name, variable_name, d), 0);
+                pro = v.get_available_projection(index, 0);
 
             }else{
                 
@@ -61,7 +100,7 @@ public class Projection_analyzer extends ElementAnalyzer{
                         throw new RuntimeException("Trying to assign successor to variable: " + v.get_name() + ", while its colorclass isn't circular/ordered"); 
                     }
                     
-                    pro = v.get_available_projection(vit.get_variable_index(transition_name, variable_name, d), 1);
+                    pro = v.get_available_projection(index, 1);
 
                 }else if(circ_op.contains("--")){
                     //index = this.generate_projection_index(variable_name, -1);
@@ -70,7 +109,7 @@ public class Projection_analyzer extends ElementAnalyzer{
                         throw new RuntimeException("Trying to assign predecessor to variable: " + v.get_name() + ", while its colorclass isn't circular/ordered"); 
                     }
                                         
-                    pro = v.get_available_projection(vit.get_variable_index(transition_name, variable_name, d), 1);
+                    pro = v.get_available_projection(index, 1);
 
                 }else{
                     throw new NullPointerException("Can't find successor/predecessor in " + proj);

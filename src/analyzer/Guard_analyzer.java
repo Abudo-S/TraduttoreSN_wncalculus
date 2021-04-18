@@ -36,10 +36,11 @@ public class Guard_analyzer{
      * 
      * @param guard syntactic guard that will be analysed
      * @param transition_name the name of transition (that contains guard or with which an arc expression is connected that contains that guard)
+     * @param tuple_vars_names all variables in tuple (Not repeated in the same linear combination)
      * @param d the domain of transition (that contains guard or with which an arc expression is connected that contains that guard)
      * @return the analysed guard
      */
-    public Guard analyze_guard_of_predicates(Syntactic_guard guard, String transition_name,  Domain d){
+    public Guard analyze_guard_of_predicates(Syntactic_guard guard, String transition_name, ArrayList<String> tuple_vars_names, Domain d){
         Guard next_p = null, res = null; //for not analyzing predicates that were pre-analyzed after and/or operation
 
         if(guard != null){
@@ -55,17 +56,17 @@ public class Guard_analyzer{
             for(Syntactic_predicate predicate : separated_predicates.keySet()){
 
                 if(next_p == null){ //first cycle
-                    res = this.analyze_predicate(predicate, transition_name, d);
+                    res = this.analyze_predicate(predicate, transition_name, tuple_vars_names, d);
 
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), transition_name, d);
+                        next_p = this.analyze_predicate(it.next(), transition_name, tuple_vars_names, d);
                     }else{
                         break;
                     }                    
                 }else{
 
                     if(it.hasNext()){
-                        next_p = this.analyze_predicate(it.next(), transition_name, d);
+                        next_p = this.analyze_predicate(it.next(), transition_name, tuple_vars_names, d);
                     }else{
                         break;
                     }
@@ -91,7 +92,7 @@ public class Guard_analyzer{
      * @return the analysed guard of predicate 
      * @throws UnsupportedPredicateOperation if predicate's operation isn't (= | != |in |!in) & the predicate isn't of type True/False
      */
-    private Guard analyze_predicate(Syntactic_predicate synt_pr, String transition_name, Domain d) throws UnsupportedPredicateOperation{
+    private Guard analyze_predicate(Syntactic_predicate synt_pr, String transition_name, ArrayList<String> tuple_vars_names, Domain d) throws UnsupportedPredicateOperation{
         ArrayList<String> predicate_txt = synt_pr.get_predicate_elements();
         Guard g = null;
         
@@ -110,7 +111,7 @@ public class Guard_analyzer{
              //equality || membership
             }else{ //3 elements predicate -> projection, operation, projection/constant 
                 //1st element
-                Projection p1 = pa.analyze_projection_element(p_txt, transition_name, d);
+                Projection p1 = pa.analyze_projection_element(p_txt, transition_name, tuple_vars_names, d);
                 //2nd element
                 String operation = predicate_txt.get(1).replaceAll("\\s+","");
                 //3rd element
@@ -118,10 +119,10 @@ public class Guard_analyzer{
                 
                 switch (operation){
                     case "==":
-                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name, d), true, d);
+                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name, tuple_vars_names, d), true, d);
                         break;
                     case "!=":
-                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name, d), false, d);
+                        g = this.analyze_equality_guard(p1, pa.analyze_projection_element(op3, transition_name, tuple_vars_names, d), false, d);
                         break;
                     case "in":
                         g = this.analyze_membership_guard(p1, ca.analyze_constant_element(op3), true, d);
@@ -194,7 +195,6 @@ public class Guard_analyzer{
      * @return the analysed guard
      */ 
     private Guard analyze_membership_guard(Projection p1, Subcl constant, boolean operation, Domain d){
-        //Semantic_DataTester.get_instance().test_domain(String.valueOf(p1.getIndex()), d);
         return Membership.build(p1, constant, operation, d);
     }
     
