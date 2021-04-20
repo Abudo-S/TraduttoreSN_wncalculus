@@ -5,7 +5,7 @@
  */
 package writer;
 
-import eccezioni.UnsupportedELementdataException;
+import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -28,10 +28,10 @@ public class Arc_writer extends ElementWriter{
     /**
      * 
      * @param element_info ArrayList of element's data that will be added to pnml document
-     * @throws UnsupportedELementdataException if one of element_info internal data can't be transformed in pnml format
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
      */
     @Override
-    public void write_info(ArrayList<String> element_info) throws UnsupportedELementdataException{
+    public void write_info(ArrayList<String> element_info) throws UnsupportedElementdataException{
         Element arc = doc.createElement("place");
         doc.appendChild(arc);
                 
@@ -62,7 +62,7 @@ public class Arc_writer extends ElementWriter{
                             arc.appendChild(hlinscription);
                             break;
                         default:
-                            throw new UnsupportedELementdataException("Can't transform one of element data in pnml: " + single_datum);
+                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
         );

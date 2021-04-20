@@ -9,9 +9,9 @@ package eccezioni;
  *
  * @author dell
  */
-public class UnsupportedELementdataException extends RuntimeException{
+public class UnsupportedElementdataException extends RuntimeException{
     
-    public UnsupportedELementdataException(String message){
+    public UnsupportedElementdataException(String message){
         super(message);
     }
 }

@@ -5,7 +5,7 @@
  */
 package writer;
 
-import eccezioni.UnsupportedELementdataException;
+import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,9 +33,9 @@ public abstract class ElementWriter {
     /**
      * 
      * @param element_info ArrayList of element's data that will be added to pnml document
-     * @throws UnsupportedELementdataException if one of element_info internal data can't be transformed in pnml format
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
      */
-    public void write_info(ArrayList<String> element_info) throws UnsupportedELementdataException{}
+    public void write_info(ArrayList<String> element_info) throws UnsupportedElementdataException{}
     
     /**
      * 

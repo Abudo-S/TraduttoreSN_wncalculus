@@ -5,7 +5,7 @@
  */
 package writer;
 
-import eccezioni.UnsupportedELementdataException;
+import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -28,10 +28,10 @@ public class Transition_writer extends ElementWriter{
     /**
      * 
      * @param element_info ArrayList of element's data that will be added to pnml document
-     * @throws UnsupportedELementdataException if one of element_info internal data can't be transformed in pnml format
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
      */
     @Override
-    public void write_info(ArrayList<String> element_info) throws UnsupportedELementdataException{
+    public void write_info(ArrayList<String> element_info) throws UnsupportedElementdataException{
         Element transition = doc.createElement("place");
         doc.appendChild(transition);
                 
@@ -44,6 +44,12 @@ public class Transition_writer extends ElementWriter{
                             transition.setAttribute("id", single_datum);
                             transition.appendChild(name);
                             break; 
+                        
+                        case "condition":
+                            Element condition = doc.createElement(single_datum);
+                            condition.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                            transition.appendChild(condition);
+                            
                         case "graphics":
                             Element graphics = doc.createElement(single_datum);
                             Attr position = doc.createAttribute("position");
@@ -60,7 +66,7 @@ public class Transition_writer extends ElementWriter{
                             transition.appendChild(graphics);
                             break;
                         default:
-                            throw new UnsupportedELementdataException("Can't transform one of element data in pnml: " + single_datum);
+                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
         );
