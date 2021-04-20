@@ -102,11 +102,11 @@ public class Arc_scanner extends ElementScanner{
             for(String arc_expression : arc_expressions){
                 tuple_mult = 1;
                 //secure that filter's predicates with [i] won't be removed
-                p = Pattern.compile(".*@[\\[](\\d+)[\\]].*");
+                p = Pattern.compile(".*[@]([_a-zA-Z0-9]*)([\\[](\\d+)[\\]])?.*");
                 m = p.matcher(arc_expression);
 
                 if(m.find()){
-                    arc_expression = arc_expression.replaceAll("\\[(\\d+)\\]", "#^" + m.group(1) + "^#");
+                    arc_expression = arc_expression.replaceAll("\\[(\\d+)\\]", "#^" + m.group(3) + "^#");
                 }
                 //separate multiplied arc-tuple/function from its associated guard if exists 
                 arc_expression = arc_expression.replaceAll("\\s*[\\]]\\s*<\\s*", "#@#").replaceAll("\\s*>\\s*[\\[]\\s*", "#@#");

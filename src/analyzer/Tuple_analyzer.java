@@ -7,9 +7,7 @@ package analyzer;
 
 import componenti.Place_syntax_table;
 import componenti.Marking_tokens_table;
-import componenti.Variable_index_table;
 import eccezioni.UnsupportedLinearCombElement;
-import java.nio.charset.Charset;
 import test.Semantic_DataTester;
 import java.util.*;
 import java.util.regex.Matcher;

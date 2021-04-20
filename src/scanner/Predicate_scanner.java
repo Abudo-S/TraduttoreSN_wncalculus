@@ -18,8 +18,8 @@ public class Predicate_scanner{ //sub-element of Guard_scanner
     
     private static Predicate_scanner instance = null;
     
-    private static final String str_rx_predicate = "((\\s*[(]*\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]*[\\[]\\d+[\\]])([+]{2}|[-]{2})?)"
-                                                 + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]+[\\[]\\d*[\\]])"
+    private static final String str_rx_predicate = "((\\s*[(]*\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]*([\\[]\\d+[\\]])?)([+]{2}|[-]{2})?)"
+                                                 + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]+([\\[]\\d*[\\]])?)"
                                                  + "([+]{2}|[-]{2})?)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
     
     private static final String str_rx_inverter = "\\s*[\\[]\\s*[!]\\s*[(]*\\s*[_a-zA-Z0-9]*";
@@ -63,8 +63,8 @@ public class Predicate_scanner{ //sub-element of Guard_scanner
                 predicate_op.add("False");
             }else{
                 predicate_op.add(m.group(3)); //op1
-                predicate_op.add(m.group(6)); //operation
-                predicate_op.add(m.group(7)); //op2
+                predicate_op.add(m.group(7)); //operation
+                predicate_op.add(m.group(8)); //op2
             }
         }
         

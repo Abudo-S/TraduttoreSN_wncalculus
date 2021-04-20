@@ -278,7 +278,7 @@
 					<position x="297" y="50"/>
 				</graphics>
 				<hlinscription>
-					<text>&lt;x,All&gt; [@[1] !in R]</text>
+					<text>&lt;x,All&gt; [@Risorsa !in R]</text>
 					<structure>
 						<tuple><subterm><variable refvariable="x"/></subterm><subterm><variable refvariable="y1"/></subterm></tuple>
 					</structure>

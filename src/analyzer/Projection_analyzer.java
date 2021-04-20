@@ -7,6 +7,7 @@ package analyzer;
 
 import componenti.Variable_index_table;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,16 +50,16 @@ public class Projection_analyzer extends ElementAnalyzer{
 
         if(m.find()){
             String var_pro = m.group(1);
-            String circ_op = m.group(5);
+            String circ_op = m.group(6);
             //check filter's syntax if exists
-            p = Pattern.compile("[@]([_a-zA-Z0-9]*)[\\[](\\d+)[\\]]");
+            p = Pattern.compile("[@]([_a-zA-Z0-9]*)([\\[](\\d+)[\\]])?");
             m = p.matcher(var_pro);
             boolean isFilter = false;
             //filter's syntax
             if(m.find()){ 
                 isFilter = true;
                 var_pro = m.group(1);
-                String f_var_index = m.group(2);
+                String f_var_index = m.group(3);
                 
                 if(var_pro == null || var_pro.isEmpty()){ //@[i]               
                     var_pro = tuple_vars_names.get(Integer.parseInt(f_var_index));
@@ -69,12 +70,12 @@ public class Projection_analyzer extends ElementAnalyzer{
                     if(f_var_index == null || f_var_index.isEmpty()){ //@C
                         
                         var_pro = tuple_vars_names.stream().filter(
-                                var_name -> sn.find_variable(var_name).get_colourClass().getClass().getName().equals(var_pro2)
+                                var_name -> sn.find_variable(var_name).get_colourClass().name().equals(var_pro2)
                         ).findFirst().orElse("");
 
                     }else{ //@C[i]
                         tuple_vars_names = tuple_vars_names.stream().filter(
-                                var_name -> sn.find_variable(var_name).get_colourClass().getClass().getName().equals(var_pro2)
+                                var_name -> sn.find_variable(var_name).get_colourClass().name().equals(var_pro2)
                         ).collect(Collectors.toCollection(ArrayList::new));
                         
                         var_pro = tuple_vars_names.get(Integer.parseInt(f_var_index));
@@ -83,6 +84,7 @@ public class Projection_analyzer extends ElementAnalyzer{
             }
             
             Variable v = sn.find_variable(var_pro);
+            //System.out.println(proj + "," + var_pro);
             //if v == null, choose a variable
             String variable_name = v.get_name();
             int index = vit.get_variable_index(transition_name, variable_name, d, isFilter);

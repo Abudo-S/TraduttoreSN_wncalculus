@@ -21,8 +21,8 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
             
     private static final String str_rx_guard = Guard_scanner.str_rx_predicate + "((\\s*([&]{2}|[|]{2}))*" + Guard_scanner.str_rx_predicate + ")*"; 
     
-    private static final String str_rx_predicate = "((\\s*[(]*\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]*[\\[]\\d+[\\]])([+]{2}|[-]{2})?)"
-                                                 + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]*[\\[]\\d+[\\]])"
+    private static final String str_rx_predicate = "((\\s*[(]*\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]*([\\[]\\d+[\\]])?)([+]{2}|[-]{2})?)"
+                                                 + "\\s*(<=|>=|<|>|==|!\\s*=|\\s+in\\s+|\\s*!\\s*in\\s+)\\s*(([_a-zA-Z]+[_a-zA-Z0-9]*|[@][_a-zA-Z0-9]+([\\[]\\d*[\\]])?)"
                                                  + "([+]{2}|[-]{2})?)\\s*[)]*\\s*)|\\s*[(]*\\s*(True|False)[)]*\\s*)";
     
     private static final String str_rx_inverter = "\\s*[\\[]\\s*[!]\\s*[(]*\\s*[_a-zA-Z0-9]*";
@@ -86,7 +86,6 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
      */
     private LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> get_guard_map(String Guard) throws RuntimeException{ //map of (not-)inverted predicates with their separators
         LinkedHashMap<HashMap<ArrayList<String>, Boolean> ,String> guard = new LinkedHashMap<>();
-
         try{
             //(inverted)predicates with their separators
             Pattern p = Pattern.compile(str_rx_guard);
@@ -130,7 +129,7 @@ public class Guard_scanner{ //sub-element of Transition_scanner/Arc_scanner
         }catch(Exception e){
             System.out.println(e + " in Guard_scanner/get_guard_map()");
         }    
-
+        
         return guard;
     }
     
