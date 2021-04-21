@@ -59,7 +59,7 @@ public class XMLWriter {
         this.tw = Transition_writer.get_instance(this.doc);
         this.aw = Arc_writer.get_instance(this.doc);
         this.ccw = new ColourClass_writer();
-        this.vw = new Variable_writer();
+        this.vw = Variable_writer.get_instance(this.doc);
         this.dw = Domain_writer.get_instance(this.doc);
     }
     

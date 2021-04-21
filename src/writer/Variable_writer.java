@@ -16,6 +16,12 @@ import org.w3c.dom.Element;
  */
 //singleton
 public class Variable_writer extends ElementWriter{
+    //single instance
+    private static Variable_writer instance = null;
+    
+    private Variable_writer(Document doc){
+        super(doc);
+    }
 
     /**
      * 
@@ -25,5 +31,17 @@ public class Variable_writer extends ElementWriter{
      */
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{}
+    
+    /**
+     * 
+     * @return single static instance
+     */
+    public static Variable_writer get_instance(Document doc){
 
+        if(instance == null){
+            instance = new Variable_writer(doc);
+        }
+        
+        return instance;
+    }
 }
