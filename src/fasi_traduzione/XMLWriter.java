@@ -127,6 +127,7 @@ public class XMLWriter {
         net.appendChild(declaration);
         net.appendChild(page);
         pnml.appendChild(net);
+        this.doc.appendChild(pnml);
         
         //transform in xml file
         TransformerFactory tf = TransformerFactory.newInstance();

@@ -34,7 +34,6 @@ public class Arc_writer extends ElementWriter{
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
         Element arc = doc.createElement("place");
-        doc.appendChild(arc);
                 
         element_info.stream().forEach(
                 single_datum -> {

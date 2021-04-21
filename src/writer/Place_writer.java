@@ -33,7 +33,6 @@ public class Place_writer extends ElementWriter{
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
         Element place = doc.createElement("place");
-        doc.appendChild(place);
                 
         element_info.stream().forEach(
                 single_datum -> {

@@ -7,6 +7,7 @@ package writer;
 
 import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,7 +31,30 @@ public class Variable_writer extends ElementWriter{
      * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
      */
     @Override
-    public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{}
+    public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
+        Element variable = doc.createElement("place");
+                
+        element_info.stream().forEach(
+                single_datum -> {
+                    
+                    switch(single_datum){
+                        case "id": //name
+                            variable.setAttribute("id", single_datum);
+                            variable.setAttribute("name", single_datum);
+                            break; 
+                        
+                        case "usersort":
+                            Element usersort = doc.createElement("position");
+                            usersort.setAttribute("declaration", single_datum);
+                            variable.appendChild(usersort);
+
+                        default:
+                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                    }
+                }
+        );
+        parent.appendChild(variable);
+    }
     
     /**
      * 
