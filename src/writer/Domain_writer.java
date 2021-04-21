@@ -16,6 +16,12 @@ import org.w3c.dom.Element;
  */
 //singleton
 public class Domain_writer extends ElementWriter{
+    //single instance
+    private static Domain_writer instance = null;
+    
+    private Domain_writer(Document doc){
+        super(doc);
+    }
 
     /**
      * 
@@ -26,5 +32,16 @@ public class Domain_writer extends ElementWriter{
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{}
     
+    /**
+     * 
+     * @return single static instance
+     */
+    public static Domain_writer get_instance(Document doc){
 
+        if(instance == null){
+            instance = new Domain_writer(doc);
+        }
+        
+        return instance;
+    }
 }
