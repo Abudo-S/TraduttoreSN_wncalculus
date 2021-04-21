@@ -37,27 +37,24 @@ public class Domain_writer extends ElementWriter{
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    switch(single_datum){
-                        case "id": //name
-                            variable.setAttribute("id", single_datum);
-                            variable.setAttribute("name", single_datum);
-                            break; 
-                        
-                        case "productsort":
-                            Element productsort = doc.createElement("productsort");
-                            String[] usersorts = this.separate_usable_ccs(this.seperate_usable_value(single_datum));
-                            
-                            Arrays.stream(usersorts).forEach(
-                                    usersort -> {
-                                        Element cc = doc.createElement("usersort");
-                                        cc.setAttribute("declaration", usersort);
-                                        productsort.appendChild(cc);
-                                    }
-                            );
-                            variable.appendChild(productsort);
+                    if(single_datum.contains("id")){ //name
+                        variable.setAttribute("id", single_datum);
+                        variable.setAttribute("name", single_datum);
+                    }else if(single_datum.contains("productsort")){
+                        Element productsort = doc.createElement("productsort");
+                        String[] usersorts = this.separate_usable_ccs(this.seperate_usable_value(single_datum));
 
-                        default:
-                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                        Arrays.stream(usersorts).forEach(
+                                usersort -> {
+                                    Element cc = doc.createElement("usersort");
+                                    cc.setAttribute("declaration", usersort);
+                                    productsort.appendChild(cc);
+                                }
+                        );
+                        variable.appendChild(productsort);
+
+                    }else{
+                        throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
         );
