@@ -28,14 +28,16 @@ public class Transition_writer extends ElementWriter{
     /**
      * 
      * @param element_info ArrayList of element's data that will be added to pnml document
+     * @param parent the element to which data will be added
      * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
      */
     @Override
-    public void write_info(ArrayList<String> element_info) throws UnsupportedElementdataException{
+    public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
         Element transition = doc.createElement("place");
         doc.appendChild(transition);
                 
-        element_info.stream().forEach(single_datum -> {
+        element_info.stream().forEach(
+                single_datum -> {
                     
                     switch(single_datum){
                         case "id": //name
@@ -70,6 +72,7 @@ public class Transition_writer extends ElementWriter{
                     }
                 }
         );
+        parent.appendChild(transition);
     }
     
     /**

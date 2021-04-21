@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -33,9 +34,10 @@ public abstract class ElementWriter {
     /**
      * 
      * @param element_info ArrayList of element's data that will be added to pnml document
+     * @param parent the element to which data will be added
      * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
      */
-    public void write_info(ArrayList<String> element_info) throws UnsupportedElementdataException{}
+    public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{}
     
     /**
      * 
