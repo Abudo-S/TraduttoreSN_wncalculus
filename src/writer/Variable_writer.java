@@ -32,24 +32,21 @@ public class Variable_writer extends ElementWriter{
      */
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
-        Element variable = doc.createElement("place");
+        Element variable = doc.createElement("variabledecl");
                 
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    switch(single_datum){
-                        case "id": //name
-                            variable.setAttribute("id", single_datum);
-                            variable.setAttribute("name", single_datum);
-                            break; 
-                        
-                        case "usersort":
-                            Element usersort = doc.createElement("position");
-                            usersort.setAttribute("declaration", single_datum);
-                            variable.appendChild(usersort);
-
-                        default:
-                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                    if(single_datum.contains("id")){ //name
+                        String datum = this.seperate_usable_value(single_datum);
+                        variable.setAttribute("id", datum);
+                        variable.setAttribute("name", datum);
+                    }else if(single_datum.contains("usersort")){
+                        Element usersort = doc.createElement("position");
+                        usersort.setAttribute("declaration", single_datum);
+                        variable.appendChild(usersort);
+                    }else{
+                        throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
         );

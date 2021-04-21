@@ -37,39 +37,37 @@ public class Place_writer extends ElementWriter{
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    switch(single_datum){
-                        case "id": //name
-                            Element name = doc.createElement(single_datum);
-                            name.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
-                            place.setAttribute("id", single_datum);
-                            place.appendChild(name);
-                            break;
-                        case "type":
-                            Element type = doc.createElement(single_datum);
-                            type.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
-                            place.appendChild(type);
-                            break;
-                        case "hlinitialMarking": //might use Marking_writer
-                            Element hlinitialMarking = doc.createElement(single_datum);
-                            hlinitialMarking.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
-                            break; 
-                        case "graphics":
-                            Element graphics = doc.createElement(single_datum);
-                            Attr position = doc.createAttribute("position");
-                            String[] xy = this.separate_usable_x_y(single_datum);
-                            position.setUserData("x", xy[0] , null);
-                            position.setUserData("y", xy[1] , null);
-                            graphics.setAttributeNode(position);
-                            /*another solution
-//                            Element position = doc.createElement("position");
-//                            position.setAttribute("x", xy[0]);
-//                            position.setAttribute("y", xy[1]);
-//                            graphics.appendChild(position);
-                            */
-                            place.appendChild(graphics);
-                            break;
-                        default:
-                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                    if(single_datum.contains("id@=")){ //name
+                        String datum = this.seperate_usable_value(single_datum);
+                        Element name = doc.createElement("id");
+                        name.appendChild(doc.createTextNode(datum));
+                        place.setAttribute("id", datum);
+                        place.appendChild(name);
+                    }else if(single_datum.contains("type@=")){
+                        Element type = doc.createElement("type");
+                        type.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        place.appendChild(type);
+                    }
+                    else if(single_datum.contains("hlinitialMarking")){ //might use Marking_writer
+                        Element hlinitialMarking = doc.createElement("hlinitialMarking");
+                        hlinitialMarking.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                    }
+                    else if(single_datum.contains("graphics")){
+                        Element graphics = doc.createElement("graphics");
+                        Attr position = doc.createAttribute("position");
+                        String[] xy = this.separate_usable_x_y(single_datum);
+                        position.setUserData("x", xy[0] , null);
+                        position.setUserData("y", xy[1] , null);
+                        graphics.setAttributeNode(position);
+                        /*another solution
+    //                            Element position = doc.createElement("position");
+    //                            position.setAttribute("x", xy[0]);
+    //                            position.setAttribute("y", xy[1]);
+    //                            graphics.appendChild(position);
+                        */
+                        place.appendChild(graphics);
+                    }else{
+                        throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
         );

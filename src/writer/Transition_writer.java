@@ -33,42 +33,38 @@ public class Transition_writer extends ElementWriter{
      */
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
-        Element transition = doc.createElement("place");
+        Element transition = doc.createElement("transition");
         doc.appendChild(transition);
                 
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    switch(single_datum){
-                        case "id": //name
-                            Element name = doc.createElement(single_datum);
-                            name.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
-                            transition.setAttribute("id", single_datum);
-                            transition.appendChild(name);
-                            break; 
-                        
-                        case "condition":
-                            Element condition = doc.createElement(single_datum);
-                            condition.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
-                            transition.appendChild(condition);
-                            
-                        case "graphics":
-                            Element graphics = doc.createElement(single_datum);
-                            Attr position = doc.createAttribute("position");
-                            String[] xy = this.separate_usable_x_y(single_datum);
-                            position.setUserData("x", xy[0] , null);
-                            position.setUserData("y", xy[1] , null);
-                            graphics.setAttributeNode(position);
-                            /*another solution
+                    if(single_datum.contains("id")){ //name
+                        String datum = this.seperate_usable_value(single_datum);
+                        Element name = doc.createElement("id");
+                        name.appendChild(doc.createTextNode(datum));
+                        transition.setAttribute("id", datum);
+                        transition.appendChild(name);
+                    }else if(single_datum.contains("condition")){
+                        Element condition = doc.createElement("condition");
+                        condition.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        transition.appendChild(condition);
+                    }else if(single_datum.contains("graphics")){
+                        Element graphics = doc.createElement("graphics");
+                        Attr position = doc.createAttribute("position");
+                        String[] xy = this.separate_usable_x_y(single_datum);
+                        position.setUserData("x", xy[0] , null);
+                        position.setUserData("y", xy[1] , null);
+                        graphics.setAttributeNode(position);
+                        /*another solution
 //                            Element position = doc.createElement("position");
 //                            position.setAttribute("x", xy[0]);
 //                            position.setAttribute("y", xy[1]);
 //                            graphics.appendChild(position);
-                            */
-                            transition.appendChild(graphics);
-                            break;
-                        default:
-                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                        */
+                        transition.appendChild(graphics);
+                    }else{
+                        throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
         );

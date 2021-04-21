@@ -33,37 +33,31 @@ public class Arc_writer extends ElementWriter{
      */
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
-        Element arc = doc.createElement("place");
+        Element arc = doc.createElement("arc");
                 
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    switch(single_datum){
-                        case "id":
-                            arc.setAttribute("id", single_datum);
-                            break;
-                        case "source":
-                            arc.setAttribute("source",this.seperate_usable_value(single_datum));
-                            break;
-                        case "target":
-                            arc.setAttribute("target",this.seperate_usable_value(single_datum));
-                            break;
-                        case "type": //inhibitor/transiting arc
-                            String arc_type = this.seperate_usable_value(single_datum);
-                            
-                            if(arc_type.equals("inhibitor")){
-                                Attr type = doc.createAttribute("type");
-                                type.setValue("inhibitor");
-                                arc.setAttributeNode(type);
-                            }
-                            break;
-                        case "hlinscription":
-                            Element hlinscription = doc.createElement("hlinscription");
-                            hlinscription.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
-                            arc.appendChild(hlinscription);
-                            break;
-                        default:
-                            throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                    if(single_datum.contains("id")){
+                        arc.setAttribute("id", this.seperate_usable_value(single_datum));
+                    }else if(single_datum.contains("source")){
+                        arc.setAttribute("source",this.seperate_usable_value(single_datum));
+                    }else if(single_datum.contains("target")){
+                        arc.setAttribute("target",this.seperate_usable_value(single_datum));
+                    }else if(single_datum.contains("type")){ //inhibitor/transiting arc
+                        String arc_type = this.seperate_usable_value(single_datum);
+
+                        if(arc_type.equals("inhibitor")){
+                            Attr type = doc.createAttribute("type");
+                            type.setValue("inhibitor");
+                            arc.setAttributeNode(type);
+                        }
+                    }else if(single_datum.contains("hlinscription")){
+                        Element hlinscription = doc.createElement("hlinscription");
+                        hlinscription.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        arc.appendChild(hlinscription);
+                    }else{
+                        throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
         );

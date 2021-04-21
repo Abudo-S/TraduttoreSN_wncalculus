@@ -84,4 +84,9 @@ public abstract class ElementWriter {
         
         return xy;
     }
+    
+    protected String[] separate_usable_ccs(String single_datum){
+        String[] ccs = single_datum.split(",");
+        return ccs;
+    }
 }
