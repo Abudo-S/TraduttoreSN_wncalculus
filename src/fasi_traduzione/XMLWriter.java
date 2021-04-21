@@ -32,9 +32,10 @@ public class XMLWriter {
     private final Place_writer pw;
     private final Transition_writer tw;
     private final Arc_writer aw;
-    private final ColourClass_writer ccw;
-    private final Variable_writer vw;
-    private final Domain_writer dw;
+//    private final ColourClass_writer ccw;
+//    private final Variable_writer vw;
+//    private final Domain_writer dw;
+    private static Element declaration;
     //single instance
     private static XMLWriter instance = null;
     
@@ -58,9 +59,9 @@ public class XMLWriter {
         this.pw = Place_writer.get_instance(this.doc);
         this.tw = Transition_writer.get_instance(this.doc);
         this.aw = Arc_writer.get_instance(this.doc);
-        this.ccw = ColourClass_writer.get_instance(this.doc);
-        this.vw = Variable_writer.get_instance(this.doc);
-        this.dw = Domain_writer.get_instance(this.doc);
+//        this.ccw = ColourClass_writer.get_instance(this.doc);
+//        this.vw = Variable_writer.get_instance(this.doc);
+//        this.dw = Domain_writer.get_instance(this.doc);
     }
     
     /**
@@ -87,28 +88,28 @@ public class XMLWriter {
         net.appendChild(net_name);
         
         //create declarations
-        Element declaration = this.doc.createElement("declaration");
-        Element structure = this.doc.createElement("structure");
-        Element declarations = this.doc.createElement("declarations");
-        
-        this.ccw.get_element_data().stream().forEach(
-                cc_data -> this.ccw.write_info(cc_data, declarations)
-        );
-        
-        this.dw.get_element_data().stream().forEach(
-                domain_data -> this.dw.write_info(domain_data, declarations)
-        );
-        
-        this.vw.get_element_data().stream().forEach(
-                var_data -> this.vw.write_info(var_data, declarations)
-        );
-        
-        structure.appendChild(declarations);
-        declaration.appendChild(structure);
-        
-        this.ccw.get_element_data().stream().forEach(
-                cc_data -> this.ccw.write_info(cc_data, declarations)
-        );
+//        Element declaration = this.doc.createElement("declaration");
+//        Element structure = this.doc.createElement("structure");
+//        Element declarations = this.doc.createElement("declarations");
+//        
+//        this.ccw.get_element_data().stream().forEach(
+//                cc_data -> this.ccw.write_info(cc_data, declarations)
+//        );
+//        
+//        this.dw.get_element_data().stream().forEach(
+//                domain_data -> this.dw.write_info(domain_data, declarations)
+//        );
+//        
+//        this.vw.get_element_data().stream().forEach(
+//                var_data -> this.vw.write_info(var_data, declarations)
+//        );
+//        
+//        structure.appendChild(declarations);
+//        declaration.appendChild(structure);
+//        
+//        this.ccw.get_element_data().stream().forEach(
+//                cc_data -> this.ccw.write_info(cc_data, declarations)
+//        );
         
         //create components
         Element page = this.doc.createElement("page");
@@ -137,6 +138,13 @@ public class XMLWriter {
         transformer.transform(domsr, streamResult);
     }
     
+    /**
+     * 
+     * @param net_decl set unmodified net declarations
+     */
+    public void set_net_declaration(Element net_decl){
+        declaration = net_decl;   
+    }
     /**
      * delegator
      * @param element_info ArrayList of all element data that's ready to be added

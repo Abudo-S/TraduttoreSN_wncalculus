@@ -149,7 +149,7 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
             throw new RuntimeException("Calling Token_estimator/estimate_tokens() for an unbounded interval" + inter.name() + ", " + cc.name());
         }
         
-        String prefix = cc.name() + "_ct";
+        String prefix = cc.name().toLowerCase();
         if(!tokens.isEmpty()){
             prefix = this.find_token_prefix(tokens.get(0).get_Token_value(), inter);
         }

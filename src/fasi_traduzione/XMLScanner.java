@@ -72,14 +72,24 @@ public class XMLScanner {
     
     /**
      * scan all files data in order
+     * @throws java.lang.Exception
      */
-    public void scan_file_data(){
+    public void scan_file_data() throws Exception{
         this.scan_color_classes();
         this.scan_domains();
         this.scan_variables();
         this.scan_places();
         this.scan_transitions();
         this.scan_arcs();
+        
+        //pass net declarations without modifications
+        Node decl = this.doc.getElementsByTagName("declaration").item(0);
+        
+        if(decl.getNodeType() == Node.ELEMENT_NODE){
+            Element net_decl = (Element) decl;
+            XMLWriter.get_instance(this.file_address).set_net_declaration(net_decl);
+        }
+        
     }
     
     /**
