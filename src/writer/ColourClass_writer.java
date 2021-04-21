@@ -16,9 +16,32 @@ import org.w3c.dom.Element;
  */
 //singleton
 public class ColourClass_writer extends ElementWriter{
+    //single instance
+    private static ColourClass_writer instance = null;
     
+    private ColourClass_writer(Document doc){
+        super(doc);
+    }
+
+    /**
+     * 
+     * @param element_info ArrayList of element's data that will be added to pnml document
+     * @param parent the element to which data will be added
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
+     */
     @Override
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{}
     
+    /**
+     * 
+     * @return single static instance
+     */
+    public static ColourClass_writer get_instance(Document doc){
 
+        if(instance == null){
+            instance = new ColourClass_writer(doc);
+        }
+        
+        return instance;
+    }
 }
