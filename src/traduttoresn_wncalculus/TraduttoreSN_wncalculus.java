@@ -6,9 +6,7 @@
 package traduttoresn_wncalculus;
 
 import componenti.Token_estimator;
-import fasi_traduzione.DataParser;
-import fasi_traduzione.XMLScanner;
-import fasi_traduzione.SemanticAnalyzer;
+import fasi_traduzione.*;
 import eccezioni.UnsupportedFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +39,7 @@ public class TraduttoreSN_wncalculus {
         //Semantic_DataTester.get_instance().print_all_proj_indices();
         SN_DataTester sn_dt = SN_DataTester.get_instance(); //for data testing
         //sn_dt.SN_all_data();
-        sn_dt.print_nodes_connections();
+        //sn_dt.print_nodes_connections();
         
         //estimate all colorclasses tokens
         Token_estimator te = Token_estimator.get_instance();
@@ -68,6 +66,9 @@ public class TraduttoreSN_wncalculus {
                     );
                 }
         );
+        
+        PartialGenerator pg = PartialGenerator.get_instance();
+        pg.unfold_multiplied_cc(SN.get_instance().get_C().get(1), 0, 0);
         
     }
     
