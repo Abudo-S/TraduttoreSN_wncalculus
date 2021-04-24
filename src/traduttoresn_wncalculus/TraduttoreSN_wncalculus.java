@@ -66,9 +66,10 @@ public class TraduttoreSN_wncalculus {
                     );
                 }
         );
-        
+        //test
+        System.out.println("----------------");
         PartialGenerator pg = PartialGenerator.get_instance();
-        pg.unfold_multiplied_cc(SN.get_instance().get_C().get(1), 0, 0);
+        pg.unfold_multiplied_cc(SN.get_instance().get_C().get(2), 3, "Risorsa");
         
     }
     
