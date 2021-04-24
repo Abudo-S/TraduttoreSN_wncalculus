@@ -46,8 +46,20 @@ public class PartialGenerator {
      * @return HashMap of all colour classes with their combinations present in colour domain cd on which cartesian product will be applied
      */
     public HashMap<String, ArrayList<String>> unfold_colordomain(HashMap<ColorClass, Integer> multiplied_cc, String cd_name){ //prodotto di C_i^ei per i=1..n
-        //to be completed
-        return null;
+        
+        if(this.cd_possible_combs.containsKey(cd_name)){
+            return this.cd_possible_combs.get(cd_name);
+        }
+        
+        HashMap<String, ArrayList<String>> cd_base_filters = new HashMap<>();
+        
+        multiplied_cc.keySet().stream().forEach(
+                cc -> {
+                    cd_base_filters.put(cc.name(), this.unfold_multiplied_cc(cc, multiplied_cc.get(cc), cd_name));
+                }
+        );
+        
+        return cd_base_filters;
     }
     
     /**
