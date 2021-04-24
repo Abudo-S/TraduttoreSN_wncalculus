@@ -156,7 +156,39 @@ public class PartialGenerator {
     
     public ArrayList<String> find_cc_base_filters(ColorClass cc, ArrayList<String> cc_possible_combs){ //uses colour class possilbe combinations
         ArrayList<String> base_filters = new ArrayList<>();
-        //to be completed
+        Interval[] subs = cc.getConstraints();
+        
+        cc_possible_combs.stream().forEach(
+                possible_comb -> {      
+                    String base_filter = "";
+                    int[] subcc_repetitions = new int[subs.length];
+                    
+                    for(var i = 0; i < possible_comb.length(); i++){
+                        char c = possible_comb.charAt(i);
+                        int N = 0, subcc_index = Integer.parseInt(String.valueOf(c)) - 1;
+                        //generate base filter predicate
+                        base_filter += "@" + cc.name() + "[" + i +"] in " + subs[subcc_index].name(); 
+                        
+                        if(i != possible_comb.length() -1){ //add "and" operation 
+                            base_filter += " and ";
+                        }
+                        
+                        if(subcc_repetitions[subcc_index] == 0){ //check if subclass hasn't already been calculated before
+                            //calculate N repetitions of a certain subclass in possible combination
+                            for(var j = i; j < possible_comb.length(); j++){
+
+                                if(possible_comb.charAt(i) == possible_comb.charAt(j)){
+                                    N++;
+                                }
+                            }
+                            subcc_repetitions[subcc_index] = N;
+                            this.unfold_sub_cc(subs[subcc_index], N, cc.name());
+                        }
+                    }
+                    
+                    base_filters.add(base_filter);
+                }
+        );
         
         return base_filters;
     }
