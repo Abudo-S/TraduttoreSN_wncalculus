@@ -208,8 +208,8 @@ public class PartialGenerator {
                                 all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters2, place_name1)); 
                             }
                         }else{
-                            //System.out.println(place_name2);
-                            all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters2, cc2_name));  
+                            System.out.println(place_name2);
+                            all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters2, place_name2));  
                         }
                     }
                 }else{
@@ -253,7 +253,7 @@ public class PartialGenerator {
                 }
             );
         }else{
-            //System.out.println(place_name + p2_name);
+            System.out.println(place_name + p2_name);
             p_filters.forEach(
                 p_filter -> {
                         all_places_combs_filter.put(place_name + p2_name, new ArrayList<>(List.of(place_filter + " and " + p_filter)));
