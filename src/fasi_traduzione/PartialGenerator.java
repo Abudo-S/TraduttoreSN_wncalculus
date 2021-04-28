@@ -22,7 +22,7 @@ import wncalculus.expr.Sort;
 //will be a part of factory pattern with (struttura_unfolding_parziale)/XMLWriter
 public class PartialGenerator {
     //usable maps to prevent redundant calculations/combinations of colour classes of a colour domain cd
-    private HashMap<String, HashMap<String, ArrayList<String>>> cd_all_places_filters; //contains pre-calculated cd's unfolded places names and their corresponding filters
+    private HashMap<String, HashMap<String, String>> cd_all_places_filters; //contains pre-calculated cd's unfolded places names and their corresponding filters
     private HashMap<String, HashMap<String, ArrayList<String>>> cd_possible_combs; //es. colour-domain name ->{colour-class name -> 11, 12, ...}
     private HashMap<String, HashMap<Integer, ArrayList<String>>> cc_base_filters; //base filters of a colour class that follows ei multiplicity
     private HashMap<String, HashMap<Integer, ArrayList<String>>> subcc_predicates; //predicates of each subcc for 1 <= n <= ei, Note: each filter's predicates are in the same list
@@ -54,11 +54,12 @@ public class PartialGenerator {
 //                    //write arc
 //                }
 //        );
-       HashMap<String, ArrayList<String>> all_places_combs_filter = this.unfold_place(sn.get_P().get(0));
+
+       HashMap<String, String> all_places_combs_filter = this.unfold_place(sn.get_P().get(0));
 
        all_places_combs_filter.keySet().stream().forEach(
                 p -> {
-                    System.out.println(p + "," + Arrays.toString(all_places_combs_filter.get(p).toArray()));
+                    System.out.println(p + "," + all_places_combs_filter.get(p));
                 }
         );
     }
@@ -68,13 +69,13 @@ public class PartialGenerator {
      * @param p the place that we want to fold
      * @return HashMap of all places names and their corresponding filters
      */
-    private HashMap<String, ArrayList<String>> unfold_place(Place p){
+    private HashMap<String, String> unfold_place(Place p){
         //apply cartesian product on cd colour classes combinations & name resulting places with colour class name + combination, colour class name + combination ... (following cartesian product combinations)
         Domain d = p.get_node_domain(); //cd
         String cd_name = d.name();
         //contains the results of cartesian product between cd_base_filters (of each colour class) and subclasses of cd elements from (subcc_predicates) 
         //in case of certain possible combinations (possible_combs) with N > 1 subclass repetitions
-        HashMap<String, ArrayList<String>> all_places_combs_filter = new HashMap<>();
+        HashMap<String, String> all_places_combs_filter = new HashMap<>();
             
         if(this.cd_all_places_filters.containsKey(cd_name)){
             all_places_combs_filter = this.cd_all_places_filters.get(cd_name);
@@ -131,11 +132,7 @@ public class PartialGenerator {
             Iterator it1 = cd_combined_filters.keySet().iterator(), it2 = cd_combined_filters.keySet().iterator();
             
             if(it1.hasNext()){
-                            
-                if(it2.hasNext()){
-                    it2.next();
-                }
-                all_places_combs_filter = this.apply_cc_filters_cp(cd_combined_filters, it1, it2);
+                all_places_combs_filter = this.apply_cc_filters_cp(cd_combined_filters, it1);
             }
             
             //reserve calculated & unfolded places to use later if we face another place with the same cd name
@@ -146,24 +143,14 @@ public class PartialGenerator {
     
     /**
      * 
-     * @param cd_combined_filters
-     * @param it1
-     * @param it2
-     * @param all_places_combs_filter
-     * @return 
+     * @param cd_combined_filters HashMap of all cd's colour classes combined filters of a possible combination
+     * @param it1 iterator of colour class first key element (starts with the head of keys)
+     * @return HashMap all generated places names with their corrisponding filters
      */
-    private HashMap<String, ArrayList<String>> apply_cc_filters_cp(HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters,
-                                                                   Iterator it1, Iterator it2){    
-        HashMap<String, ArrayList<String>> all_places_combs_filter = new HashMap<>();
-        String cc_name = (String)it1.next(), place_name, cc2_name = "";
-        HashMap<String, ArrayList<String>> cc_internal_combs_filters = cd_combined_filters.get(cc_name);
-
-        if(it2.hasNext()){
-            cc2_name = (String) it2.next();
-        }else{
-            it2 = null;
-        }         
-        
+    private HashMap<String, String> apply_cc_filters_cp(HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters, Iterator it1){    
+        HashMap<String, String> all_places_combs_filter = new HashMap<>();
+        String cc_name = (String)it1.next(), place_name;
+        HashMap<String, ArrayList<String>> cc_internal_combs_filters = cd_combined_filters.get(cc_name);               
 //        cd_combined_filters.keySet().stream().forEach(
 //                cc -> {
 //                    System.out.println(cc + "------");
@@ -176,92 +163,60 @@ public class PartialGenerator {
 //                    );
 //                }
 //        );
+        //subplace_name and its corresponding filter
+        HashMap<String, String> pre_calculated_subtree = new HashMap<>(); //used to be assigned to a filter instead of calculating all its subtree cartesian product again 
         
         for(String possible_comb : cc_internal_combs_filters.keySet()){
             place_name = cc_name + possible_comb;
             ArrayList<String> filters = cc_internal_combs_filters.get(possible_comb);
-
             //System.out.println(possible_comb + "," + Arrays.toString(filters.toArray()));
+            if(pre_calculated_subtree.isEmpty()){
+                pre_calculated_subtree = this.calculate_all_places_c_f(cd_combined_filters, it1);   
+            }
+            //System.out.println(place_name + "," + pre_calculated_subtree.toString());
+            
             if(filters.size() > 1){
                 String place_name1;
 
                 for(var i = 0; i < filters.size(); i++){
-                    place_name1 = place_name + "_" + String.valueOf(i+1);  
-                    String place_filter = filters.get(i);
-                    all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2,  place_name1, place_filter, filters, ""));
-                }
-            }else{
-                
-                if(!cc2_name.equals("")){
-                    HashMap<String, ArrayList<String>> cc2_internal_combs_filters = cd_combined_filters.get(cc2_name);
-                    String place_name2;
+                    place_name1 = place_name + "_" + String.valueOf(i+1);
                     
-                    for(String possible_comb2 : cc2_internal_combs_filters.keySet()){
-                        place_name2 = cc2_name + possible_comb2;
-                        ArrayList<String> filters2 = cc2_internal_combs_filters.get(possible_comb2);
-
-                        if(filters2.size() > 1){
-                            String place_name1;
-                            
-                            for(var i = 0; i < filters.size(); i++){
-                                place_name1 = place_name2 + "_" + String.valueOf(i+1);  
-                                all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters2, place_name1)); 
-                            }
-                        }else{
-                            System.out.println(place_name2);
-                            all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters2, place_name2));  
+                    if(pre_calculated_subtree.keySet().isEmpty()){
+                        all_places_combs_filter.put(place_name1, filters.get(i));
+                    }else{
+                        for(String sub_p_name : pre_calculated_subtree.keySet()){
+                            all_places_combs_filter.put(place_name1 + sub_p_name, filters.get(i) + " and " + pre_calculated_subtree.get(sub_p_name));
                         }
                     }
+                } 
+            }else{
+                if(pre_calculated_subtree.keySet().isEmpty()){
+                        all_places_combs_filter.put(place_name, filters.get(0));
                 }else{
-                    all_places_combs_filter = this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters, "");
-                }  
+                    for(String sub_p_name : pre_calculated_subtree.keySet()){
+                        all_places_combs_filter.put(place_name + sub_p_name, filters.get(0) + " and " + pre_calculated_subtree.get(sub_p_name)); 
+                    }
+                }
             }
         }
-        
+
         return all_places_combs_filter;
     }
     
-    /**
+        /**
      * 
-     * @param cd_combined_filters
-     * @param it2
-     * @param place_name
-     * @param p_filters
-     * @return 
+     * @param cd_combined_filters HashMap of all cd's colour classes combined filters of a possible combination
+     * @param it1 iterator of colour class key element
+     * @return HashMap all generated sub-places names with their corrisponding filters
      */
-    private HashMap<String, ArrayList<String>> calculate_all_places_c_f(HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters, Iterator it1, Iterator it2,
-                                                                        String place_name, String place_filter, ArrayList<String> p_filters, String p2_name){
-        HashMap<String, ArrayList<String>> all_places_combs_filter = new HashMap<>();
+    private HashMap<String, String> calculate_all_places_c_f(HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters, Iterator it1){
+        HashMap<String, String> all_places_filters = new HashMap<>();
 
-        if(it1 != null && it1.hasNext()){
-            HashMap<String, ArrayList<String>> p_complementary_names_filters = this.apply_cc_filters_cp(cd_combined_filters, it1, it2);
-            
-            p_complementary_names_filters.keySet().stream().forEach(
-                complementary_name -> {
-                    //               System.out.println(complementary_name + p_complementary_names_filters.get(complementary_name));
-                    ArrayList<String> complementary_name_filters = p_complementary_names_filters.get(complementary_name);
-
-                    if(complementary_name_filters.size() > 1){
-
-                        for(var j = 0; j < complementary_name_filters.size(); j++){
-                            all_places_combs_filter.put(place_name + complementary_name + String.valueOf(j+1),
-                                                        new ArrayList<>(List.of(place_filter + " and " + complementary_name_filters.get(j))));
-                        }
-                    }else{  
-                        all_places_combs_filter.put(place_name + complementary_name, new ArrayList<>(List.of(complementary_name_filters.get(0))));
-                    }
-                }
-            );
-        }else{
-            System.out.println(place_name + p2_name);
-            p_filters.forEach(
-                p_filter -> {
-                        all_places_combs_filter.put(place_name + p2_name, new ArrayList<>(List.of(place_filter + " and " + p_filter)));
-                }
-            );   
+        if(it1.hasNext()){
+            all_places_filters= this.apply_cc_filters_cp(cd_combined_filters, it1);
         }
         
-        return all_places_combs_filter;
+        return all_places_filters;
     }
         
     /**
