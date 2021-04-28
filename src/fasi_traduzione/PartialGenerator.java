@@ -6,24 +6,27 @@
 package fasi_traduzione;
 
 import eccezioni.UnsupportedElementNameException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import wncalculus.color.ColorClass;
 import struttura_sn.Place;
+import struttura_sn.SN;
+import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
+import wncalculus.expr.Sort;
 
 /**
  *
  * @author dell
  */
 //singleton
-//will be a part of factory pattern with (struttura_unfolding_parziale)
+//will be a part of factory pattern with (struttura_unfolding_parziale)/XMLWriter
 public class PartialGenerator {
     //usable maps to prevent redundant calculations/combinations of colour classes of a colour domain cd
+    private HashMap<String, HashMap<String, ArrayList<String>>> cd_all_places_filters; //contains pre-calculated cd's unfolded places names and their corresponding filters
     private HashMap<String, HashMap<String, ArrayList<String>>> cd_possible_combs; //es. colour-domain name ->{colour-class name -> 11, 12, ...}
     private HashMap<String, HashMap<Integer, ArrayList<String>>> cc_base_filters; //base filters of a colour class that follows ei multiplicity
-    private HashMap<String, HashMap<Integer, ArrayList<ArrayList<String>>>> subcc_predicates; //predicates of each subcc for 1 <= n <= ei, Note: each filter's predicates are in the same list
+    private HashMap<String, HashMap<Integer, ArrayList<String>>> subcc_predicates; //predicates of each subcc for 1 <= n <= ei, Note: each filter's predicates are in the same list
+    private static SN sn;
     //single instance
     private static PartialGenerator instance = null;
     
@@ -31,33 +34,259 @@ public class PartialGenerator {
         this.cd_possible_combs = new HashMap<>();
         this.cc_base_filters = new HashMap<>();
         this.subcc_predicates = new HashMap<>();
+        this.cd_all_places_filters = new HashMap<>();
+        sn = SN.get_instance();
     }
     
-    public void unfold_place(Place p){
-        //to be completed
+    public void unfold_all_places(){
+        
+//        sn.get_T().stream().forEach(
+//                transition -> {
+//                    //write all transitions but modify their graphical points x,y
+//                }
+//        );
+//        
+//        //unfold and write places
+//        sn.get_P().stream().forEach(
+//                place -> {
+//                    this.unfold_place(place);
+//                    //write place
+//                    //write arc
+//                }
+//        );
+       HashMap<String, ArrayList<String>> all_places_combs_filter = this.unfold_place(sn.get_P().get(0));
+
+       all_places_combs_filter.keySet().stream().forEach(
+                p -> {
+                    System.out.println(p + "," + Arrays.toString(all_places_combs_filter.get(p).toArray()));
+                }
+        );
+    }
+    
+    /**
+     * 
+     * @param p the place that we want to fold
+     * @return HashMap of all places names and their corresponding filters
+     */
+    private HashMap<String, ArrayList<String>> unfold_place(Place p){
         //apply cartesian product on cd colour classes combinations & name resulting places with colour class name + combination, colour class name + combination ... (following cartesian product combinations)
-        //combine each colour class base filter predicate(s) with each subclass predicate(s) in case of finding combination with N > 1 subclass-repetitions
-        //create resulting place connected to their filtered arcs
+        Domain d = p.get_node_domain(); //cd
+        String cd_name = d.name();
+        //contains the results of cartesian product between cd_base_filters (of each colour class) and subclasses of cd elements from (subcc_predicates) 
+        //in case of certain possible combinations (possible_combs) with N > 1 subclass repetitions
+        HashMap<String, ArrayList<String>> all_places_combs_filter = new HashMap<>();
+            
+        if(this.cd_all_places_filters.containsKey(cd_name)){
+            all_places_combs_filter = this.cd_all_places_filters.get(cd_name);
+        }else{ 
+            Map<? extends Sort, Integer> d_map = d.asMap();
+
+            if(cd_name.equals("Undefined domain")){ // one colour class domain
+                d.set_name(d_map.keySet().iterator().next().name());
+            }
+            
+            HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters = new HashMap<>(); 
+            HashMap<String, ArrayList<String>> ccs_base_filters = this.unfold_colordomain((Map<ColorClass, Integer>) d_map, cd_name);
+            HashMap<String, ArrayList<String>> possible_combs = this.cd_possible_combs.get(cd_name);
+            
+            possible_combs.keySet().stream().forEach(
+                    cc_name -> {
+                        HashMap<String, ArrayList<String>> cc_all_combs = new HashMap<>();
+                        Interval[] subs = sn.find_colorClass(cc_name).getConstraints();
+                        ArrayList<String> cc_combs = possible_combs.get(cc_name);
+                        
+                        for(var k = 0; k < cc_combs.size(); k++){
+                            String possible_comb = cc_combs.get(k);
+                            ArrayList<String> cc_base_filters = new ArrayList<>(List.of(ccs_base_filters.get(cc_name).get(k)));
+                            int[] subcc_repetitions = new int[subs.length];
+
+                            for(var i = 0; i < possible_comb.length(); i++){
+                                char c = possible_comb.charAt(i);
+                                int N = 0, subcc_index = Integer.parseInt(String.valueOf(c)) - 1;
+
+                                if(subcc_repetitions[subcc_index] == 0){ //check if subclass hasn't already been calculated before
+                                    //calculate N repetitions of a certain subclass in possible combination
+                                    for(var j = i; j < possible_comb.length(); j++){
+
+                                        if(possible_comb.charAt(i) == possible_comb.charAt(j)){
+                                            N++;
+                                        }
+                                    }
+                                    subcc_repetitions[subcc_index] = N;
+                                }
+                            }
+                            ArrayList<String> subs_predicates = this.get_cp_subccs_predicates(subcc_repetitions, subs);
+
+                            if(!subs_predicates.isEmpty()){
+                                //combine each colour class base filter predicate(s) with each subclass predicate(s) in case of finding combination with N > 1 subclass-repetitions
+                                 cc_all_combs.put(possible_comb, this.apply_cartesian_product(cc_base_filters, subs_predicates));
+                            }else{
+                                cc_all_combs.put(possible_comb, cc_base_filters);
+                            }
+                        }
+                        //System.out.println(Arrays.toString(cc_all_combs.values().toArray()));
+                        cd_combined_filters.put(cc_name, cc_all_combs);
+                    }
+            );
+            Iterator it1 = cd_combined_filters.keySet().iterator(), it2 = cd_combined_filters.keySet().iterator();
+            
+            if(it1.hasNext()){
+                            
+                if(it2.hasNext()){
+                    it2.next();
+                }
+                all_places_combs_filter = this.apply_cc_filters_cp(cd_combined_filters, it1, it2);
+            }
+            
+            //reserve calculated & unfolded places to use later if we face another place with the same cd name
+            this.cd_all_places_filters.put(cd_name, all_places_combs_filter);
+        }
+        return all_places_combs_filter;
+    }
+    
+    /**
+     * 
+     * @param cd_combined_filters
+     * @param it1
+     * @param it2
+     * @param all_places_combs_filter
+     * @return 
+     */
+    private HashMap<String, ArrayList<String>> apply_cc_filters_cp(HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters,
+                                                                   Iterator it1, Iterator it2){    
+        HashMap<String, ArrayList<String>> all_places_combs_filter = new HashMap<>();
+        String cc_name = (String)it1.next(), place_name, cc2_name = "";
+        HashMap<String, ArrayList<String>> cc_internal_combs_filters = cd_combined_filters.get(cc_name);
+
+        if(it2.hasNext()){
+            cc2_name = (String) it2.next();
+        }else{
+            it2 = null;
+        }         
+        
+//        cd_combined_filters.keySet().stream().forEach(
+//                cc -> {
+//                    System.out.println(cc + "------");
+//                    HashMap<String, ArrayList<String>> cc_pf = cd_combined_filters.get(cc);
+//                    
+//                    cc_pf.keySet().stream().forEach(
+//                            pc -> {
+//                                System.out.println(pc + "," + Arrays.toString(cc_pf.get(pc).toArray()));
+//                            }
+//                    );
+//                }
+//        );
+        
+        for(String possible_comb : cc_internal_combs_filters.keySet()){
+            place_name = cc_name + possible_comb;
+            ArrayList<String> filters = cc_internal_combs_filters.get(possible_comb);
+
+            //System.out.println(possible_comb + "," + Arrays.toString(filters.toArray()));
+            if(filters.size() > 1){
+                String place_name1;
+
+                for(var i = 0; i < filters.size(); i++){
+                    place_name1 = place_name + "_" + String.valueOf(i+1);  
+                    String place_filter = filters.get(i);
+                    all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2,  place_name1, place_filter, filters, ""));
+                }
+            }else{
+                
+                if(!cc2_name.equals("")){
+                    HashMap<String, ArrayList<String>> cc2_internal_combs_filters = cd_combined_filters.get(cc2_name);
+                    String place_name2;
+                    
+                    for(String possible_comb2 : cc2_internal_combs_filters.keySet()){
+                        place_name2 = cc2_name + possible_comb2;
+                        ArrayList<String> filters2 = cc2_internal_combs_filters.get(possible_comb2);
+
+                        if(filters2.size() > 1){
+                            String place_name1;
+                            
+                            for(var i = 0; i < filters.size(); i++){
+                                place_name1 = place_name2 + "_" + String.valueOf(i+1);  
+                                all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters2, place_name1)); 
+                            }
+                        }else{
+                            //System.out.println(place_name2);
+                            all_places_combs_filter.putAll(this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters2, cc2_name));  
+                        }
+                    }
+                }else{
+                    all_places_combs_filter = this.calculate_all_places_c_f(cd_combined_filters, it1, it2, place_name, filters.get(0), filters, "");
+                }  
+            }
+        }
+        
+        return all_places_combs_filter;
+    }
+    
+    /**
+     * 
+     * @param cd_combined_filters
+     * @param it2
+     * @param place_name
+     * @param p_filters
+     * @return 
+     */
+    private HashMap<String, ArrayList<String>> calculate_all_places_c_f(HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters, Iterator it1, Iterator it2,
+                                                                        String place_name, String place_filter, ArrayList<String> p_filters, String p2_name){
+        HashMap<String, ArrayList<String>> all_places_combs_filter = new HashMap<>();
+
+        if(it1 != null && it1.hasNext()){
+            HashMap<String, ArrayList<String>> p_complementary_names_filters = this.apply_cc_filters_cp(cd_combined_filters, it1, it2);
+            
+            p_complementary_names_filters.keySet().stream().forEach(
+                complementary_name -> {
+                    //               System.out.println(complementary_name + p_complementary_names_filters.get(complementary_name));
+                    ArrayList<String> complementary_name_filters = p_complementary_names_filters.get(complementary_name);
+
+                    if(complementary_name_filters.size() > 1){
+
+                        for(var j = 0; j < complementary_name_filters.size(); j++){
+                            all_places_combs_filter.put(place_name + complementary_name + String.valueOf(j+1),
+                                                        new ArrayList<>(List.of(place_filter + " and " + complementary_name_filters.get(j))));
+                        }
+                    }else{  
+                        all_places_combs_filter.put(place_name + complementary_name, new ArrayList<>(List.of(complementary_name_filters.get(0))));
+                    }
+                }
+            );
+        }else{
+            //System.out.println(place_name + p2_name);
+            p_filters.forEach(
+                p_filter -> {
+                        all_places_combs_filter.put(place_name + p2_name, new ArrayList<>(List.of(place_filter + " and " + p_filter)));
+                }
+            );   
+        }
+        
+        return all_places_combs_filter;
     }
         
     /**
-     * Note: unfolding a colour class of multiplicity > 9 in cd, may cause exceptions because of using one digit char while producing combinations
+     * Note: unfolding a colour class with multiplicity > 9 in cd, may cause exceptions because of using one digit char while producing combinations
      * @param multiplied_cc HashMap of all colour classes and their multiplicities in a certain colour domain
      * @return HashMap of all colour classes with their combinations present in colour domain cd on which cartesian product will be applied
      */
-    public HashMap<String, ArrayList<String>> unfold_colordomain(HashMap<ColorClass, Integer> multiplied_cc, String cd_name){ //prodotto di C_i^ei per i=1..n
-        
-        if(this.cd_possible_combs.containsKey(cd_name)){
-            return this.cd_possible_combs.get(cd_name);
-        }
-        
+    private HashMap<String, ArrayList<String>> unfold_colordomain(Map<ColorClass, Integer> multiplied_cc, String cd_name){ //prodotto di C_i^ei per i=1..n
         HashMap<String, ArrayList<String>> cd_base_filters = new HashMap<>();
-        
-        multiplied_cc.keySet().stream().forEach(
+                
+        if(this.cd_possible_combs.containsKey(cd_name)){ //combinations are already calculated before
+            
+            multiplied_cc.keySet().stream().forEach(
                 cc -> {
-                    cd_base_filters.put(cc.name(), this.unfold_multiplied_cc(cc, multiplied_cc.get(cc), cd_name));
+                    cd_base_filters.put(cc.name(), this.cc_base_filters.get(cc.name()).get(multiplied_cc.get(cc)));
                 }
-        );
+            );
+        }else{
+        
+            multiplied_cc.keySet().stream().forEach(
+                    cc -> {
+                        cd_base_filters.put(cc.name(), this.unfold_multiplied_cc(cc, multiplied_cc.get(cc), cd_name));
+                    }
+            );
+        }
         
         return cd_base_filters;
     }
@@ -71,9 +300,10 @@ public class PartialGenerator {
      * @throws UnsupportedElementNameException if the name of sub-colour-class is undefined
      * @throws RuntimeException if cd_possible_combs Map signs that colour-class's combinations at multiplicity ei is calculated but base filters aren't found in cc_base_filters
      */
-    public ArrayList<String> unfold_multiplied_cc(ColorClass cc, int multiplicity, String cd_name) throws UnsupportedElementNameException, RuntimeException{ //C_i^ei
+    private ArrayList<String> unfold_multiplied_cc(ColorClass cc, int multiplicity, String cd_name) throws UnsupportedElementNameException, RuntimeException{ //C_i^ei
         Interval[] subs = cc.getConstraints();
-        
+        ArrayList<String> cc_possible_combs = new ArrayList<>();
+                    
         if(subs.length == 1 && subs[0].name().equals("Undefined interval")){ //case of unnamed single sub-colour-class
             //modify the single subclass name with parent colour class name
             subs[0].set_name(cc.name());
@@ -81,19 +311,7 @@ public class PartialGenerator {
         
         ArrayList<String> base_filters = new ArrayList<>();
         
-        if(multiplicity == 1){ //C_i^1
-            //generate n filters equal to the number of subclasses in C_i
-            for(var i = 0; i < subs.length; i++){
-                String subcc_name = subs[i].name();
-                
-                if(subcc_name.equals("Undefined interval")){
-                    throw new UnsupportedElementNameException("Sub-colour-class name isn't defined yet! :" + subs[i].toString());
-                }
-                
-                base_filters.add("@" + cc.name() + "[0] in " + subs[i].name());
-            }
-            
-        }else if(this.cd_possible_combs.containsKey(cd_name) && this.cd_possible_combs.get(cd_name).containsKey(cc.name())){ //check if cc's combinations are already calculated before
+        if(this.cd_possible_combs.containsKey(cd_name) && this.cd_possible_combs.get(cd_name).containsKey(cc.name())){ //check if cc's combinations are already calculated before
             HashMap<Integer, ArrayList<String>> cc_mult_base_filters = this.cc_base_filters.get(cc.name()); 
             
             if(cc_mult_base_filters.containsKey(multiplicity)){
@@ -102,25 +320,34 @@ public class PartialGenerator {
                 throw new RuntimeException("Can't find pre-calculated base filters of: " + cc.name());
             }
             
+        }else if(multiplicity == 1){ //C_i^1
+            //generate n filters equal to the number of subclasses in C_i            
+            for(var i = 0; i < subs.length; i++){
+                String subcc_name = subs[i].name();
+                
+                if(subcc_name.equals("Undefined interval")){
+                    throw new UnsupportedElementNameException("Sub-colour-class name isn't defined yet! :" + subs[i].toString());
+                }
+                
+                base_filters.add("@" + cc.name() + "[0] in " + subs[i].name());           
+                cc_possible_combs.add(String.valueOf(i + 1));
+            }
         }else{ //C_i^ei, ei > 1
             //generate all possible combinations of subclasses
             int combs_subcc = (int) Math.pow(subs.length, multiplicity) / subs.length; //all combinations/number of subclasses in cc
-            ArrayList<String> cc_possible_combs = new ArrayList<>();
             
             String comb;
             for(var i = 0; i < subs.length; i++){
                 comb = String.valueOf(i + 1);
                 
                 for(var j = 0; j < combs_subcc; j++){
-                    int char_index = -1;
 
                     for(var k = multiplicity; k > 1; k--){ //size of each combination without first integer that is known as subclass index + 1
                         
                         if(comb.length() < multiplicity){ //first assignment of combination should equal the index of sublass+1 + "11111..."
                             comb = comb + "1";
                         }else{ //first combination is already added
-                            char_index = k - 1;
-                            int comb_num = Integer.parseInt(String.valueOf(comb.charAt(char_index)));
+                            int char_index = k - 1, comb_num = Integer.parseInt(String.valueOf(comb.charAt(char_index)));
                             
                             if(comb_num < subs.length){ //increment this char and retrieve this combination
                                 StringBuilder comb_builder = new StringBuilder(comb);
@@ -135,24 +362,26 @@ public class PartialGenerator {
                 }
             }
             base_filters = this.find_cc_base_filters(cc, cc_possible_combs);
-            
-            HashMap<String, ArrayList<String>> possible_combs;
-            if(!this.cd_possible_combs.containsKey(cd_name)){
-                possible_combs = new HashMap<>();
-            }else{
-                possible_combs = this.cd_possible_combs.get("cd_name");   
-            }
-            possible_combs.put(cc.name(), cc_possible_combs); 
-            this.cd_possible_combs.put(cd_name, possible_combs);
         }
         
-//        System.out.println(cc.name() + "," + multiplicity);
+        //update cd with cc possible combs
+        HashMap<String, ArrayList<String>> possible_combs;
+
+        if(!this.cd_possible_combs.containsKey(cd_name)){
+            possible_combs = new HashMap<>();
+        }else{
+            possible_combs = this.cd_possible_combs.get(cd_name);   
+        }
+        possible_combs.put(cc.name(), cc_possible_combs); 
+        this.cd_possible_combs.put(cd_name, possible_combs);
+//        System.out.println(cc.name() + "," + cc_possible_combs);
+//        //System.out.println(cc.name() + "," + multiplicity);
 //        base_filters.stream().forEach(
 //                base_filter -> System.out.println(base_filter)
 //        );
         //create CS
         //ArrayList<Interval> CS = this.create_CS(cc, multiplicity);
-        
+        //update  base filters
         HashMap<Integer, ArrayList<String>> ei_base_filters;
         if(this.cc_base_filters.containsKey(cc.name())){
             ei_base_filters = this.cc_base_filters.get(cc.name());
@@ -166,7 +395,7 @@ public class PartialGenerator {
         return base_filters;
     }
     
-    public ArrayList<String> find_cc_base_filters(ColorClass cc, ArrayList<String> cc_possible_combs){ //uses colour class possilbe combinations
+    private ArrayList<String> find_cc_base_filters(ColorClass cc, ArrayList<String> cc_possible_combs){ //uses colour class possilbe combinations
         ArrayList<String> base_filters = new ArrayList<>();
         Interval[] subs = cc.getConstraints();
         
@@ -194,7 +423,10 @@ public class PartialGenerator {
                                 }
                             }
                             subcc_repetitions[subcc_index] = N;
-                            this.unfold_sub_cc(subs[subcc_index], N, cc.name());
+                            
+                            if(N > 1){
+                                 this.unfold_sub_cc(subs[subcc_index], N, cc.name());
+                            }
                         }
                     }
                     
@@ -218,7 +450,7 @@ public class PartialGenerator {
         vg.grp[1][0] = 1; // primo gruppo ha 1 variabile
         vg.grp[1][1] = 1; // la prima variabile del gruppo 1 è la 1
 
-        HashMap<Integer, ArrayList<ArrayList<String>>> N_predicates;
+        HashMap<Integer, ArrayList<String>> N_predicates;
         
         if(this.subcc_predicates.containsKey(subcc.name())){
             N_predicates = this.subcc_predicates.get(subcc.name());
@@ -227,12 +459,89 @@ public class PartialGenerator {
         }
         
         if(!N_predicates.containsKey(N)){
-            ArrayList<ArrayList<String>> multi_predicates = this.assign(vg, 1, 1, min(N, this.calculate_K(subcc)), N, new ArrayList<>(), cc_name);
+            ArrayList<String> multi_predicates = this.assign(vg, 1, 1, min(N, this.calculate_K(subcc)), N, new ArrayList<>(), cc_name);
+            
+//            System.out.println("------------------");
+//            multi_predicates.stream().forEach(
+//                    preds -> System.out.println(Arrays.toString(preds.toArray()))
+//            );
+            
             N_predicates.put(N, multi_predicates);
             this.subcc_predicates.put(subcc.name(), N_predicates);
         }
     }
-    
+   
+    private ArrayList<String> apply_cartesian_product(ArrayList<String> l1, ArrayList<String> l2){
+        ArrayList<String> res = new ArrayList<>();
+        
+        l1.stream().forEach(
+                f1 -> {
+                    
+                    if(l2.isEmpty()){
+                        res.add(f1);
+                    }else{
+                        l2.stream().forEach(
+                                f2 -> {
+                                    res.add(f1 + " and " + f2);
+                                }
+                        );
+                    }
+                    
+                }
+        );
+        return res;
+    }
+    /**
+     * Note: all subclasses used in this method should have N > 1
+     * @param subcc_repetitions array of subclasses repetitions in a certain cd
+     * @param subs arrays of all subclasses of a certain cc
+     * @return Cartesian product between subclasses combined predicates and other subclasses of same colour class
+     */
+    private ArrayList<String> get_cp_subccs_predicates(int[] subcc_repetitions, Interval[] subs){
+        ArrayList<String> cart_product_subccs = new ArrayList<>();
+        ArrayList<String> calculated_cp = new ArrayList<>(), subcc1_filters = new ArrayList<>();
+        boolean calculated = false;
+        
+        for(var i = 0; i < subcc_repetitions.length; i++){
+            
+            if(subcc_repetitions[i] > 1){
+                subcc1_filters = this.subcc_predicates.get(subs[i].name()).get(subcc_repetitions[i]);
+                //calculate cartesian product between any existing different subclasses with N > 1
+                for(String subcc1_filter : subcc1_filters){
+                     
+                    for(var j = i+1; j < subcc_repetitions.length; j++){
+                        ArrayList<String> subcc2_filters = this.subcc_predicates.get(subs[j].name()).get(subcc_repetitions[j]);
+                        
+                        if(subcc_repetitions[j] > 1){
+                            String res_filter;
+                            
+                            if(!calculated_cp.contains(String.valueOf(j) + String.valueOf(i))){
+                                calculated = true;
+                                
+                                for(String subcc2_filter : subcc2_filters){
+                                    res_filter = subcc1_filter + " and " + subcc2_filter;
+                                    cart_product_subccs.add(res_filter);
+                                }
+                                calculated_cp.add(String.valueOf(i) + String.valueOf(j));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(!calculated){
+            return subcc1_filters;
+        }
+        
+        return cart_product_subccs;
+    }
+    /**
+     * 
+     * @param str_index starting index from which we want to set '1'
+     * @param sb StringBuilder on which we elaborate replacing chars with '1'
+     * @return elaborated StringBuilder
+     */
     private String replace_from(int str_index, StringBuilder sb){
         
         for(var i = str_index; i < sb.length(); i++){
@@ -284,12 +593,12 @@ public class PartialGenerator {
 //        return CS;
 //    }
     
-    private ArrayList<ArrayList<String>> assign(vargrp part, int assigned, int taken, int maxgroup, int N, ArrayList<ArrayList<String>> multi_predicates, String cc_name){
+    private ArrayList<String> assign(vargrp part, int assigned, int taken, int maxgroup, int N, ArrayList<String> multi_predicates, String cc_name){
         ArrayList<String> filter_predicates = new ArrayList<>();
         int i,j;
         
         if(assigned == N){// stampa l'assegnazione variabile - sottoinsieme
-            System.out.printf("\n");
+           System.out.printf("\n");
             
             for(i = 1;i <= N; i++)
               System.out.printf("@%s[%d] in grp %d\n", cc_name, i-1, part.V[i]);
@@ -308,7 +617,7 @@ public class PartialGenerator {
                 filter_predicates.add("@" + cc_name + "[" + String.valueOf(part.grp[i][1] - 1) + "]" + " != " + "@" + cc_name + "[" + String.valueOf(part.grp[j][1] - 1) + "]");
                }
             System.out.printf(" \n");
-            multi_predicates.add(filter_predicates);
+            multi_predicates.add(this.set_and_between_predicates(filter_predicates));
         }else{ // richiamo ricorsivo
             int g, newtaken;
             assigned++;
@@ -329,6 +638,19 @@ public class PartialGenerator {
         return multi_predicates;
     }
     
+    private String set_and_between_predicates(ArrayList<String> filter_predicates){
+        String filter = "";
+        
+        for(var i = 0; i < filter_predicates.size(); i++){
+            filter += filter_predicates.get(i);
+            
+            if(i != filter_predicates.size() -1){
+                filter += " and ";
+            }
+        }
+        
+        return filter;
+    }
     /**
      * Note: used in assign()
      * @param a first number

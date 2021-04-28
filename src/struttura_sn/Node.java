@@ -71,7 +71,7 @@ public abstract class Node {
      * 
      * @param d the domain that will be associated with this node
      */
-    public void set_node_domain(Domain d){
+    public void set_node_domain(Domain d){        
         this.d = d;
     }
     
