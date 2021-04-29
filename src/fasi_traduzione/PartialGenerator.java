@@ -11,12 +11,14 @@ import albero_sintattico.SyntaxTree;
 import eccezioni.UnsupportedElementNameException;
 import java.util.*;
 import javax.xml.transform.TransformerException;
+import struttura_sn.Marking;
 import wncalculus.color.ColorClass;
 import struttura_sn.Place;
 import struttura_sn.SN;
 import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
 import wncalculus.expr.Sort;
+import wncalculus.wnbag.LinearComb;
 
 /**
  *
@@ -46,16 +48,32 @@ public class PartialGenerator {
     }
     
     public void unfold_all_places() throws TransformerException{        
-//        //unfold and write places
+        Marking mk = Marking.get_instance();
+        int[] place_xy = new int[]{140, 30}; //graphics points
+        
         sn.get_P().stream().forEach(
                 place -> {
-                    HashMap<String, String> all_places_combs_filter = this.unfold_place(place);
                     
+                    String prefix_name = place.get_name();
+                    //unfold place
+                    HashMap<String, String> all_places_combs_filter = this.unfold_place(place);
+                    //write unfolded places
                     all_places_combs_filter.keySet().stream().forEach(
                             p_name -> {
-                                //copy intitial marking of place in all unfolded places
                                 //write place
-                                //write arc
+                                ArrayList<String> place_data = new ArrayList<>();
+                                place_data.add("id@=" + prefix_name + p_name);
+                                place_data.add("type@=" + place.get_type());
+                                
+                                HashMap<ArrayList<LinearComb>, Integer> initial_marking = mk.get_marking_of_place(p_name);
+                                //copy intitial marking of place in all unfolded places
+                                if(!initial_marking.isEmpty()){
+                                    place_data.add("hlinitialMarking@=" + this.get_place_initial_marking(initial_marking));
+                                }
+                                place_xy[1] += 10;
+                                place_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+                                //write place arcs with unfolded filter
+                                this.write_unfolded_place_arcs(place, all_places_combs_filter.get(p_name));
                             }
                     );
                 }
@@ -71,8 +89,36 @@ public class PartialGenerator {
         xmlwriter.write_all_data();
     }
     
+    /**
+     * 
+     * @param initial_marking HashMap of token-tuple's elements (ArrayList of linear combinartions) with their multiplicity
+     * @return the equivalent String of initial marking map
+     */
+    private String get_place_initial_marking(HashMap<ArrayList<LinearComb>, Integer> initial_marking){
+        String str_marking = "";
+        //to be completed
+        return str_marking;
+    }
+    
+    /**
+     * 
+     * @param p place that we want to write its arcs expanded with the filter resulted from place unfolding
+     * Note: the expanded filter will be added to each tuple written on arc
+     */
+    private void write_unfolded_place_arcs(Place p, String expanded_filter){
+        //to be completed
+    }
+    private String get_arc_expression(){
+        String str_exp = "";
+        //to be completed
+        return str_exp;
+    }
+    
+    /**
+     * write all transitions with different graphics points
+     */
     private void write_transitions(){
-        int[] transition_xy = new int[]{300, 30};
+        int[] transition_xy = new int[]{300, 30}; //graphics points
                 
         SyntaxTree.get_instance().get_synt_transitions().stream().forEach(
                 transition -> {
@@ -117,8 +163,7 @@ public class PartialGenerator {
                         transition_data.add("condition@=" + guard);
                     }
                     
-                    transition_xy[0] += 10;
-                    transition_xy[1] += 10;
+                    transition_xy[1] += 15;
                     transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" + transition_xy[1]);
                     //add transition to be written
                     xmlwriter.add_transition(transition_data);

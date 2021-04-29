@@ -75,9 +75,25 @@ public class Marking {
         return marking.get(p);
     }
     
-//    public void update_initial_marking(Marking m0){
-//        instance = m0;
-//    }
+        /**
+     * 
+     * @param p_name the name of place that we want to get its marking
+     * @return HashMap of place marking (colour-class/domain) type
+     * Note: the ArrayList of linear combination of colour-class typed place has only 1 element 
+     */
+    public HashMap<ArrayList<LinearComb>, Integer> get_marking_of_place(String p_name){
+        HashMap<ArrayList<LinearComb>, Integer> mk = new HashMap<>();
+        
+        Place p = marking.keySet().stream().filter(
+                place -> place.get_name().equals(p_name)
+        ).findFirst().orElse(null);
+        
+        if(p != null){
+            mk = marking.get(p);
+        }
+        
+        return mk;
+    }
     
     /**
      * 

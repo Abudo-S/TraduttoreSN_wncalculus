@@ -138,8 +138,7 @@ public class DataParser { // will use SemanticAnalyzer
         //XML_DataTester.get_instance().test_add_Domain(domain_name, colorclasses);
         this.check_name(domain_name, "Undefined domain");
         HashMap<ColorClass, Integer> product_sort = new HashMap<>();
-
-//GreatSpn tool doesn't allow the (1<n) * color class muliplicity        
+   
         colorclasses.stream().forEach( 
                 e -> {
                     ColorClass cc = sn.find_colorClass(e);

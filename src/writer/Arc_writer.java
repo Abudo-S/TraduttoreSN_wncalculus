@@ -41,9 +41,9 @@ public class Arc_writer extends ElementWriter{
                     if(single_datum.contains("id")){
                         arc.setAttribute("id", this.seperate_usable_value(single_datum));
                     }else if(single_datum.contains("source")){
-                        arc.setAttribute("source",this.seperate_usable_value(single_datum));
+                        arc.setAttribute("source", this.seperate_usable_value(single_datum));
                     }else if(single_datum.contains("target")){
-                        arc.setAttribute("target",this.seperate_usable_value(single_datum));
+                        arc.setAttribute("target", this.seperate_usable_value(single_datum));
                     }else if(single_datum.contains("type")){ //inhibitor/transiting arc
                         String arc_type = this.seperate_usable_value(single_datum);
 
