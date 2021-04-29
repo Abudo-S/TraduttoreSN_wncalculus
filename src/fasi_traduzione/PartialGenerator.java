@@ -5,8 +5,12 @@
  */
 package fasi_traduzione;
 
+import albero_sintattico.Syntactic_guard;
+import albero_sintattico.Syntactic_predicate;
+import albero_sintattico.SyntaxTree;
 import eccezioni.UnsupportedElementNameException;
 import java.util.*;
+import javax.xml.transform.TransformerException;
 import wncalculus.color.ColorClass;
 import struttura_sn.Place;
 import struttura_sn.SN;
@@ -26,40 +30,98 @@ public class PartialGenerator {
     private HashMap<String, HashMap<String, ArrayList<String>>> cd_possible_combs; //es. colour-domain name ->{colour-class name -> 11, 12, ...}
     private HashMap<String, HashMap<Integer, ArrayList<String>>> cc_base_filters; //base filters of a colour class that follows ei multiplicity
     private HashMap<String, HashMap<Integer, ArrayList<String>>> subcc_predicates; //predicates of each subcc for 1 <= n <= ei, Note: each filter's predicates are in the same list
+    private static XMLWriter xmlwriter;
     private static SN sn;
     //single instance
     private static PartialGenerator instance = null;
     
-    private PartialGenerator(){
+    private PartialGenerator() throws Exception{
         this.cd_possible_combs = new HashMap<>();
         this.cc_base_filters = new HashMap<>();
         this.subcc_predicates = new HashMap<>();
         this.cd_all_places_filters = new HashMap<>();
+        xmlwriter = XMLWriter.get_instance("CPN");
+        xmlwriter.write_all_data();
         sn = SN.get_instance();
     }
     
-    public void unfold_all_places(){
-        
-//        sn.get_T().stream().forEach(
-//                transition -> {
-//                    //write all transitions but modify their graphical points x,y
-//                }
-//        );
-//        
+    public void unfold_all_places() throws TransformerException{        
 //        //unfold and write places
-//        sn.get_P().stream().forEach(
-//                place -> {
-//                    this.unfold_place(place);
-//                    //write place
-//                    //write arc
+        sn.get_P().stream().forEach(
+                place -> {
+                    HashMap<String, String> all_places_combs_filter = this.unfold_place(place);
+                    
+                    all_places_combs_filter.keySet().stream().forEach(
+                            p_name -> {
+                                //copy intitial marking of place in all unfolded places
+                                //write place
+                                //write arc
+                            }
+                    );
+                }
+        );
+        this.write_transitions();
+//       HashMap<String, String> all_places_combs_filter = this.unfold_place(sn.get_P().get(1));
+//
+//       all_places_combs_filter.keySet().stream().forEach(
+//                p -> {
+//                    System.out.println(p + "," + all_places_combs_filter.get(p));
 //                }
 //        );
-
-       HashMap<String, String> all_places_combs_filter = this.unfold_place(sn.get_P().get(0));
-
-       all_places_combs_filter.keySet().stream().forEach(
-                p -> {
-                    System.out.println(p + "," + all_places_combs_filter.get(p));
+        xmlwriter.write_all_data();
+    }
+    
+    private void write_transitions(){
+        int[] transition_xy = new int[]{300, 30};
+                
+        SyntaxTree.get_instance().get_synt_transitions().stream().forEach(
+                transition -> {
+                    //write all transitions but modify their graphical points x,y
+                    ArrayList<String> transition_data = new ArrayList<>();
+                    transition_data.add("id@=" + transition.get_name());
+                    String guard = "";
+                    Syntactic_guard synt_guard = transition.get_syntactic_guard();
+                    
+                    if(synt_guard != null && !synt_guard.get_separated_predicates().isEmpty()){
+                        boolean invert_guard = synt_guard.get_invert_guard();
+                        
+                        if(invert_guard == true){
+                           guard = "!("; 
+                        }
+                        
+                        LinkedHashMap<Syntactic_predicate, String> separated_predicates = synt_guard.get_separated_predicates();
+                        
+                        for(Syntactic_predicate synt_predicate : separated_predicates.keySet()){
+                           ArrayList<String> predicate_elements = synt_predicate.get_predicate_elements(); 
+                           boolean invert_predicate = synt_predicate.get_invert_guard();
+                           
+                            if(invert_predicate == true){
+                               guard = "!("; 
+                            }
+                                                   
+                            for(String predicate_element : predicate_elements){
+                               guard += " " + predicate_element;
+                            }
+                            
+                            if(invert_predicate == true){
+                               guard += ")"; 
+                            }
+                        }
+                        
+                        if(invert_guard == true){
+                           guard += ")"; 
+                        }
+                    }
+                    
+                    if(!guard.equals("")){
+                        transition_data.add("condition@=" + guard);
+                    }
+                    
+                    transition_xy[0] += 10;
+                    transition_xy[1] += 10;
+                    transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" + transition_xy[1]);
+                    //add transition to be written
+                    xmlwriter.add_transition(transition_data);
                 }
         );
     }
@@ -625,7 +687,7 @@ public class PartialGenerator {
      * 
      * @return single static instance
      */
-    public static PartialGenerator get_instance(){
+    public static PartialGenerator get_instance() throws Exception{
         
         if(instance == null){
             instance = new PartialGenerator();

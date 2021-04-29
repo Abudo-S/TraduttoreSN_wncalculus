@@ -55,6 +55,9 @@ public class XMLWriter {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         this.doc = builder.newDocument();
+        Element pnml = this.doc.createElement("pnml");
+        pnml.setAttribute("xmlns", "http://www.pnml.org/version-2009/grammar/pnml");
+        this.doc.appendChild(pnml);
         //initialize elements scanners
         this.pw = Place_writer.get_instance(this.doc);
         this.tw = Transition_writer.get_instance(this.doc);
@@ -78,8 +81,6 @@ public class XMLWriter {
      */
     public void write_all_data() throws TransformerException{
         //create essential file tags
-        Element pnml = this.doc.createElement("pnml");
-        pnml.setAttribute("xmlns", "http://www.pnml.org/version-2009/grammar/pnml");
         Element net = this.doc.createElement("net");
         net.setAttribute("id", this.file_address);
         net.setAttribute("type", "http://www.pnml.org/version-2009/grammar/symmetricnet");
@@ -125,14 +126,17 @@ public class XMLWriter {
         this.aw.get_element_data().stream().forEach(
                 arc_data -> this.aw.write_info(arc_data, page)
         );
-        net.appendChild(declaration);
+        net.appendChild(this.doc.adoptNode(declaration));
         net.appendChild(page);
-        pnml.appendChild(net);
-        this.doc.appendChild(pnml);
+        this.doc.getDocumentElement().appendChild(net);
+        this.doc.setXmlVersion("1.0");
+        this.doc.setXmlStandalone(false);
         
-        //transform in xml file
+        //transform doc in xml file
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         DOMSource domsr = new DOMSource(this.doc);
         StreamResult streamResult = new StreamResult(new File(this.file_address));
         transformer.transform(domsr, streamResult);

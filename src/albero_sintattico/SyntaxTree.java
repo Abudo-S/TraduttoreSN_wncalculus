@@ -54,7 +54,7 @@ public class SyntaxTree {
      * 
      * @return ArrayList of all syntactic transitions that exist in this tree
      */
-    public ArrayList<Syntactic_transition> get_synt_transition(){
+    public ArrayList<Syntactic_transition> get_synt_transitions(){
         return all_st;
     }
     

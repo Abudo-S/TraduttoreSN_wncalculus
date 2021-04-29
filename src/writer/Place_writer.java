@@ -53,18 +53,12 @@ public class Place_writer extends ElementWriter{
                         hlinitialMarking.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
                     }
                     else if(single_datum.contains("graphics")){
-                        Element graphics = doc.createElement("graphics");
-                        Attr position = doc.createAttribute("position");
-                        String[] xy = this.separate_usable_x_y(single_datum);
-                        position.setUserData("x", xy[0] , null);
-                        position.setUserData("y", xy[1] , null);
-                        graphics.setAttributeNode(position);
-                        /*another solution
-    //                            Element position = doc.createElement("position");
-    //                            position.setAttribute("x", xy[0]);
-    //                            position.setAttribute("y", xy[1]);
-    //                            graphics.appendChild(position);
-                        */
+                        String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
+                        Element graphics = doc.createElement("graphics");                        
+                        Element position = doc.createElement("position");
+                        position.setAttribute("x", xy[0]);
+                        position.setAttribute("y", xy[1]);
+                        graphics.appendChild(position);
                         place.appendChild(graphics);
                     }else{
                         throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);

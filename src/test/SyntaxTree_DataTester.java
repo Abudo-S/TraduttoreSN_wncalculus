@@ -116,7 +116,7 @@ public class SyntaxTree_DataTester {
                 }
         );
         
-        synt_tree.get_synt_transition().stream().forEach(
+        synt_tree.get_synt_transitions().stream().forEach(
                 synt_t -> {
                     System.out.println(synt_t.get_name() + ", Next node: ");
                     HashMap<SyntacticNode, Syntactic_arc> next = synt_t.get_all_next();

@@ -74,7 +74,7 @@ public class SemanticAnalyzer {
             throw new NullPointerException("Can't analyze the syntax tree!");
         }
         
-        ArrayList<Syntactic_transition> all_transitions = snt.get_synt_transition();
+        ArrayList<Syntactic_transition> all_transitions = snt.get_synt_transitions();
         ArrayList<Syntactic_place> all_places = snt.get_synt_places();
         ArrayList<Syntactic_arc> around_transition = new ArrayList<>();
         //Domain[] wrapper = new Domain[1]; //to wrap transition's domain because lambda expression doesn't allow modifing non final variable
