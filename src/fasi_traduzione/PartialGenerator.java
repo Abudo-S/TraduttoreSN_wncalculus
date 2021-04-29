@@ -15,6 +15,10 @@ import struttura_sn.Marking;
 import wncalculus.color.ColorClass;
 import struttura_sn.Place;
 import struttura_sn.SN;
+import struttura_sn.Token;
+import wncalculus.classfunction.All;
+import wncalculus.classfunction.ElementaryFunction;
+import wncalculus.classfunction.Subcl;
 import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
 import wncalculus.expr.Sort;
@@ -95,9 +99,58 @@ public class PartialGenerator {
      * @return the equivalent String of initial marking map
      */
     private String get_place_initial_marking(HashMap<ArrayList<LinearComb>, Integer> initial_marking){
-        String str_marking = "";
+        String[] str_marking = new String[]{""};//wrapper pf marking
+        int[] i = new int[1];
+        
+        initial_marking.keySet().stream().forEach(
+            tuple_elements_list -> {
+                int tuple_mult = initial_marking.get(tuple_elements_list);
+                
+                if(tuple_mult != 1){
+                    str_marking[0] += tuple_mult;
+                }
+                str_marking[0] += "&lt;";
+                
+                tuple_elements_list.stream().forEach(
+                        tuple_element -> {
+                            Map<ElementaryFunction, Integer> linearcomb_map = (Map<ElementaryFunction, Integer>) tuple_element.asMap();
+                            
+                            linearcomb_map.keySet().stream().forEach(
+                                    ef -> {                                        
+                                        int lc_element_mult = linearcomb_map.get(ef);
+                                    
+                                        if(lc_element_mult!= 1 && lc_element_mult != -1){
+                                            str_marking[0] += "+" + lc_element_mult;
+                                        }else if(lc_element_mult == 1){
+                                            str_marking[0] += "+";
+                                        }else if(lc_element_mult == -1){
+                                            str_marking[0] += "-";
+                                        }
+                                        
+                                        //cast ef to Subcl | All | Token
+                                        if(ef instanceof Token){
+                                            Token t = (Token) ef;
+                                            str_marking[0] += t.get_Token_value() + " ";
+                                        }else if(ef instanceof Subcl){
+                                            Subcl con = (Subcl) ef;
+                                            str_marking[0] += con.getSort().getConstraint(con.index()).name() + " ";
+                                        }else{ //All
+                                            str_marking[0] += "All ";
+                                        }
+                                    }
+                            );
+                        }
+                ); 
+                str_marking[0] += "&gt; ";
+                i[0] += 1;
+                
+                if(i[0] != initial_marking.keySet().size()){
+                    str_marking[0] += " + ";
+                }
+            }            
+        );
         //to be completed
-        return str_marking;
+        return str_marking[0];
     }
     
     /**
