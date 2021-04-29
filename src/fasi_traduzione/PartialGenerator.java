@@ -100,55 +100,63 @@ public class PartialGenerator {
      */
     private String get_place_initial_marking(HashMap<ArrayList<LinearComb>, Integer> initial_marking){
         String[] str_marking = new String[]{""};//wrapper pf marking
-        int[] i = new int[1];
+        Iterator it1 = initial_marking.keySet().iterator();
         
-        initial_marking.keySet().stream().forEach(
-            tuple_elements_list -> {
-                int tuple_mult = initial_marking.get(tuple_elements_list);
-                
-                if(tuple_mult != 1){
-                    str_marking[0] += tuple_mult;
+        while(it1.hasNext()){
+            ArrayList<LinearComb> tuple_elements_list = (ArrayList<LinearComb>) it1.next();
+            int tuple_mult = initial_marking.get(tuple_elements_list);
+
+            if(tuple_mult != 1){
+                str_marking[0] += tuple_mult;
+            }
+            str_marking[0] += "&lt;";
+            
+            Iterator it2 = tuple_elements_list.iterator();
+            while(it2.hasNext()) {
+                LinearComb tuple_element = (LinearComb) it2.next();
+                Map<ElementaryFunction, Integer> linearcomb_map = (Map<ElementaryFunction, Integer>) tuple_element.asMap();
+                ArrayList<ElementaryFunction> keys_list = new ArrayList<>(linearcomb_map.keySet()); //to use ArrayList's index
+
+                for(var j = 0; j < keys_list.size(); j++){      
+                    ElementaryFunction ef = keys_list.get(j);
+                    int lc_element_mult = linearcomb_map.get(ef);
+
+                    if(j != 0 && lc_element_mult > 0){ //don't add "+" mark before the first element of linear combination
+                        str_marking[0] += "+";
+                    }
+
+                    if(lc_element_mult!= 1 && lc_element_mult != -1){
+                        str_marking[0] += lc_element_mult;
+                    }else if(lc_element_mult == -1){
+                        str_marking[0] += "-";
+                    }
+
+                    //cast ef to Subcl | All | Token
+                    if(ef instanceof Token){
+                        Token t = (Token) ef;
+                        str_marking[0] += t.get_Token_value() + " ";
+                    }else if(ef instanceof Subcl){
+                        Subcl con = (Subcl) ef;
+                        str_marking[0] += con.getSort().getConstraint(con.index()).name() + " ";
+                    }else{ //All
+                        str_marking[0] += "All ";
+                    }                                
                 }
-                str_marking[0] += "&lt;";
                 
-                tuple_elements_list.stream().forEach(
-                        tuple_element -> {
-                            Map<ElementaryFunction, Integer> linearcomb_map = (Map<ElementaryFunction, Integer>) tuple_element.asMap();
-                            
-                            linearcomb_map.keySet().stream().forEach(
-                                    ef -> {                                        
-                                        int lc_element_mult = linearcomb_map.get(ef);
-                                    
-                                        if(lc_element_mult!= 1 && lc_element_mult != -1){
-                                            str_marking[0] += "+" + lc_element_mult;
-                                        }else if(lc_element_mult == 1){
-                                            str_marking[0] += "+";
-                                        }else if(lc_element_mult == -1){
-                                            str_marking[0] += "-";
-                                        }
-                                        
-                                        //cast ef to Subcl | All | Token
-                                        if(ef instanceof Token){
-                                            Token t = (Token) ef;
-                                            str_marking[0] += t.get_Token_value() + " ";
-                                        }else if(ef instanceof Subcl){
-                                            Subcl con = (Subcl) ef;
-                                            str_marking[0] += con.getSort().getConstraint(con.index()).name() + " ";
-                                        }else{ //All
-                                            str_marking[0] += "All ";
-                                        }
-                                    }
-                            );
-                        }
-                ); 
-                str_marking[0] += "&gt; ";
-                i[0] += 1;
-                
-                if(i[0] != initial_marking.keySet().size()){
-                    str_marking[0] += " + ";
+                //check if there's a tuple element
+                if(it2.hasNext()){
+                    str_marking[0] += " , ";
                 }
-            }            
-        );
+            }
+            
+            str_marking[0] += "&gt; ";
+            
+            //check if there's a next tuple
+            if(it1.hasNext()){
+                str_marking[0] += " + ";
+            }
+        }            
+    
         //to be completed
         return str_marking[0];
     }
