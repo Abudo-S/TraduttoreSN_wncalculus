@@ -45,9 +45,9 @@ public class ColourClass_writer extends ElementWriter{
             String single_datum = element_info.get(i);
             
             if(single_datum.contains("id@=")){ //name
-                String datum = this.seperate_usable_value(single_datum);
-                cc.setAttribute("id", datum);
-                cc.setAttribute("name", datum);
+                single_datum = this.seperate_usable_value(single_datum);
+                cc.setAttribute("id", single_datum);
+                cc.setAttribute("name", single_datum);
             }else if(single_datum.contains("ordered@=")){
                 cc.setAttribute("ordered", this.seperate_usable_value(single_datum));
             }else if(single_datum.contains("finiteintrange@=")){

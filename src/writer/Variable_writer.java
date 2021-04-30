@@ -7,7 +7,6 @@ package writer;
 
 import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -43,7 +42,7 @@ public class Variable_writer extends ElementWriter{
                         variable.setAttribute("name", datum);
                     }else if(single_datum.contains("usersort@=")){
                         Element usersort = doc.createElement("position");
-                        usersort.setAttribute("declaration", single_datum);
+                        usersort.setAttribute("declaration", this.seperate_usable_value(single_datum));
                         variable.appendChild(usersort);
                     }else{
                         throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);

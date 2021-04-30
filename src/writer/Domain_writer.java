@@ -38,6 +38,7 @@ public class Domain_writer extends ElementWriter{
                 single_datum -> {
                     
                     if(single_datum.contains("id@=")){ //name
+                        single_datum = this.seperate_usable_value(single_datum);
                         variable.setAttribute("id", single_datum);
                         variable.setAttribute("name", single_datum);
                     }else if(single_datum.contains("productsort@=")){
