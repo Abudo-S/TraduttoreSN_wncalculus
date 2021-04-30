@@ -8,6 +8,7 @@ package fasi_traduzione;
 import albero_sintattico.Syntactic_guard;
 import albero_sintattico.Syntactic_predicate;
 import albero_sintattico.SyntaxTree;
+import componenti.Variable_index_table;
 import eccezioni.UnsupportedElementNameException;
 import java.util.*;
 import javax.xml.transform.TransformerException;
@@ -17,11 +18,13 @@ import struttura_sn.Marking;
 import wncalculus.color.ColorClass;
 import struttura_sn.*;
 import wncalculus.classfunction.ElementaryFunction;
+import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
 import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
 import wncalculus.expr.Sort;
 import wncalculus.wnbag.LinearComb;
+import wncalculus.wnbag.TupleBag;
 import wncalculus.wnbag.WNtuple;
 
 /**
@@ -111,7 +114,7 @@ public class PartialGenerator {
             if(tuple_mult != 1){
                 str_marking[0] += tuple_mult;
             }
-            str_marking[0] += "&lt;";
+            str_marking[0] += "<";
             
             Iterator it2 = tuple_elements_list.iterator();
             while(it2.hasNext()){
@@ -147,19 +150,18 @@ public class PartialGenerator {
                 
                 //check if there's a tuple element
                 if(it2.hasNext()){
-                    str_marking[0] += " , ";
+                    str_marking[0] += ", ";
                 }
             }
             
-            str_marking[0] += "&gt; ";
+            str_marking[0] += "> ";
             
             //check if there's a next tuple
             if(it1.hasNext()){
                 str_marking[0] += " + ";
             }
         }            
-    
-        //to be completed
+        
         return str_marking[0];
     }
     
@@ -180,12 +182,12 @@ public class PartialGenerator {
                 //write arc
                 ArrayList<String> arc_data = new ArrayList<>();
                 String from = p.get_name() + place_name_suffix;
-                String to = next_node.get_name();
+                String to = next_node.get_name(); //transition
                 arc_data.add("id@=" + from + "_" + to);
                 arc_data.add("source@=" + from);
                 arc_data.add("target@=" + to);
                 //add hlinscription
-                arc_data.add("hlinscription@=" + this.get_arc_expression(next_nodes.get(next_node)));
+                arc_data.add("hlinscription@=" + this.get_tuples_expression(next_nodes.get(next_node).get_tuple_bag(), expanded_filter, to));
                 //add arc to be written
                 xmlwriter.add_arc(arc_data);
             }
@@ -195,13 +197,13 @@ public class PartialGenerator {
             previous_node -> {
                 //write arc
                 ArrayList<String> arc_data = new ArrayList<>();
-                String from = p.get_name() + place_name_suffix;
-                String to = previous_node.get_name();
+                String from = previous_node.get_name(); //transition
+                String to = p.get_name() + place_name_suffix;
                 arc_data.add("id@=" + from + "_" + to);
                 arc_data.add("source@=" + from);
                 arc_data.add("target@=" + to);
                 //add hlinscription
-                arc_data.add("hlinscription@=" + this.get_arc_expression(previous_nodes.get(previous_node)));    
+                arc_data.add("hlinscription@=" + this.get_tuples_expression(previous_nodes.get(previous_node).get_tuple_bag(), expanded_filter, from));    
                 //add arc to be written
                 xmlwriter.add_arc(arc_data);
             }
@@ -212,26 +214,112 @@ public class PartialGenerator {
                 //write arc
                 ArrayList<String> arc_data = new ArrayList<>();
                 String from = p.get_name() + place_name_suffix;
-                String to = inhibitored_node.get_name();
+                String to = inhibitored_node.get_name(); //transition
                 arc_data.add("id@=" + from + "_" + to);
                 arc_data.add("source@=" + from);
                 arc_data.add("target@=" + to);
                 //add hlinscription
-                arc_data.add("hlinscription@=" + this.get_arc_expression(inhibitored_nodes.get(inhibitored_node)));
+                arc_data.add("hlinscription@=" + this.get_tuples_expression(inhibitored_nodes.get(inhibitored_node).get_tuple_bag(), expanded_filter, to));
                 arc_data.add("type@=inhibitor");
                 //add arc to be written
                 xmlwriter.add_arc(arc_data);
             }
-        );
-        
+        );        
         
     }
-     
-    private String get_arc_expression(ArcAnnotation arc){
-        String multiplied_filtered_tuples = "";
-        HashMap<WNtuple, Integer> multiplied_tuples = (HashMap<WNtuple, Integer>) arc.get_tuple_bag().asMap();
-        //to be completed
-        return multiplied_filtered_tuples;
+    
+    /**
+     * 
+     * @param tb the tuple bag (Map of multiplied tuples) that we want to extract in a string
+     * @param expanded_filter the unfolded generated filter that will be added to each tuple in tb
+     * @return the resulting string of all filtered tuples combinations
+     * @throws NullPointerException if a variable hasn't extracted from a projection
+     */
+    private String get_tuples_expression(TupleBag tb, String expanded_filter, String transition_name) throws NullPointerException{
+        String[] str_marking = new String[]{""};//wrapper pf marking
+        Map<WNtuple, Integer> multiplied_tuple = (Map<WNtuple, Integer>) tb.asMap();
+        
+        Iterator it1 = multiplied_tuple.keySet().iterator();
+        
+        while(it1.hasNext()){
+            WNtuple tuple = (WNtuple) it1.next();
+            List<LinearComb> tuple_elements_list = (List<LinearComb>) tuple.getComponents();
+            int tuple_mult = multiplied_tuple.get(tuple);
+
+            if(tuple_mult != 1){
+                str_marking[0] += tuple_mult;
+            }
+            str_marking[0] += "<";
+            
+            Iterator it2 = tuple_elements_list.iterator();
+            while(it2.hasNext()){
+                LinearComb tuple_element = (LinearComb) it2.next();
+                Map<ElementaryFunction, Integer> linearcomb_map = (Map<ElementaryFunction, Integer>) tuple_element.asMap();
+                ArrayList<ElementaryFunction> keys_list = new ArrayList<>(linearcomb_map.keySet()); //to use ArrayList's index
+
+                for(var j = 0; j < keys_list.size(); j++){      
+                    ElementaryFunction ef = keys_list.get(j);
+                    int lc_element_mult = linearcomb_map.get(ef);
+
+                    if(j != 0 && lc_element_mult > 0){ //don't add "+" mark before the first element of linear combination
+                        str_marking[0] += "+";
+                    }
+
+                    if(lc_element_mult!= 1 && lc_element_mult != -1){
+                        str_marking[0] += lc_element_mult;
+                    }else if(lc_element_mult == -1){
+                        str_marking[0] += "-";
+                    }
+
+                    //cast ef to Subcl | All | Token
+                    if(ef instanceof Projection){
+                        Projection pro = (Projection) ef;
+                        
+                        String var_name = Variable_index_table.get_instance().get_var_name_at_index(transition_name, pro.getSort().name(), pro.getIndex());
+                        
+                        if(var_name == null){
+                            throw new NullPointerException("Can't use a null variable for projection: " + pro.toString());
+                        }
+                        
+                        switch (pro.getSucc()) {
+                            case 1: //++
+                                str_marking[0] += var_name + "++ ";
+                                break;
+                            case -1: //--
+                                str_marking[0] += var_name + "-- ";
+                                break;
+                            default:
+                                str_marking[0] += var_name + " ";
+                                break;
+                        }
+                        
+                    }else if(ef instanceof Subcl){
+                        Subcl con = (Subcl) ef;
+                        str_marking[0] += con.getSort().getConstraint(con.index()).name() + " ";
+                    }else{ //All
+                        str_marking[0] += "All ";
+                    }                                
+                }
+                
+                //check if there's a tuple element
+                if(it2.hasNext()){
+                    str_marking[0] += ", ";
+                }
+            }
+            
+            str_marking[0] += "> ";
+            
+            if(expanded_filter != null && !expanded_filter.equals("")){
+                 str_marking[0] += "[" + expanded_filter + "] ";
+            }
+            
+            //check if there's a next tuple
+            if(it1.hasNext()){
+                str_marking[0] += " + ";
+            }
+        }            
+        
+        return str_marking[0];
     }
     
     /**
