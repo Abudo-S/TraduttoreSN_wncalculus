@@ -37,11 +37,11 @@ public class Variable_writer extends ElementWriter{
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    if(single_datum.contains("id")){ //name
+                    if(single_datum.contains("id@=")){ //name
                         String datum = this.seperate_usable_value(single_datum);
                         variable.setAttribute("id", datum);
                         variable.setAttribute("name", datum);
-                    }else if(single_datum.contains("usersort")){
+                    }else if(single_datum.contains("usersort@=")){
                         Element usersort = doc.createElement("position");
                         usersort.setAttribute("declaration", single_datum);
                         variable.appendChild(usersort);

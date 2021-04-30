@@ -7,7 +7,6 @@ package writer;
 
 import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import static writer.ElementWriter.doc;
@@ -38,21 +37,21 @@ public class Arc_writer extends ElementWriter{
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    if(single_datum.contains("id")){
+                    if(single_datum.contains("id@=")){
                         arc.setAttribute("id", this.seperate_usable_value(single_datum));
-                    }else if(single_datum.contains("source")){
+                    }else if(single_datum.contains("source@=")){
                         arc.setAttribute("source", this.seperate_usable_value(single_datum));
-                    }else if(single_datum.contains("target")){
+                    }else if(single_datum.contains("target@=")){
                         arc.setAttribute("target", this.seperate_usable_value(single_datum));
-                    }else if(single_datum.contains("type")){ //inhibitor/transiting arc
+                    }else if(single_datum.contains("type@=")){ //inhibitor/transiting_arc
                         String arc_type = this.seperate_usable_value(single_datum);
 
                         if(arc_type.equals("inhibitor")){
-                            Attr type = doc.createAttribute("type");
-                            type.setValue("inhibitor");
-                            arc.setAttributeNode(type);
+                            Element type = doc.createElement("type");
+                            type.setAttribute("type", "inhibitor");
+                            arc.appendChild(type);
                         }
-                    }else if(single_datum.contains("hlinscription")){
+                    }else if(single_datum.contains("hlinscription@=")){
                         Element hlinscription = doc.createElement("hlinscription");
                         hlinscription.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
                         arc.appendChild(hlinscription);

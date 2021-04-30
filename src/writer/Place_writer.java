@@ -47,10 +47,10 @@ public class Place_writer extends ElementWriter{
                         Element type = doc.createElement("type");
                         type.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
                         place.appendChild(type);
-                    }else if(single_datum.contains("hlinitialMarking")){ //might use Marking_writer
+                    }else if(single_datum.contains("hlinitialMarking@=")){ //might use Marking_writer
                         Element hlinitialMarking = doc.createElement("hlinitialMarking");
                         hlinitialMarking.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
-                    }else if(single_datum.contains("graphics")){
+                    }else if(single_datum.contains("graphics@=")){
                         String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
                         Element graphics = doc.createElement("graphics");                        
                         Element position = doc.createElement("position");

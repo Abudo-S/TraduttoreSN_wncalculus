@@ -37,10 +37,10 @@ public class Domain_writer extends ElementWriter{
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    if(single_datum.contains("id")){ //name
+                    if(single_datum.contains("id@=")){ //name
                         variable.setAttribute("id", single_datum);
                         variable.setAttribute("name", single_datum);
-                    }else if(single_datum.contains("productsort")){
+                    }else if(single_datum.contains("productsort@=")){
                         Element productsort = doc.createElement("productsort");
                         String[] usersorts = this.separate_usable_ccs(this.seperate_usable_value(single_datum));
 

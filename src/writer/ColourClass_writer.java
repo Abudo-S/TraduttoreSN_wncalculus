@@ -44,19 +44,19 @@ public class ColourClass_writer extends ElementWriter{
         for(var i = 1; i < element_info.size(); i++){
             String single_datum = element_info.get(i);
             
-            if(single_datum.contains("id")){ //name
+            if(single_datum.contains("id@=")){ //name
                 String datum = this.seperate_usable_value(single_datum);
                 cc.setAttribute("id", datum);
                 cc.setAttribute("name", datum);
-            }else if(single_datum.contains("ordered")){
+            }else if(single_datum.contains("ordered@=")){
                 cc.setAttribute("ordered", this.seperate_usable_value(single_datum));
-            }else if(single_datum.contains("finiteintrange")){
+            }else if(single_datum.contains("finiteintrange@=")){
                 Element finiteintrange = doc.createElement("finiteintrange");
                 String[] str_end = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
                 finiteintrange.setAttribute("start", str_end[0]);
                 finiteintrange.setAttribute("end", str_end[1]);
                 cc.appendChild(finiteintrange);
-            }else if(single_datum.contains("finiteenumeration")){
+            }else if(single_datum.contains("finiteenumeration@=")){
                 Element finiteenumeration = doc.createElement("finiteenumeration");
                 String[] ccs = this.separate_usable_ccs(this.seperate_usable_value(single_datum));
                 
@@ -71,11 +71,11 @@ public class ColourClass_writer extends ElementWriter{
                 );
                 
                 cc.appendChild(finiteenumeration);
-            }else if(single_datum.contains("partitionelement")){
+            }else if(single_datum.contains("partitionelement@=")){
                 Element partitionelement = doc.createElement("partitionelement");
                 String tag = this.seperate_usable_value(single_datum);
                 
-                if(tag.contains("finiteintrange")){
+                if(tag.contains("finiteintrange@=")){
                     Element finiteintrange = doc.createElement("finiteintrange");
                     String[] str_end = this.separate_usable_x_y(this.seperate_usable_value(tag));
                     finiteintrange.setAttribute("start", str_end[0]);

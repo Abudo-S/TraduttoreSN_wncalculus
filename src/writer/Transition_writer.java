@@ -38,17 +38,17 @@ public class Transition_writer extends ElementWriter{
         element_info.stream().forEach(
                 single_datum -> {
                     
-                    if(single_datum.contains("id")){ //name
+                    if(single_datum.contains("id@=")){ //name
                         String datum = this.seperate_usable_value(single_datum);
                         Element name = doc.createElement("id");
                         name.appendChild(doc.createTextNode(datum));
                         transition.setAttribute("id", datum);
                         transition.appendChild(name);
-                    }else if(single_datum.contains("condition")){
+                    }else if(single_datum.contains("condition@=")){
                         Element condition = doc.createElement("condition");
                         condition.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
                         transition.appendChild(condition);
-                    }else if(single_datum.contains("graphics")){
+                    }else if(single_datum.contains("graphics@=")){
                         String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
                         Element graphics = doc.createElement("graphics");                        
                         Element position = doc.createElement("position");

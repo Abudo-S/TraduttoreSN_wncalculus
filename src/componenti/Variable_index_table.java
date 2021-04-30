@@ -56,6 +56,21 @@ public class Variable_index_table { //used for assigning projections' indices fo
     
     /**
      * 
+     * @param t_name the key transition that we use to get its all colour classes variables-indices map
+     * @param cc_name the colour class that we want to get its all variables-indices-map
+     * @param index the index for which we search in HashMap t_reserved_cc_var_indices
+     * @return variable name if found, null otherwise
+     */
+    public String get_var_name_at_index(String t_name, String cc_name, int index){
+        HashMap<String, Integer> vars_indices= this.t_reserved_cc_var_indices.get(t_name).get(cc_name);
+        
+        return vars_indices.keySet().stream().filter(
+                var_name -> vars_indices.get(var_name) == index
+        ).findFirst().orElse(null);
+    }
+    
+    /**
+     * 
      * @param tran the transition that we want to search in its variables
      * @param var variable name that we want to get its index to create a projection
      * @param d the domain of transition (used before transition's creation)
