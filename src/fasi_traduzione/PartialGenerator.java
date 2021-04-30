@@ -77,7 +77,7 @@ public class PartialGenerator {
                                 if(!initial_marking.isEmpty()){
                                     place_data.add("hlinitialMarking@=" + this.get_place_initial_marking(initial_marking));
                                 }
-                                place_xy[1] += 10;
+                                place_xy[1] += 20;
                                 place_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
                                 //add place to be written
                                 xmlwriter.add_place(place_data);
@@ -371,7 +371,7 @@ public class PartialGenerator {
                         transition_data.add("condition@=" + guard);
                     }
                     
-                    transition_xy[1] += 15;
+                    transition_xy[1] += 25;
                     transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" + transition_xy[1]);
                     //add transition to be written
                     xmlwriter.add_transition(transition_data);

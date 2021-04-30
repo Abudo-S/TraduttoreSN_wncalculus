@@ -39,13 +39,17 @@ public class Place_writer extends ElementWriter{
                     
                     if(single_datum.contains("id@=")){ //name
                         String datum = this.seperate_usable_value(single_datum);
-                        Element name = doc.createElement("id");
-                        name.appendChild(doc.createTextNode(datum));
+                        Element name = doc.createElement("name");
+                        Element text = doc.createElement("text");
+                        text.appendChild(doc.createTextNode(datum));
+                        name.appendChild(text);
                         place.setAttribute("id", datum);
                         place.appendChild(name);
                     }else if(single_datum.contains("type@=")){
                         Element type = doc.createElement("type");
-                        type.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        Element text = doc.createElement("text");
+                        text.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        type.appendChild(text);
                         place.appendChild(type);
                     }else if(single_datum.contains("hlinitialMarking@=")){ //might use Marking_writer
                         Element hlinitialMarking = doc.createElement("hlinitialMarking");

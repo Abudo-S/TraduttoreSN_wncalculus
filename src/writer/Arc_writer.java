@@ -53,7 +53,9 @@ public class Arc_writer extends ElementWriter{
                         }
                     }else if(single_datum.contains("hlinscription@=")){
                         Element hlinscription = doc.createElement("hlinscription");
-                        hlinscription.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        Element text = doc.createElement("text");
+                        text.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        hlinscription.appendChild(text);
                         arc.appendChild(hlinscription);
                     }else{
                         throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);

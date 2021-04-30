@@ -40,13 +40,17 @@ public class Transition_writer extends ElementWriter{
                     
                     if(single_datum.contains("id@=")){ //name
                         String datum = this.seperate_usable_value(single_datum);
-                        Element name = doc.createElement("id");
-                        name.appendChild(doc.createTextNode(datum));
+                        Element name = doc.createElement("name");
+                        Element text = doc.createElement("text");
+                        text.appendChild(doc.createTextNode(datum));
+                        name.appendChild(text);
                         transition.setAttribute("id", datum);
                         transition.appendChild(name);
                     }else if(single_datum.contains("condition@=")){
                         Element condition = doc.createElement("condition");
-                        condition.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        Element text = doc.createElement("text");
+                        text.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        condition.appendChild(text);
                         transition.appendChild(condition);
                     }else if(single_datum.contains("graphics@=")){
                         String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
