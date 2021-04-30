@@ -11,18 +11,18 @@ import albero_sintattico.SyntaxTree;
 import eccezioni.UnsupportedElementNameException;
 import java.util.*;
 import javax.xml.transform.TransformerException;
+import org.w3c.dom.Node;
+import struttura_sn.ArcAnnotation;
 import struttura_sn.Marking;
 import wncalculus.color.ColorClass;
-import struttura_sn.Place;
-import struttura_sn.SN;
-import struttura_sn.Token;
-import wncalculus.classfunction.All;
+import struttura_sn.*;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.classfunction.Subcl;
 import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
 import wncalculus.expr.Sort;
 import wncalculus.wnbag.LinearComb;
+import wncalculus.wnbag.WNtuple;
 
 /**
  *
@@ -76,8 +76,10 @@ public class PartialGenerator {
                                 }
                                 place_xy[1] += 10;
                                 place_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+                                //add place to be written
+                                xmlwriter.add_place(place_data);
                                 //write place arcs with unfolded filter
-                                this.write_unfolded_place_arcs(place, all_places_combs_filter.get(p_name));
+                                this.write_unfolded_place_arcs(place, p_name, all_places_combs_filter.get(p_name));
                             }
                     );
                 }
@@ -112,7 +114,7 @@ public class PartialGenerator {
             str_marking[0] += "&lt;";
             
             Iterator it2 = tuple_elements_list.iterator();
-            while(it2.hasNext()) {
+            while(it2.hasNext()){
                 LinearComb tuple_element = (LinearComb) it2.next();
                 Map<ElementaryFunction, Integer> linearcomb_map = (Map<ElementaryFunction, Integer>) tuple_element.asMap();
                 ArrayList<ElementaryFunction> keys_list = new ArrayList<>(linearcomb_map.keySet()); //to use ArrayList's index
@@ -164,15 +166,72 @@ public class PartialGenerator {
     /**
      * 
      * @param p place that we want to write its arcs expanded with the filter resulted from place unfolding
+     * @param place_name_suffix place combination
+     * @param expanded_filter the generated filter of a combination
      * Note: the expanded filter will be added to each tuple written on arc
      */
-    private void write_unfolded_place_arcs(Place p, String expanded_filter){
-        //to be completed
+    private void write_unfolded_place_arcs(Place p, String place_name_suffix, String expanded_filter){
+        HashMap<struttura_sn.Node, ArcAnnotation> next_nodes = p.get_next_nodes();
+        HashMap<struttura_sn.Node, ArcAnnotation> previous_nodes = p.get_previous_nodes();
+        HashMap<struttura_sn.Node, ArcAnnotation> inhibitored_nodes = p.get_inib_nodes();
+        
+        next_nodes.keySet().stream().forEach(
+            next_node -> {
+                //write arc
+                ArrayList<String> arc_data = new ArrayList<>();
+                String from = p.get_name() + place_name_suffix;
+                String to = next_node.get_name();
+                arc_data.add("id@=" + from + "_" + to);
+                arc_data.add("source@=" + from);
+                arc_data.add("target@=" + to);
+                //add hlinscription
+                arc_data.add("hlinscription@=" + this.get_arc_expression(next_nodes.get(next_node)));
+                //add arc to be written
+                xmlwriter.add_arc(arc_data);
+            }
+        );
+        
+        previous_nodes.keySet().stream().forEach(
+            previous_node -> {
+                //write arc
+                ArrayList<String> arc_data = new ArrayList<>();
+                String from = p.get_name() + place_name_suffix;
+                String to = previous_node.get_name();
+                arc_data.add("id@=" + from + "_" + to);
+                arc_data.add("source@=" + from);
+                arc_data.add("target@=" + to);
+                //add hlinscription
+                arc_data.add("hlinscription@=" + this.get_arc_expression(previous_nodes.get(previous_node)));    
+                //add arc to be written
+                xmlwriter.add_arc(arc_data);
+            }
+        );
+        
+        inhibitored_nodes.keySet().stream().forEach(
+            inhibitored_node -> {
+                //write arc
+                ArrayList<String> arc_data = new ArrayList<>();
+                String from = p.get_name() + place_name_suffix;
+                String to = inhibitored_node.get_name();
+                arc_data.add("id@=" + from + "_" + to);
+                arc_data.add("source@=" + from);
+                arc_data.add("target@=" + to);
+                //add hlinscription
+                arc_data.add("hlinscription@=" + this.get_arc_expression(inhibitored_nodes.get(inhibitored_node)));
+                arc_data.add("type@=inhibitor");
+                //add arc to be written
+                xmlwriter.add_arc(arc_data);
+            }
+        );
+        
+        
     }
-    private String get_arc_expression(){
-        String str_exp = "";
+     
+    private String get_arc_expression(ArcAnnotation arc){
+        String multiplied_filtered_tuples = "";
+        HashMap<WNtuple, Integer> multiplied_tuples = (HashMap<WNtuple, Integer>) arc.get_tuple_bag().asMap();
         //to be completed
-        return str_exp;
+        return multiplied_filtered_tuples;
     }
     
     /**
