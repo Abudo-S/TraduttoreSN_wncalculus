@@ -56,7 +56,7 @@ public class PartialGenerator {
     
     public void unfold_all_places() throws TransformerException{        
         Marking mk = Marking.get_instance();
-        int[] place_xy = new int[]{140, 30}; //graphics points
+        int[] place_xy = new int[]{40, 20}; //graphics points
         
         sn.get_P().stream().forEach(
                 place -> {
@@ -326,7 +326,7 @@ public class PartialGenerator {
      * write all transitions with different graphics points
      */
     private void write_transitions(){
-        int[] transition_xy = new int[]{300, 30}; //graphics points
+        int[] transition_xy = new int[]{900, 200}; //graphics points
                 
         SyntaxTree.get_instance().get_synt_transitions().stream().forEach(
                 transition -> {
