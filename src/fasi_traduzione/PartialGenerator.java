@@ -12,7 +12,6 @@ import componenti.Variable_index_table;
 import eccezioni.UnsupportedElementNameException;
 import java.util.*;
 import javax.xml.transform.TransformerException;
-import org.w3c.dom.Node;
 import struttura_sn.ArcAnnotation;
 import struttura_sn.Marking;
 import wncalculus.color.ColorClass;
@@ -173,9 +172,9 @@ public class PartialGenerator {
      * Note: the expanded filter will be added to each tuple written on arc
      */
     private void write_unfolded_place_arcs(Place p, String place_name_suffix, String expanded_filter){
-        HashMap<struttura_sn.Node, ArcAnnotation> next_nodes = p.get_next_nodes();
-        HashMap<struttura_sn.Node, ArcAnnotation> previous_nodes = p.get_previous_nodes();
-        HashMap<struttura_sn.Node, ArcAnnotation> inhibitored_nodes = p.get_inib_nodes();
+        HashMap<Node, ArcAnnotation> next_nodes = p.get_next_nodes();
+        HashMap<Node, ArcAnnotation> previous_nodes = p.get_previous_nodes();
+        HashMap<Node, ArcAnnotation> inhibitored_nodes = p.get_inib_nodes();
         
         next_nodes.keySet().stream().forEach(
             next_node -> {
