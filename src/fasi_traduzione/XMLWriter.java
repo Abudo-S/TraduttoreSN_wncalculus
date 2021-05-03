@@ -140,6 +140,8 @@ public class XMLWriter {
         DOMSource domsr = new DOMSource(this.doc);
         StreamResult streamResult = new StreamResult(new File(this.file_address));
         transformer.transform(domsr, streamResult);
+        
+        System.out.println("File has been created under this name '" + this.file_address +"'");
     }
     
     /**

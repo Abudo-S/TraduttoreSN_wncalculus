@@ -37,11 +37,25 @@ public class TraduttoreSN_wncalculus {
         sa.set_syntax_tree(DataParser.get_syntax_tree());
         sa.analyze_syntax_tree();
         //Semantic_DataTester.get_instance().print_all_proj_indices();
+        
         SN_DataTester sn_dt = SN_DataTester.get_instance(); //for data testing
         //sn_dt.SN_all_data();
         //sn_dt.print_nodes_connections();
         
-        //estimate all colorclasses tokens
+        //estimate/find color tokens of all colour classes
+        //estimate_all_cc_tokens();
+        
+        //apply unfolding algorithm
+        System.out.println("----------------");
+        PartialGenerator pg = PartialGenerator.get_instance();
+        pg.unfold_all_places();        
+    }
+    
+    /**
+     * prints all estimated/found tokens
+     */
+    private static void estimate_all_cc_tokens(){
+                //estimate all colorclasses tokens
         Token_estimator te = Token_estimator.get_instance();
         SN.get_instance().get_C().stream().forEach(
                 cc -> {
@@ -66,14 +80,7 @@ public class TraduttoreSN_wncalculus {
                     );
                 }
         );
-        //test
-        System.out.println("----------------");
-        PartialGenerator pg = PartialGenerator.get_instance();
-        //pg.unfold_multiplied_cc(SN.get_instance().get_C().get(2), 2, "Risorsa");
-        pg.unfold_all_places();
-        
     }
-    
     /**
      * 
      * @return String of scanned file name

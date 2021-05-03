@@ -49,7 +49,6 @@ public class PartialGenerator {
         this.subcc_predicates = new HashMap<>();
         this.cd_all_places_filters = new HashMap<>();
         xmlwriter = XMLWriter.get_instance("CPN");
-        xmlwriter.write_all_data();
         sn = SN.get_instance();
     }
     
