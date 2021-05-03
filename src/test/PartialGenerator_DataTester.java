@@ -74,9 +74,9 @@ public class PartialGenerator_DataTester {
     public void print_cc_filters_combs(ArrayList<String> bases, String cc_name, boolean isComb){
         
         if(isComb){
-            System.out.println("possible combinations of" + cc_name + ": " + Arrays.toString(bases.toArray()));    
+            System.out.println("possible combinations of " + cc_name + ": " + Arrays.toString(bases.toArray()));    
         }else{
-            System.out.println("base_filters of" + cc_name + ": " + Arrays.toString(bases.toArray()));    
+            System.out.println("base filters of" + cc_name + ": " + Arrays.toString(bases.toArray()));    
         }
     }
     /**

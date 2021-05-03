@@ -175,6 +175,7 @@ public class PartialGenerator {
         HashMap<Node, ArcAnnotation> next_nodes = p.get_next_nodes();
         HashMap<Node, ArcAnnotation> previous_nodes = p.get_previous_nodes();
         HashMap<Node, ArcAnnotation> inhibitored_nodes = p.get_inib_nodes();
+        //PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
         
         next_nodes.keySet().stream().forEach(
             next_node -> {
@@ -187,6 +188,7 @@ public class PartialGenerator {
                 arc_data.add("target@=" + to);
                 //add hlinscription
                 arc_data.add("hlinscription@=" + this.get_tuples_expression(next_nodes.get(next_node).get_tuple_bag(), expanded_filter, to));
+                //pg_dt.print_element_data(arc_data);
                 //add arc to be written
                 xmlwriter.add_arc(arc_data);
             }
@@ -203,6 +205,7 @@ public class PartialGenerator {
                 arc_data.add("target@=" + to);
                 //add hlinscription
                 arc_data.add("hlinscription@=" + this.get_tuples_expression(previous_nodes.get(previous_node).get_tuple_bag(), expanded_filter, from));    
+                //pg_dt.print_element_data(arc_data);
                 //add arc to be written
                 xmlwriter.add_arc(arc_data);
             }
@@ -220,6 +223,7 @@ public class PartialGenerator {
                 //add hlinscription
                 arc_data.add("hlinscription@=" + this.get_tuples_expression(inhibitored_nodes.get(inhibitored_node).get_tuple_bag(), expanded_filter, to));
                 arc_data.add("type@=inhibitor");
+                //pg_dt.print_element_data(arc_data);
                 //add arc to be written
                 xmlwriter.add_arc(arc_data);
             }
@@ -443,7 +447,7 @@ public class PartialGenerator {
                         cd_combined_filters.put(cc_name, cc_all_combs);
                     }
             );
-            Iterator it1 = cd_combined_filters.keySet().iterator(), it2 = cd_combined_filters.keySet().iterator();
+            Iterator it1 = cd_combined_filters.keySet().iterator();
             
             if(it1.hasNext()){
                 all_places_combs_filter = this.apply_cc_filters_cp(cd_combined_filters, it1);
@@ -452,6 +456,10 @@ public class PartialGenerator {
             //reserve calculated & unfolded places to use later if we face another place with the same cd name
             this.cd_all_places_filters.put(cd_name, all_places_combs_filter);
         }
+        
+//        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+//        pg_dt.print_place_unfolded_places(cd_name, all_places_combs_filter);
+        
         return all_places_combs_filter;
     }
     
@@ -459,14 +467,15 @@ public class PartialGenerator {
      * 
      * @param cd_combined_filters HashMap of all cd's colour classes combined filters of a possible combination
      * @param it1 iterator of colour class first key element (starts with the head of keys)
-     * @return HashMap all generated places names with their corrisponding filters
+     * @return HashMap all generated places names with their corresponding filters
      */
     private HashMap<String, String> apply_cc_filters_cp(HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters, Iterator it1){    
         HashMap<String, String> all_places_combs_filter = new HashMap<>();
         String cc_name = (String)it1.next(), place_name;
         HashMap<String, ArrayList<String>> cc_internal_combs_filters = cd_combined_filters.get(cc_name);               
-        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
-        pg_dt.print_cc_combined_filters_combs(cc_internal_combs_filters);
+//        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+//        pg_dt.print_cc_combined_filters_combs(cc_internal_combs_filters);
+
         //subplace_name and its corresponding filter
         HashMap<String, String> pre_calculated_subtree = new HashMap<>(); //used to be assigned to a filter instead of calculating all its subtree cartesian product again 
         
@@ -634,8 +643,8 @@ public class PartialGenerator {
         possible_combs.put(cc.name(), cc_possible_combs); 
         this.cd_possible_combs.put(cd_name, possible_combs);
         
-        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
-        pg_dt.print_cc_filters_combs(cc_possible_combs, cd_name, true);
+//        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+//        pg_dt.print_cc_filters_combs(cc_possible_combs, cd_name, true);
         //create CS
         //ArrayList<Interval> CS = this.create_CS(cc, multiplicity);
         //update  base filters
@@ -691,8 +700,8 @@ public class PartialGenerator {
                 }
         );
         
-        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
-        pg_dt.print_cc_filters_combs(base_filters, cc.name(), false);
+//        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+//        pg_dt.print_cc_filters_combs(base_filters, cc.name(), false);
         
         return base_filters;
     }
