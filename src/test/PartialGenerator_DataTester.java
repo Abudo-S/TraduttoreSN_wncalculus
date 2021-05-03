@@ -23,6 +23,20 @@ public class PartialGenerator_DataTester {
     
     /**
      * 
+     * @param p_name the name of place before unfolding 
+     * @param all_places_combs_filter HashMap of all generated places with their corresponding filters
+     */
+    public void print_place_unfolded_places(String p_name, HashMap<String, String> all_places_combs_filter){
+        System.out.println("the unfolding of " + p_name + ": ");
+        
+        all_places_combs_filter.keySet().stream().forEach(
+                place -> System.out.println(place + " <---> " + all_places_combs_filter.get(place))
+        );
+        
+        System.out.println("--------------");
+    }
+    /**
+     * 
      * @param element_data ArraysList of all element's data that will be printed
      */
     public void print_element_data(ArrayList<String> element_data){
