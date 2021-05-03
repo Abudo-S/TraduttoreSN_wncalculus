@@ -29,7 +29,6 @@ public class DataParser { // will use SemanticAnalyzer
     
     private static SN sn;
     private static Place_syntax_table pst; 
-    private static Variable_index_table vit;
     private static ColorClass_tokens_table cc_tt;
     private static SyntaxTree snt;
     private static Marking m0;
@@ -39,7 +38,6 @@ public class DataParser { // will use SemanticAnalyzer
     private DataParser(){
        sn = SN.get_instance();
        pst = Place_syntax_table.get_instance();
-       vit = Variable_index_table.get_instance();
        cc_tt = ColorClass_tokens_table.get_instance();
        snt = SyntaxTree.get_instance();
        m0 = Marking.get_instance();

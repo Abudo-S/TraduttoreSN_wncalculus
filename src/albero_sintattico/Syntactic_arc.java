@@ -14,7 +14,7 @@ public class Syntactic_arc{
     
     private final String name;
     private boolean inhibitor;
-    private LinkedHashMap<Syntactic_tuple, Integer> multiplied_tuples;
+    private final LinkedHashMap<Syntactic_tuple, Integer> multiplied_tuples;
     
     /**
      * 

@@ -19,8 +19,8 @@ import wncalculus.expr.Domain;
 //singleton
 public class Variable_index_table { //used for assigning projections' indices for each transition 
     //HashMap<t_name, HashMap<cc_name, HashMap<var_name, int>>> -> HashMap of all reserved indices of a certain colour-class variables for a transition
-    private HashMap<String, HashMap<String, HashMap<String, Integer>>> t_reserved_cc_var_indices; //all reserved indices of a certain transition variables of the same colorclass
-    private HashMap<Domain, HashMap<String, Integer>> filters_vars_indices;
+    private final HashMap<String, HashMap<String, HashMap<String, Integer>>> t_reserved_cc_var_indices; //all reserved indices of a certain transition variables of the same colorclass
+    private final HashMap<Domain, HashMap<String, Integer>> filters_vars_indices;
     private static SN sn;
     //single instance
     private static Variable_index_table instance = null;

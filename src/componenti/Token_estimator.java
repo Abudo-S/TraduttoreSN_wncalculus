@@ -13,15 +13,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import struttura_sn.Marking;
-import struttura_sn.Place;
 import struttura_sn.SN;
 import struttura_sn.Token;
-import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.color.ColorClass;
-import wncalculus.expr.Domain;
 import wncalculus.expr.Interval;
-import wncalculus.wnbag.LinearComb;
 
 /**
  *

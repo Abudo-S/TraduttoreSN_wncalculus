@@ -16,7 +16,7 @@ import wncalculus.color.ColorClass;
  */
 //singleton
 public class Marking_tokens_table {
-    private HashSet<Token> created_token;
+    private final HashSet<Token> created_token;
     //single instance
     private static Marking_tokens_table instance = null;
     

@@ -72,17 +72,6 @@ public class Tuple_analyzer {
             tuple_combs.add(this.analyze_tuple_element(tuple_elements[i], transition_name, place_name, i, d));
         }
         
-//        System.out.println(sn.find_colorClass("Risorsa").getConstraints()[0].lb());      
-//        tuple_combs.stream().forEach(
-//                comb -> {
-//                    System.out.println("comb start:");
-//                    comb.asMap().keySet().stream().forEach(
-//                         comb_element -> System.out.println(comb_element.indexSet().iterator().next())
-//                    );
-//                    System.out.println("comb end:");
-//                }
-//        );
-//        System.out.println(place_name + "," + tuple_combs.size() + "," + transition_name);
         //Semantic_DataTester.get_instance().test_semantic_arc_tuple(tuple_combs, g, transition_name);
         return new WNtuple(filter, tuple_combs, g, d, false);
     }
@@ -364,14 +353,18 @@ public class Tuple_analyzer {
             if(stimate_var_wrapper[0] == true){
                 ColorClass cc = sn.find_colorClass(pst.get_place_values(place_name).get(i));
                 int n_times = 3; //limit of loop cycles
-                Variable v = this.get_random_var(cc);
+                Variable v = this.get_random_var(cc); 
                 
                 if(v == null){
-                    sn.add_variable(new Variable(this.random_name(), cc));
+                    v = new Variable(this.random_name(), cc);
+                    sn.add_variable(v);
                 }
+                
+                this.last_filter_var_name = v.get_name();
                 //try to get another variable if it's recently used by a filter's element
                 while(this.last_filter_var_name.equals(v.get_name()) && n_times > 0){
                     v = this.get_random_var(cc);
+                    this.last_filter_var_name = v.get_name();
                     n_times--;
                 }
                vars.add(v.get_name());

@@ -16,6 +16,7 @@ import struttura_sn.ArcAnnotation;
 import struttura_sn.Marking;
 import wncalculus.color.ColorClass;
 import struttura_sn.*;
+import test.PartialGenerator_DataTester;
 import wncalculus.classfunction.ElementaryFunction;
 import wncalculus.classfunction.Projection;
 import wncalculus.classfunction.Subcl;
@@ -34,10 +35,10 @@ import wncalculus.wnbag.WNtuple;
 //will be a part of factory pattern with (struttura_unfolding_parziale)/XMLWriter
 public class PartialGenerator {
     //usable maps to prevent redundant calculations/combinations of colour classes of a colour domain cd
-    private HashMap<String, HashMap<String, String>> cd_all_places_filters; //contains pre-calculated cd's unfolded places names and their corresponding filters
-    private HashMap<String, HashMap<String, ArrayList<String>>> cd_possible_combs; //es. colour-domain name ->{colour-class name -> 11, 12, ...}
-    private HashMap<String, HashMap<Integer, ArrayList<String>>> cc_base_filters; //base filters of a colour class that follows ei multiplicity
-    private HashMap<String, HashMap<Integer, ArrayList<String>>> subcc_predicates; //predicates of each subcc for 1 <= n <= ei, Note: each filter's predicates are in the same list
+    private final HashMap<String, HashMap<String, String>> cd_all_places_filters; //contains pre-calculated cd's unfolded places names and their corresponding filters
+    private final HashMap<String, HashMap<String, ArrayList<String>>> cd_possible_combs; //es. colour-domain name ->{colour-class name -> 11, 12, ...}
+    private final HashMap<String, HashMap<Integer, ArrayList<String>>> cc_base_filters; //base filters of a colour class that follows ei multiplicity
+    private final HashMap<String, HashMap<Integer, ArrayList<String>>> subcc_predicates; //predicates of each subcc for 1 <= n <= ei, Note: each filter's predicates are in the same list
     private static XMLWriter xmlwriter;
     private static SN sn;
     //single instance
@@ -464,18 +465,8 @@ public class PartialGenerator {
         HashMap<String, String> all_places_combs_filter = new HashMap<>();
         String cc_name = (String)it1.next(), place_name;
         HashMap<String, ArrayList<String>> cc_internal_combs_filters = cd_combined_filters.get(cc_name);               
-//        cd_combined_filters.keySet().stream().forEach(
-//                cc -> {
-//                    System.out.println(cc + "------");
-//                    HashMap<String, ArrayList<String>> cc_pf = cd_combined_filters.get(cc);
-//                    
-//                    cc_pf.keySet().stream().forEach(
-//                            pc -> {
-//                                System.out.println(pc + "," + Arrays.toString(cc_pf.get(pc).toArray()));
-//                            }
-//                    );
-//                }
-//        );
+        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+        pg_dt.print_cc_combined_filters_combs(cc_internal_combs_filters);
         //subplace_name and its corresponding filter
         HashMap<String, String> pre_calculated_subtree = new HashMap<>(); //used to be assigned to a filter instead of calculating all its subtree cartesian product again 
         
@@ -642,11 +633,9 @@ public class PartialGenerator {
         }
         possible_combs.put(cc.name(), cc_possible_combs); 
         this.cd_possible_combs.put(cd_name, possible_combs);
-//        System.out.println(cc.name() + "," + cc_possible_combs);
-//        //System.out.println(cc.name() + "," + multiplicity);
-//        base_filters.stream().forEach(
-//                base_filter -> System.out.println(base_filter)
-//        );
+        
+        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+        pg_dt.print_cc_filters_combs(cc_possible_combs, cd_name, true);
         //create CS
         //ArrayList<Interval> CS = this.create_CS(cc, multiplicity);
         //update  base filters
@@ -701,6 +690,9 @@ public class PartialGenerator {
                     base_filters.add(base_filter);
                 }
         );
+        
+        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+        pg_dt.print_cc_filters_combs(base_filters, cc.name(), false);
         
         return base_filters;
     }
@@ -824,7 +816,7 @@ public class PartialGenerator {
      * @return K the dimension of static subclass
      */
     private int calculate_K(Interval subcc){
-        int K = 0;
+        int K;
         
         if(subcc.lb() == subcc.ub()){ //exact number of elements
             K = subcc.lb();
@@ -937,6 +929,7 @@ public class PartialGenerator {
     /**
      * 
      * @return single static instance
+     * @throws java.lang.Exception
      */
     public static PartialGenerator get_instance() throws Exception{
         

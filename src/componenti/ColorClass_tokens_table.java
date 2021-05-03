@@ -6,7 +6,6 @@
 package componenti;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import struttura_sn.SN;
 import wncalculus.color.ColorClass;
@@ -19,11 +18,11 @@ import wncalculus.color.ColorClass;
 public class ColorClass_tokens_table { //contains each colorclass available token that were read from file, that will reduce colorclass tokens stimation dedicated to tag "finiteintrange"
     //each colorclass name will have its corrisponding ArrayList of subclasses names.
     //Note: if colorclass contains only 1 unnamed subclass then the subclass will have parent(key) colorclass's name
-    private HashMap<String, ArrayList<String>> cc_subccs; //List is faster than Set in accessing/storing time
+    private final HashMap<String, ArrayList<String>> cc_subccs; //List is faster than Set in accessing/storing time
     //each subclass will have its corrisponding flag, true means that its values/tokens exist (explicit token-expressing), false means that it will be estimated by Token_estimator (implicit token-expressing)
-    private HashMap<String, Boolean> subccs_values_exist;
+    private final HashMap<String, Boolean> subccs_values_exist;
     //each colorclass with its available values/tokens
-    private HashMap<String, ArrayList<String>> subccs_values;
+    private final HashMap<String, ArrayList<String>> subccs_values;
     //single instance
     private static ColorClass_tokens_table instance = null; 
     
