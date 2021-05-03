@@ -55,7 +55,7 @@ public class TraduttoreSN_wncalculus {
      * prints all estimated/found tokens
      */
     private static void estimate_all_cc_tokens(){
-                //estimate all colorclasses tokens
+        //estimate all colorclasses tokens
         Token_estimator te = Token_estimator.get_instance();
         SN.get_instance().get_C().stream().forEach(
                 cc -> {
