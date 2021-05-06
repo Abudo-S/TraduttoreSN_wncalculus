@@ -21,8 +21,8 @@ public class ColourClass_writer extends ElementWriter{
     //single instance
     private static ColourClass_writer instance = null;
     
-    private ColourClass_writer(Document doc){
-        super(doc);
+    private ColourClass_writer(Document doc, Document doc_pnpro){
+        super(doc, doc_pnpro);
     }
 
     /**
@@ -101,12 +101,14 @@ public class ColourClass_writer extends ElementWriter{
     
     /**
      * 
+     * @param doc pnml document
+     * @param doc_pnpro pnpro document
      * @return single static instance
      */
-    public static ColourClass_writer get_instance(Document doc){
+    public static ColourClass_writer get_instance(Document doc, Document doc_pnpro){
 
         if(instance == null){
-            instance = new ColourClass_writer(doc);
+            instance = new ColourClass_writer(doc, doc_pnpro);
         }
         
         return instance;

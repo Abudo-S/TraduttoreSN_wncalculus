@@ -21,8 +21,8 @@ public class Transition_writer extends ElementWriter{
     //single instance
     private static Transition_writer instance = null;
     
-    private Transition_writer(Document doc){
-        super(doc);
+    private Transition_writer(Document doc, Document doc_pnpro){
+        super(doc, doc_pnpro);
     }
     
     /**
@@ -70,12 +70,14 @@ public class Transition_writer extends ElementWriter{
     
     /**
      * 
+     * @param doc pnml document
+     * @param doc_pnpro pnpro document
      * @return single static instance
      */
-    public static Transition_writer get_instance(Document doc){
+    public static Transition_writer get_instance(Document doc, Document doc_pnpro){
 
         if(instance == null){
-            instance = new Transition_writer(doc);
+            instance = new Transition_writer(doc, doc_pnpro);
         }
         
         return instance;

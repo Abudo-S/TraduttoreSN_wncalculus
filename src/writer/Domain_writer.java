@@ -20,8 +20,8 @@ public class Domain_writer extends ElementWriter{
     //single instance
     private static Domain_writer instance = null;
     
-    private Domain_writer(Document doc){
-        super(doc);
+    private Domain_writer(Document doc, Document doc_pnpro){
+        super(doc, doc_pnpro);
     }
 
     /**
@@ -64,12 +64,14 @@ public class Domain_writer extends ElementWriter{
     
     /**
      * 
+     * @param doc pnml document
+     * @param doc_pnpro pnpro document
      * @return single static instance
      */
-    public static Domain_writer get_instance(Document doc){
+    public static Domain_writer get_instance(Document doc, Document doc_pnpro){
 
         if(instance == null){
-            instance = new Domain_writer(doc);
+            instance = new Domain_writer(doc, doc_pnpro);
         }
         
         return instance;

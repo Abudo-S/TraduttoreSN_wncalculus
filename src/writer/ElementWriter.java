@@ -20,14 +20,17 @@ import org.w3c.dom.Element;
 public abstract class ElementWriter {
     
     protected static Document doc;
+    protected static Document doc_pnpro;
     protected ArrayList<ArrayList<String>> element_data;
     
     /**
      * 
-     * @param doc the document in which we write elements
+     * @param doc the pnml document in which we write elements
+     * @param doc_pnpro the pnpro document in which we write elements
      */
-    public ElementWriter(final Document doc){
+    public ElementWriter(final Document doc, final Document doc_pnpro){
         ElementWriter.doc = doc;  
+        ElementWriter.doc_pnpro = doc_pnpro;
         this.element_data = new ArrayList<>();
     }
     
@@ -38,6 +41,14 @@ public abstract class ElementWriter {
      * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnml format
      */
     public void write_info(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{}
+    
+    /**
+     * 
+     * @param element_info ArrayList of element's data that will be added to pnpro document
+     * @param parent the element to which data will be added
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnpro format
+     */
+    public void write_info_pnpro(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{}
     
     /**
      * 
@@ -53,6 +64,13 @@ public abstract class ElementWriter {
      */
     public ArrayList<ArrayList<String>> get_element_data(){
         return this.element_data;
+    }
+    
+    /**
+     * resets all ArrayList element data
+     */
+    public void reset_element_data(){
+        this.element_data = new ArrayList<>();
     }
     
     /**

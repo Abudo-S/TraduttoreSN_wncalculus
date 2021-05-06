@@ -7,7 +7,6 @@ package writer;
 
 import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -20,8 +19,8 @@ public class Place_writer extends ElementWriter{
     //single instance
     private static Place_writer instance = null;
     
-    private Place_writer(Document doc){
-        super(doc);
+    private Place_writer(Document doc, Document doc_pnpro){
+        super(doc, doc_pnpro);
     }
 
     /**
@@ -72,12 +71,14 @@ public class Place_writer extends ElementWriter{
     
     /**
      * 
+     * @param doc pnml document
+     * @param doc_pnpro doc_pnpro
      * @return single static instance
      */
-    public static Place_writer get_instance(Document doc){
+    public static Place_writer get_instance(Document doc, Document doc_pnpro){
 
         if(instance == null){
-            instance = new Place_writer(doc);
+            instance = new Place_writer(doc, doc_pnpro);
         }
         
         return instance;

@@ -20,8 +20,8 @@ public class Arc_writer extends ElementWriter{
     //single instance
     private static Arc_writer instance = null;
     
-    private Arc_writer(Document doc){
-        super(doc);
+    private Arc_writer(Document doc, Document doc_pnpro){
+        super(doc, doc_pnpro);
     }
     
     /**
@@ -67,12 +67,14 @@ public class Arc_writer extends ElementWriter{
     
     /**
      * 
+     * @param doc pnml document
+     * @param doc_pnpro pnpro document
      * @return single static instance
      */
-    public static Arc_writer get_instance(Document doc){
+    public static Arc_writer get_instance(Document doc, Document doc_pnpro){
 
         if(instance == null){
-            instance = new Arc_writer(doc);
+            instance = new Arc_writer(doc, doc_pnpro);
         }
         
         return instance;

@@ -19,8 +19,8 @@ public class Variable_writer extends ElementWriter{
     //single instance
     private static Variable_writer instance = null;
     
-    private Variable_writer(Document doc){
-        super(doc);
+    private Variable_writer(Document doc, Document doc_pnpro){
+        super(doc, doc_pnpro);
     }
 
     /**
@@ -54,12 +54,14 @@ public class Variable_writer extends ElementWriter{
     
     /**
      * 
+     * @param doc pnml document
+     * @param doc_pnpro pnpro document
      * @return single static instance
      */
-    public static Variable_writer get_instance(Document doc){
+    public static Variable_writer get_instance(Document doc, Document doc_pnpro){
 
         if(instance == null){
-            instance = new Variable_writer(doc);
+            instance = new Variable_writer(doc, doc_pnpro);
         }
         
         return instance;
