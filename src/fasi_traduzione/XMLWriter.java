@@ -27,15 +27,16 @@ import writer.*;
 //part of factory pattern with (writer)
 public class XMLWriter {
     
-    private final String file_address; 
+    private String file_address; 
     private final Document doc;
+    private final Document doc_pnpro;
     private final Place_writer pw;
     private final Transition_writer tw;
     private final Arc_writer aw;
-//    private final ColourClass_writer ccw;
-//    private final Variable_writer vw;
+    private final ColourClass_writer ccw;
+    private final Variable_writer vw;
 //    private final Domain_writer dw;
-    private static Element declaration;
+    private static Element declaration; //for pnml document
     //single instance
     private static XMLWriter instance = null;
     
@@ -51,20 +52,30 @@ public class XMLWriter {
             file_address = m.group(1);
         }
         
-        this.file_address = file_address + "_generated.pnml";
+        this.file_address = file_address + "_generated";
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
+        
+        //create pnpro document
+        this.doc_pnpro = builder.newDocument();
+        Element prnpro = this.doc_pnpro.createElement("project");
+        prnpro.setAttribute("name", "SN");
+        prnpro.setAttribute("version", "121");
+        this.doc_pnpro.appendChild(prnpro);
+        
+        //create pnml document
         this.doc = builder.newDocument();
         Element pnml = this.doc.createElement("pnml");
         pnml.setAttribute("xmlns", "http://www.pnml.org/version-2009/grammar/pnml");
         this.doc.appendChild(pnml);
+        
         //initialize elements scanners
-        this.pw = Place_writer.get_instance(this.doc);
-        this.tw = Transition_writer.get_instance(this.doc);
-        this.aw = Arc_writer.get_instance(this.doc);
-//        this.ccw = ColourClass_writer.get_instance(this.doc);
-//        this.vw = Variable_writer.get_instance(this.doc);
-//        this.dw = Domain_writer.get_instance(this.doc);
+        this.pw = Place_writer.get_instance(this.doc, this.doc_pnpro);
+        this.tw = Transition_writer.get_instance(this.doc, this.doc_pnpro);
+        this.aw = Arc_writer.get_instance(this.doc, this.doc_pnpro);
+        this.ccw = ColourClass_writer.get_instance(this.doc, this.doc_pnpro);
+        this.vw = Variable_writer.get_instance(this.doc, this.doc_pnpro);
+        //this.dw = Domain_writer.get_instance(this.doc);
     }
     
     /**
@@ -76,16 +87,18 @@ public class XMLWriter {
     }
     
     /**
-     * write all necessary data in document, then create a file from them
+     * write all necessary data in a pnml document, then create a file from them
      * @throws javax.xml.transform.TransformerException
      */
-    public void write_all_data() throws TransformerException{
+    public void write_all_data() throws TransformerException{ //pnml
+        //set file address.pnml
+        String modified_address = this.file_address + ".pnml";
         //create essential file tags
         Element net = this.doc.createElement("net");
-        net.setAttribute("id", this.file_address);
+        net.setAttribute("id", modified_address);
         net.setAttribute("type", "http://www.pnml.org/version-2009/grammar/symmetricnet");
         Element net_name = this.doc.createElement("name");
-        net_name.setTextContent(this.file_address);
+        net_name.setTextContent(modified_address);
         net.appendChild(net_name);
         
         //create declarations
@@ -138,10 +151,18 @@ public class XMLWriter {
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         DOMSource domsr = new DOMSource(this.doc);
-        StreamResult streamResult = new StreamResult(new File(this.file_address));
+        StreamResult streamResult = new StreamResult(new File(modified_address));
         transformer.transform(domsr, streamResult);
         
-        System.out.println("File has been created under this name '" + this.file_address + "'");
+        System.out.println("File has been created under this name '" + modified_address + "'");
+    }
+    
+    /**
+     * write all necessary data in a pnpro document, then create a file from them
+     * @throws javax.xml.transform.TransformerException
+     */
+    public void write_all_data_pnpro() throws TransformerException{ //pnml
+        //to be completed
     }
     
     /**
