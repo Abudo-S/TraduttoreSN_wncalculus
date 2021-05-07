@@ -8,6 +8,8 @@ package fasi_traduzione;
 import albero_sintattico.Syntactic_guard;
 import albero_sintattico.Syntactic_predicate;
 import albero_sintattico.SyntaxTree;
+import componenti.Place_syntax_table;
+import componenti.Token_estimator;
 import componenti.Variable_index_table;
 import eccezioni.UnsupportedElementNameException;
 import java.util.*;
@@ -73,20 +75,37 @@ public class PartialGenerator {
                                 
                                 HashMap<ArrayList<LinearComb>, Integer> initial_marking = mk.get_marking_of_place(p_name);
                                 //copy intitial marking of place in all unfolded places
+                                String marking = "";
                                 if(!initial_marking.isEmpty()){
-                                    place_data.add("hlinitialMarking@=" + this.get_place_initial_marking(initial_marking));
+                                    marking = this.get_place_initial_marking(initial_marking);
+                                    place_data.add("hlinitialMarking@=" + marking);
                                 }
                                 place_xy[1] += 20;
                                 place_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
-                                //add place to be written
-                                xmlwriter.add_place(place_data);
+                                //add place to be written in pnml
+                                xmlwriter.add_place(place_data, false);
+                                
+                                place_data = new ArrayList<>();
+                                place_data.add("name@=" + p_name);
+                                place_data.add("domain@=" + place.get_type());
+                                
+                                if(!marking.equals("")){
+                                   place_data.add("marking@=" + marking);
+                                }
+                                place_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+                                //add place to be written in pnpro
+                                xmlwriter.add_place(place_data, true);
+                                
                                 //write place arcs with unfolded filter
                                 this.write_unfolded_place_arcs(place, p_name, all_places_combs_filter.get(p_name));
                             }
                     );
                 }
         );
+        
         this.write_transitions();
+        this.write_colourclasses_domains_pnpro();
+        this.write_variables_pnpro();
 //       HashMap<String, String> all_places_combs_filter = this.unfold_place(sn.get_P().get(1));
 //
 //       all_places_combs_filter.keySet().stream().forEach(
@@ -187,10 +206,19 @@ public class PartialGenerator {
                 arc_data.add("source@=" + from);
                 arc_data.add("target@=" + to);
                 //add hlinscription
-                arc_data.add("hlinscription@=" + this.get_tuples_expression(next_nodes.get(next_node).get_tuple_bag(), expanded_filter, to));
+                String ex = this.get_tuples_expression(next_nodes.get(next_node).get_tuple_bag(), expanded_filter, to);
+                arc_data.add("hlinscription@=" + ex);
                 //pg_dt.print_element_data(arc_data);
-                //add arc to be written
-                xmlwriter.add_arc(arc_data);
+                //add arc to be written in pnml
+                xmlwriter.add_arc(arc_data, false);
+                
+                arc_data = new ArrayList<>();
+                arc_data.add("head@=" + from);
+                arc_data.add("tail@=" + to);
+                arc_data.add("kind@=OUTPUT");
+                arc_data.add("mult@=" + ex);
+                //add arc to be written in pnpro
+                xmlwriter.add_arc(arc_data, true);
             }
         );
         
@@ -204,10 +232,19 @@ public class PartialGenerator {
                 arc_data.add("source@=" + from);
                 arc_data.add("target@=" + to);
                 //add hlinscription
-                arc_data.add("hlinscription@=" + this.get_tuples_expression(previous_nodes.get(previous_node).get_tuple_bag(), expanded_filter, from));    
+                String ex = this.get_tuples_expression(previous_nodes.get(previous_node).get_tuple_bag(), expanded_filter, from);
+                arc_data.add("hlinscription@=" + ex);    
                 //pg_dt.print_element_data(arc_data);
                 //add arc to be written
-                xmlwriter.add_arc(arc_data);
+                xmlwriter.add_arc(arc_data, false);
+            
+                arc_data = new ArrayList<>();
+                arc_data.add("head@=" + from);
+                arc_data.add("tail@=" + to);
+                arc_data.add("kind@=INPUT");
+                arc_data.add("mult@=" + ex);
+                //add arc to be written in pnpro
+                xmlwriter.add_arc(arc_data, true);
             }
         );
         
@@ -221,11 +258,20 @@ public class PartialGenerator {
                 arc_data.add("source@=" + from);
                 arc_data.add("target@=" + to);
                 //add hlinscription
+                String ex = this.get_tuples_expression(inhibitored_nodes.get(inhibitored_node).get_tuple_bag(), expanded_filter, to);
                 arc_data.add("hlinscription@=" + this.get_tuples_expression(inhibitored_nodes.get(inhibitored_node).get_tuple_bag(), expanded_filter, to));
                 arc_data.add("type@=inhibitor");
                 //pg_dt.print_element_data(arc_data);
                 //add arc to be written
-                xmlwriter.add_arc(arc_data);
+                xmlwriter.add_arc(arc_data, false);
+                
+                arc_data = new ArrayList<>();
+                arc_data.add("head@=" + from);
+                arc_data.add("tail@=" + to);
+                arc_data.add("kind@=INHIBITOR");
+                arc_data.add("mult@=" + ex);
+                //add arc to be written in pnpro
+                xmlwriter.add_arc(arc_data, true);
             }
         );        
         
@@ -377,9 +423,106 @@ public class PartialGenerator {
                     transition_xy[1] += 25;
                     transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" + transition_xy[1]);
                     //add transition to be written
-                    xmlwriter.add_transition(transition_data);
+                    xmlwriter.add_transition(transition_data, false);
+                    
+                    transition_data = new ArrayList<>();
+                    transition_data.add("name@=" + transition.get_name());
+                    
+                    if(!guard.equals("")){
+                        transition_data.add("guard@=" + guard);
+                    }
+                    transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" + transition_xy[1]);
+                    //add transition to be written in pnpro
+                    xmlwriter.add_transition(transition_data, true);
                 }
         );
+    }
+    
+    /**
+     * write all domains and colour classes from SN in pnpro
+     */
+    private void write_colourclasses_domains_pnpro(){
+       Token_estimator te = Token_estimator.get_instance();
+       Place_syntax_table pst = Place_syntax_table.get_instance();
+       
+       sn.get_C().stream().forEach(
+               cc -> {
+                  if(!cc.name().equals("Neutral")){ 
+                    ArrayList<String> cc_data = new ArrayList<>();
+                    cc_data.add("name@=" + cc.name());
+                    String definition = "definition@=";
+
+                    Interval[] subs = cc.getConstraints();
+
+                    if(subs.length == 1){ //partitioned cc
+                      ArrayList<Token> tokens = te.get_estimated_cc_tokens(cc.name());
+                      definition += "enum {";
+
+                      for(var i = 0; i < tokens.size(); i++){
+                          definition += tokens.get(i).get_Token_value();
+
+                          if(i < tokens.size() - 1){
+                              definition += ",";
+                          }
+                      }
+
+                      definition += "}";
+
+                    }else{ //Non partitioned cc
+
+                        for(var i = 0; i < subs.length; i++){
+                          ArrayList<Token> tokens = te.get_estimated_cc_tokens(subs[i].name());
+                          definition += "enum {";
+
+                          for(var j = 0; j < tokens.size(); j++){
+                              definition += tokens.get(j).get_Token_value();
+
+                              if(j < tokens.size() - 1){
+                                  definition += ",";
+                              }
+                          }
+
+                          definition += "} is " + subs[i].name();
+                          
+                          if(i < subs.length -1){
+                              definition += " + ";
+                          }
+                        }
+                    }
+
+                    cc_data.add(definition);
+                    //add colour class to be written
+                    xmlwriter.add_colourclass(cc_data, true);
+                  }
+               }         
+       );
+
+       sn.get_DC().stream().forEach(
+               d -> {
+                    ArrayList<String> domain_data = new ArrayList<>();
+                    domain_data.add("name@=" + d.name());
+                    ArrayList<String> values = pst.get_cd_values(d.name());
+                    String definition = "definition@=";
+                            
+                    for(var i = 0; i < values.size(); i++){
+                            definition += values.get(i);
+                        
+                            if(i < values.size() - 1){
+                                definition += " * ";
+                            }
+                    }
+                    domain_data.add("definition@=" + definition);
+                    //add colour class to be written
+                    xmlwriter.add_colourclass(domain_data, true);
+               }
+       );
+    }
+    
+    /**
+     * write all variables from SN in pnpro
+     */
+    private void write_variables_pnpro(){
+        //to be completed
     }
     
     /**
@@ -498,7 +641,7 @@ public class PartialGenerator {
                         all_places_combs_filter.put(place_name1, filters.get(i));
                     }else{
                         for(String sub_p_name : pre_calculated_subtree.keySet()){
-                            all_places_combs_filter.put(place_name1 + sub_p_name, filters.get(i) + " and " + pre_calculated_subtree.get(sub_p_name));
+                            all_places_combs_filter.put(place_name1 + sub_p_name, filters.get(i) + " && " + pre_calculated_subtree.get(sub_p_name));
                         }
                     }
                 } 
@@ -507,7 +650,7 @@ public class PartialGenerator {
                         all_places_combs_filter.put(place_name, filters.get(0));
                 }else{
                     for(String sub_p_name : pre_calculated_subtree.keySet()){
-                        all_places_combs_filter.put(place_name + sub_p_name, filters.get(0) + " and " + pre_calculated_subtree.get(sub_p_name)); 
+                        all_places_combs_filter.put(place_name + sub_p_name, filters.get(0) + " && " + pre_calculated_subtree.get(sub_p_name)); 
                     }
                 }
             }
@@ -677,7 +820,7 @@ public class PartialGenerator {
                         base_filter += "@" + cc.name() + "[" + i +"] in " + subs[subcc_index].name(); 
                         
                         if(i != possible_comb.length() -1){ //add "and" operation 
-                            base_filter += " and ";
+                            base_filter += " && ";
                         }
                         
                         if(subcc_repetitions[subcc_index] == 0){ //check if subclass hasn't already been calculated before
@@ -751,7 +894,7 @@ public class PartialGenerator {
                     }else{
                         l2.stream().forEach(
                                 f2 -> {
-                                    res.add(f1 + " and " + f2);
+                                    res.add(f1 + " && " + f2);
                                 }
                         );
                     }
@@ -788,7 +931,7 @@ public class PartialGenerator {
                                 calculated = true;
                                 
                                 for(String subcc2_filter : subcc2_filters){
-                                    res_filter = subcc1_filter + " and " + subcc2_filter;
+                                    res_filter = subcc1_filter + " && " + subcc2_filter;
                                     cart_product_subccs.add(res_filter);
                                 }
                                 calculated_cp.add(String.valueOf(i) + String.valueOf(j));
