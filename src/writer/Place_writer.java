@@ -7,6 +7,7 @@ package writer;
 
 import eccezioni.UnsupportedElementdataException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -65,6 +66,37 @@ public class Place_writer extends ElementWriter{
                         throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }
                 }
+        );
+        parent.appendChild(place);
+    }
+    
+    /**
+     * 
+     * @param element_info ArrayList of element's data that will be added to pnpro document
+     * @param parent the element to which data will be added
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnpro format
+     */
+    @Override
+    public void write_info_pnpro(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
+        Element place = doc_pnpro.createElement("place");
+
+        element_info.stream().forEach(
+            single_datum -> {
+
+                if(single_datum.contains("name@=")){
+                    place.setAttribute("name", this.seperate_usable_value(single_datum));
+                }else if(single_datum.contains("domain@=")){
+                    place.setAttribute("domain", this.seperate_usable_value(single_datum));
+                }else if(single_datum.contains("marking@=")){
+                    place.setAttribute("marking", this.seperate_usable_value(single_datum));
+                }else if(single_datum.contains("graphics@=")){
+                    String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
+                    place.setAttribute("x", xy[0]);
+                    place.setAttribute("y", xy[1]);
+                }else{
+                    throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                }
+            }
         );
         parent.appendChild(place);
     }
