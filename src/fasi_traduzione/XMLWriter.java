@@ -27,7 +27,7 @@ import writer.*;
 //part of factory pattern with (writer)
 public class XMLWriter {
     
-    private String file_address; 
+    private final String file_address; 
     private final Document doc;
     private final Document doc_pnpro;
     private final Place_writer pw;
@@ -155,6 +155,7 @@ public class XMLWriter {
         transformer.transform(domsr, streamResult);
         
         System.out.println("File has been created under this name '" + modified_address + "'");
+        this.write_all_data_pnpro("CPN", true);
     }
     
     /**
@@ -165,7 +166,7 @@ public class XMLWriter {
      */
     public void write_all_data_pnpro(String gspn_name, boolean write_in_xml) throws TransformerException{ //pnpro
         //set file address.pnpro
-        String modified_address = this.file_address + ".pnrpo";
+        String modified_address = this.file_address + ".PNPRO";
         //create essential file tags
         Element gspn = this.doc_pnpro.createElement("gspn");
         gspn.setAttribute("name", gspn_name);
@@ -175,29 +176,30 @@ public class XMLWriter {
         //gspn.setAttribute("zoom", "200");
         Element nodes = this.doc_pnpro.createElement("nodes");
         
-        this.ccw.get_element_data().stream().forEach(
-                cc_data -> this.ccw.write_info(cc_data, nodes)
+        this.ccw.get_element_data_pnpro().stream().forEach(
+                cc_data -> this.ccw.write_info_pnpro(cc_data, nodes)
         );
         
-        this.vw.get_element_data().stream().forEach(
-                var_data -> this.vw.write_info(var_data, nodes)
+        this.vw.get_element_data_pnpro().stream().forEach(
+                var_data -> this.vw.write_info_pnpro(var_data, nodes)
         );
         
-        this.pw.get_element_data().stream().forEach(
-                place_data -> this.pw.write_info(place_data, nodes)
+        this.pw.get_element_data_pnpro().stream().forEach(
+                place_data -> this.pw.write_info_pnpro(place_data, nodes)
         );
         
-        this.tw.get_element_data().stream().forEach(
-                transition_data -> this.tw.write_info(transition_data, nodes)
+        this.tw.get_element_data_pnpro().stream().forEach(
+                transition_data -> this.tw.write_info_pnpro(transition_data, nodes)
         );
         
         Element edges = this.doc_pnpro.createElement("edges"); 
         
-        this.aw.get_element_data().stream().forEach(
-                arc_data -> this.aw.write_info(arc_data, edges)
+        this.aw.get_element_data_pnpro().stream().forEach(
+                arc_data -> this.aw.write_info_pnpro(arc_data, edges)
         );
-        this.doc_pnpro.appendChild(nodes);
-        this.doc_pnpro.appendChild(edges);
+        gspn.appendChild(nodes);
+        gspn.appendChild(edges);
+        this.doc_pnpro.getDocumentElement().appendChild(gspn);
         
         if(write_in_xml){
             //transform doc_pnpro in xml file
@@ -205,16 +207,12 @@ public class XMLWriter {
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            DOMSource domsr = new DOMSource(this.doc);
+            DOMSource domsr = new DOMSource(this.doc_pnpro);
             StreamResult streamResult = new StreamResult(new File(modified_address));
             transformer.transform(domsr, streamResult);
 
             System.out.println("File has been created under this name '" + modified_address + "'");
         }
-    }
-    
-    public void transform_doc_pnpro_inXML(){
-        
     }
     
     /**
@@ -227,25 +225,71 @@ public class XMLWriter {
     /**
      * delegator
      * @param element_info ArrayList of all element data that's ready to be added
+     * @param PNPRO true if we are writing a PNPRO file
      */
-    public void add_place(ArrayList<String> element_info){
-        this.pw.add_element_data(element_info);
+    public void add_place(ArrayList<String> element_info, boolean PNPRO){
+        
+        if(PNPRO){
+            this.pw.add_element_data_pnpro(element_info);
+        }else{
+            this.pw.add_element_data(element_info);
+        }
     }
     
     /**
      * delegator
      * @param element_info ArrayList of all element data that's ready to be added
+     * @param PNPRO true if we are writing a PNPRO file
      */
-    public void add_transition(ArrayList<String> element_info){
-        this.tw.add_element_data(element_info);
+    public void add_transition(ArrayList<String> element_info, boolean PNPRO){
+        
+        if(PNPRO){
+            this.tw.add_element_data_pnpro(element_info);
+        }else{
+            this.tw.add_element_data(element_info);
+        }
     }
     
     /**
      * delegator
      * @param element_info ArrayList of all element data that's ready to be added
+     * @param PNPRO true if we are writing a PNPRO file
      */
-    public void add_arc(ArrayList<String> element_info){
-        this.aw.add_element_data(element_info);
+    public void add_arc(ArrayList<String> element_info, boolean PNPRO){
+        
+        if(PNPRO){
+            this.aw.add_element_data_pnpro(element_info);
+        }else{
+            this.aw.add_element_data(element_info);
+        }
+    }
+    
+    /**
+     * delegator
+     * @param element_info ArrayList of all element data that's ready to be added
+     * @param PNPRO true if we are writing a PNPRO file
+     */
+    public void add_colourclass(ArrayList<String> element_info, boolean PNPRO){
+        
+        if(PNPRO){
+            this.pw.add_element_data_pnpro(element_info);
+        }else{
+            this.pw.add_element_data(element_info);
+        }
+    }
+    
+    /**
+     * delegator
+     * @param element_info ArrayList of all element data that's ready to be added
+     * @param PNPRO true if we are writing a PNPRO file
+     */
+    public void add_variable(ArrayList<String> element_info, boolean PNPRO){
+        
+        if(PNPRO){
+            this.vw.add_element_data_pnpro(element_info);
+        }else{
+            this.vw.add_element_data(element_info);
+        }
     }
         
     /**

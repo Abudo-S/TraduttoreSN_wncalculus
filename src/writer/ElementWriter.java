@@ -22,6 +22,7 @@ public abstract class ElementWriter {
     protected static Document doc;
     protected static Document doc_pnpro;
     protected ArrayList<ArrayList<String>> element_data;
+    protected ArrayList<ArrayList<String>> element_data_pnpro;
     
     /**
      * 
@@ -32,6 +33,7 @@ public abstract class ElementWriter {
         ElementWriter.doc = doc;  
         ElementWriter.doc_pnpro = doc_pnpro;
         this.element_data = new ArrayList<>();
+        this.element_data_pnpro = new ArrayList<>();
     }
     
     /**
@@ -67,10 +69,19 @@ public abstract class ElementWriter {
     }
     
     /**
-     * resets all ArrayList element data
+     * 
+     * @param e_data all required data to create an element
      */
-    public void reset_element_data(){
-        this.element_data = new ArrayList<>();
+    public void add_element_data_pnpro(ArrayList<String> e_data){
+        this.element_data_pnpro.add(e_data);
+    }
+    
+    /**
+     * 
+     * @return ArrayList of all elements data that will be written
+     */
+    public ArrayList<ArrayList<String>> get_element_data_pnpro(){
+        return this.element_data_pnpro;
     }
     
     /**
