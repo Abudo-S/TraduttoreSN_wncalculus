@@ -101,6 +101,31 @@ public class ColourClass_writer extends ElementWriter{
     
     /**
      * 
+     * @param element_info ArrayList of element's data that will be added to pnpro document
+     * @param parent the element to which data will be added
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnpro format
+     */
+    @Override
+    public void write_info_pnpro(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
+        Element cc = doc_pnpro.createElement("color-class");
+        
+        element_info.stream().forEach(
+            single_datum -> {
+
+                if(single_datum.contains("definition=@=")){
+                    cc.setAttribute("definition=", this.seperate_usable_value(single_datum));
+                }else if(single_datum.contains("name=@=")){
+                    cc.setAttribute("name=", this.seperate_usable_value(single_datum));
+                }else{
+                    throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                }
+            }
+        );
+        parent.appendChild(cc);
+    }
+    
+    /**
+     * 
      * @param doc pnml document
      * @param doc_pnpro pnpro document
      * @return single static instance
