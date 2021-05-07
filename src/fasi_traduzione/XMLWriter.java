@@ -159,10 +159,62 @@ public class XMLWriter {
     
     /**
      * write all necessary data in a pnpro document, then create a file from them
+     * @param gspn_name the name of SN
+     * @param write_in_xml true means that doc_pnpro will be transformed in xml, false means that there will be other gspn nodes that might be added
      * @throws javax.xml.transform.TransformerException
      */
-    public void write_all_data_pnpro() throws TransformerException{ //pnml
-        //to be completed
+    public void write_all_data_pnpro(String gspn_name, boolean write_in_xml) throws TransformerException{ //pnpro
+        //set file address.pnpro
+        String modified_address = this.file_address + ".pnrpo";
+        //create essential file tags
+        Element gspn = this.doc_pnpro.createElement("gspn");
+        gspn.setAttribute("name", gspn_name);
+        gspn.setAttribute("show-fluid-cmd", "false");
+        gspn.setAttribute("show-timed-cmd", "false");
+        gspn.setAttribute("view-rates", "false");
+        //gspn.setAttribute("zoom", "200");
+        Element nodes = this.doc_pnpro.createElement("nodes");
+        
+        this.ccw.get_element_data().stream().forEach(
+                cc_data -> this.ccw.write_info(cc_data, nodes)
+        );
+        
+        this.vw.get_element_data().stream().forEach(
+                var_data -> this.vw.write_info(var_data, nodes)
+        );
+        
+        this.pw.get_element_data().stream().forEach(
+                place_data -> this.pw.write_info(place_data, nodes)
+        );
+        
+        this.tw.get_element_data().stream().forEach(
+                transition_data -> this.tw.write_info(transition_data, nodes)
+        );
+        
+        Element edges = this.doc_pnpro.createElement("edges"); 
+        
+        this.aw.get_element_data().stream().forEach(
+                arc_data -> this.aw.write_info(arc_data, edges)
+        );
+        this.doc_pnpro.appendChild(nodes);
+        this.doc_pnpro.appendChild(edges);
+        
+        if(write_in_xml){
+            //transform doc_pnpro in xml file
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            DOMSource domsr = new DOMSource(this.doc);
+            StreamResult streamResult = new StreamResult(new File(modified_address));
+            transformer.transform(domsr, streamResult);
+
+            System.out.println("File has been created under this name '" + modified_address + "'");
+        }
+    }
+    
+    public void transform_doc_pnpro_inXML(){
+        
     }
     
     /**
