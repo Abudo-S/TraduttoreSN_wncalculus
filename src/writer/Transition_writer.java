@@ -70,6 +70,36 @@ public class Transition_writer extends ElementWriter{
     
     /**
      * 
+     * @param element_info ArrayList of element's data that will be added to pnpro document
+     * @param parent the element to which data will be added
+     * @throws UnsupportedElementdataException if one of element_info internal data can't be transformed in pnpro format
+     */
+    @Override
+    public void write_info_pnpro(ArrayList<String> element_info, Element parent) throws UnsupportedElementdataException{
+        Element transition = doc_pnpro.createElement("transition");
+        
+        element_info.stream().forEach(
+            single_datum -> {
+
+                if(single_datum.contains("name@=")){
+                    transition.setAttribute("name", this.seperate_usable_value(single_datum));
+                    transition.setAttribute("type", "EXP");
+                }else if(single_datum.contains("guard@=")){
+                    transition.setAttribute("guard", this.seperate_usable_value(single_datum));
+                }else if(single_datum.contains("graphics@=")){
+                    String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
+                    transition.setAttribute("x", xy[0]);
+                    transition.setAttribute("y", xy[1]);
+                }else{
+                    throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
+                }
+            }
+        );
+        parent.appendChild(transition);
+    }
+    
+    /**
+     * 
      * @param doc pnml document
      * @param doc_pnpro pnpro document
      * @return single static instance
