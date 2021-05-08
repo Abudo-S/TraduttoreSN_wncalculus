@@ -567,6 +567,12 @@ public class PartialGenerator {
         //apply cartesian product on cd colour classes combinations & name resulting places with colour class name + combination, colour class name + combination ... (following cartesian product combinations)
         Domain d = p.get_node_domain(); //cd
         String cd_name = d.name();
+        Map<? extends Sort, Integer> d_map = d.asMap();
+
+        if(cd_name.equals("Undefined domain")){ // one colour class domain
+            cd_name = d_map.keySet().iterator().next().name();
+            d.set_name(cd_name);
+        }
         //contains the results of cartesian product between cd_base_filters (of each colour class) and subclasses of cd elements from (subcc_predicates) 
         //in case of certain possible combinations (possible_combs) with N > 1 subclass repetitions
         HashMap<String, String> all_places_combs_filter = new HashMap<>();
@@ -574,12 +580,6 @@ public class PartialGenerator {
         if(this.cd_all_places_filters.containsKey(cd_name)){
             all_places_combs_filter = this.cd_all_places_filters.get(cd_name);
         }else{ 
-            Map<? extends Sort, Integer> d_map = d.asMap();
-
-            if(cd_name.equals("Undefined domain")){ // one colour class domain
-                d.set_name(d_map.keySet().iterator().next().name());
-            }
-            
             HashMap<String, HashMap<String, ArrayList<String>>> cd_combined_filters = new HashMap<>(); 
             HashMap<String, ArrayList<String>> ccs_base_filters = this.unfold_colordomain((Map<ColorClass, Integer>) d_map, cd_name);
             HashMap<String, ArrayList<String>> possible_combs = this.cd_possible_combs.get(cd_name);
@@ -614,7 +614,7 @@ public class PartialGenerator {
 
                             if(!subs_predicates.isEmpty()){
                                 //combine each colour class base filter predicate(s) with each subclass predicate(s) in case of finding combination with N > 1 subclass-repetitions
-                                 cc_all_combs.put(possible_comb, this.apply_cartesian_product(cc_base_filters, subs_predicates));
+                                cc_all_combs.put(possible_comb, this.apply_cartesian_product(cc_base_filters, subs_predicates));
                             }else{
                                 cc_all_combs.put(possible_comb, cc_base_filters);
                             }
