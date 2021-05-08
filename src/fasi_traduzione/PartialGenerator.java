@@ -107,8 +107,9 @@ public class PartialGenerator {
         );
         
         this.write_transitions();
-        int[] xy = this.write_colourclasses_domains_pnpro(place_xy);
-        this.write_variables_pnpro(xy);
+        place_xy[1] += 20;
+        int[] xy = this.write_colourclasses_domains_pnpro(place_xy, y_multiplier);
+        this.write_variables_pnpro(xy, y_multiplier);
 //       HashMap<String, String> all_places_combs_filter = this.unfold_place(sn.get_P().get(1));
 //
 //       all_places_combs_filter.keySet().stream().forEach(
@@ -443,10 +444,11 @@ public class PartialGenerator {
     
     /**
      * @param place_xy array of last place graphical points occupied, that will be used for creating colour class graphical points
+     * @param y_multiplier vertical multiplier point
      * @return last graphics points occupied
      * write all domains and colour classes from SN in pnpro
      */
-    private int[] write_colourclasses_domains_pnpro(int[] place_xy){
+    private int[] write_colourclasses_domains_pnpro(int[] place_xy, int[] y_multiplier){
        Token_estimator te = Token_estimator.get_instance();
        Place_syntax_table pst = Place_syntax_table.get_instance();
        
@@ -505,7 +507,7 @@ public class PartialGenerator {
                     cc_data.add(definition);
                     //update graphics points
                     place_xy[1] += 3;
-                    cc_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+                    cc_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + String.valueOf(place_xy[1] - y_multiplier[0] * 10));
                     //add colour class to be written
                     xmlwriter.add_colourclass(cc_data, true);
                   }
@@ -529,7 +531,7 @@ public class PartialGenerator {
                     domain_data.add("definition@=" + definition);
                     //update graphics points
                     place_xy[1] += 3;
-                    domain_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+                    domain_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + String.valueOf(place_xy[1] - y_multiplier[0] * 10));
                     //add colour class to be written
                     xmlwriter.add_colourclass(domain_data, true);
                }
@@ -540,9 +542,10 @@ public class PartialGenerator {
     
     /**
      * @param place_xy array of last place graphical points occupied, that will be used for creating variable graphical points
+     * @param y_multiplier vertical multiplier point
      * write all variables from SN in pnpro
      */
-    private void write_variables_pnpro(int[] place_xy){
+    private void write_variables_pnpro(int[] place_xy, int[] y_multiplier){
         
         sn.get_V().stream().forEach(
                 v -> {
@@ -551,7 +554,7 @@ public class PartialGenerator {
                     var_data.add("domain@=" + v.get_colourClass().name());
                     //update graphics points
                     place_xy[1] += 3;
-                    var_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+                    var_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + String.valueOf(place_xy[1] - y_multiplier[0] * 10));
                     //add colour class to be written
                     xmlwriter.add_variable(var_data, true);
                 }
