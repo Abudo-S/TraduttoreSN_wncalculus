@@ -287,7 +287,7 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
      * @throws NullPointerException if prefix isn't extracted
      * @throws UnsupportedElementNameException  if example's data violate subclass's conditions or the prefix terminate with a number that could be matched as interval number
      */
-    private String find_token_prefix(String example, Interval inter) throws NullPointerException, UnsupportedElementNameException{
+    public String find_token_prefix(String example, Interval inter) throws NullPointerException, UnsupportedElementNameException{
         Pattern p = Pattern.compile("(.*)(\\d+)");
         Matcher m = p.matcher(example);
         

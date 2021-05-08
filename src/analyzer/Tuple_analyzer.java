@@ -85,7 +85,7 @@ public class Tuple_analyzer {
      * Note: ElementaryFunction is (All, Projection, Subcl) here
      */
     private LinearComb analyze_tuple_element(String tuple_element, String transition_name, String place_name, int element_index, Domain d){ //used for arc expression tuple 
-        Map<ElementaryFunction, Integer> element_t = new HashMap<>();
+        Map<ElementaryFunction, Integer> element_t = new LinkedHashMap<>();
         Pattern p = Pattern.compile(str_rx_comb_element);
         Matcher m = p.matcher(tuple_element);        
 
@@ -140,7 +140,7 @@ public class Tuple_analyzer {
      * Note: ElementaryFunction is (All, Token, Subcl) here
      */
     public LinearComb analyze_marking_tuple_element(String tuple_element, String place_name, int element_index){ //used for marking tuple
-        Map<ElementaryFunction, Integer> element_m = new HashMap<>();
+        Map<ElementaryFunction, Integer> element_m = new LinkedHashMap<>();
         Marking_tokens_table cmtt = Marking_tokens_table.get_instance();
         Pattern p = Pattern.compile(str_rx_comb_element);
         Matcher m = p.matcher(tuple_element);        

@@ -112,10 +112,14 @@ public class ColourClass_writer extends ElementWriter{
         element_info.stream().forEach(
             single_datum -> {
 
-                if(single_datum.contains("definition=@=")){
-                    cc.setAttribute("definition=", this.seperate_usable_value(single_datum));
-                }else if(single_datum.contains("name=@=")){
-                    cc.setAttribute("name=", this.seperate_usable_value(single_datum));
+                if(single_datum.contains("definition@=")){
+                    cc.setAttribute("definition", this.seperate_usable_value(single_datum));
+                }else if(single_datum.contains("name@=")){
+                    cc.setAttribute("name", this.seperate_usable_value(single_datum));
+                }else if(single_datum.contains("graphics@=")){
+                    String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
+                    cc.setAttribute("x", xy[0]);
+                    cc.setAttribute("y", xy[1]);
                 }else{
                     throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                 }

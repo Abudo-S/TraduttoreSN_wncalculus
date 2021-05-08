@@ -47,6 +47,14 @@ public class Place_syntax_table { //used for analyzing "All" class functuon to f
     
     /**
      * 
+     * @param cd_name colour domain name that we want to know its colour class(es) ordering
+     * @return colour domain's colour-class(es) ordering/syntax
+     */
+    public ArrayList<String> get_cd_values(String cd_name){
+        return this.type_values.get(cd_name);
+    }
+    /**
+     * 
      * @param place_name place name that we want to know its values that should follow a certain colour-classes ordering/syntax
      * @return place's colour-classes ordering/syntax
      */

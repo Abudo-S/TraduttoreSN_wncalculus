@@ -58,6 +58,7 @@ public class PartialGenerator {
     public void unfold_all_places() throws TransformerException{        
         Marking mk = Marking.get_instance();
         int[] place_xy = new int[]{40, 20}; //graphics points
+        int[] y_multiplier = new int[]{1};
         
         sn.get_P().stream().forEach(
                 place -> {
@@ -86,13 +87,15 @@ public class PartialGenerator {
                                 xmlwriter.add_place(place_data, false);
                                 
                                 place_data = new ArrayList<>();
-                                place_data.add("name@=" + p_name);
+                                place_data.add("name@=" + prefix_name + p_name);
                                 place_data.add("domain@=" + place.get_type());
                                 
                                 if(!marking.equals("")){
                                    place_data.add("marking@=" + marking);
                                 }
-                                place_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+
+                                place_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + String.valueOf(place_xy[1] - y_multiplier[0] * 10));
+                                y_multiplier[0]++;
                                 //add place to be written in pnpro
                                 xmlwriter.add_place(place_data, true);
                                 
@@ -104,8 +107,8 @@ public class PartialGenerator {
         );
         
         this.write_transitions();
-        this.write_colourclasses_domains_pnpro();
-        this.write_variables_pnpro();
+        int[] xy = this.write_colourclasses_domains_pnpro(place_xy);
+        this.write_variables_pnpro(xy);
 //       HashMap<String, String> all_places_combs_filter = this.unfold_place(sn.get_P().get(1));
 //
 //       all_places_combs_filter.keySet().stream().forEach(
@@ -421,7 +424,7 @@ public class PartialGenerator {
                     }
                     
                     transition_xy[1] += 25;
-                    transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" + transition_xy[1]);
+                    transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" +  transition_xy[0]);
                     //add transition to be written
                     xmlwriter.add_transition(transition_data, false);
                     
@@ -431,7 +434,7 @@ public class PartialGenerator {
                     if(!guard.equals("")){
                         transition_data.add("guard@=" + guard);
                     }
-                    transition_data.add("graphics@=" + "x=" + transition_xy[0] + "y=" + transition_xy[1]);
+                    transition_data.add("graphics@=" + "x=" + String.valueOf(transition_xy[0] - 800) + "y=" + String.valueOf(transition_xy[1] -200));
                     //add transition to be written in pnpro
                     xmlwriter.add_transition(transition_data, true);
                 }
@@ -439,9 +442,11 @@ public class PartialGenerator {
     }
     
     /**
+     * @param place_xy array of last place graphical points occupied, that will be used for creating colour class graphical points
+     * @return last graphics points occupied
      * write all domains and colour classes from SN in pnpro
      */
-    private void write_colourclasses_domains_pnpro(){
+    private int[] write_colourclasses_domains_pnpro(int[] place_xy){
        Token_estimator te = Token_estimator.get_instance();
        Place_syntax_table pst = Place_syntax_table.get_instance();
        
@@ -472,17 +477,24 @@ public class PartialGenerator {
 
                         for(var i = 0; i < subs.length; i++){
                           ArrayList<Token> tokens = te.get_estimated_cc_tokens(subs[i].name());
-                          definition += "enum {";
+                          
+                          if(subs[i].lb() == subs[i].ub()){ //explicit elements insertion
+                            definition += "enum {";
 
-                          for(var j = 0; j < tokens.size(); j++){
-                              definition += tokens.get(j).get_Token_value();
+                            for(var j = 0; j < tokens.size(); j++){
+                                definition += tokens.get(j).get_Token_value();
 
-                              if(j < tokens.size() - 1){
-                                  definition += ",";
-                              }
+                                if(j < tokens.size() - 1){
+                                    definition += ",";
+                                }
+                            }
+
+                            definition += "} is " + subs[i].name();
+                          }else{
+                            String prefix = te.find_token_prefix(tokens.get(0).get_Token_value(), subs[i]);
+                            
+                            definition += prefix + "{" + subs[i].lb() + ".." + subs[i].ub() + "} is " + subs[i].name();
                           }
-
-                          definition += "} is " + subs[i].name();
                           
                           if(i < subs.length -1){
                               definition += " + ";
@@ -491,6 +503,9 @@ public class PartialGenerator {
                     }
 
                     cc_data.add(definition);
+                    //update graphics points
+                    place_xy[1] += 3;
+                    cc_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
                     //add colour class to be written
                     xmlwriter.add_colourclass(cc_data, true);
                   }
@@ -512,17 +527,35 @@ public class PartialGenerator {
                             }
                     }
                     domain_data.add("definition@=" + definition);
+                    //update graphics points
+                    place_xy[1] += 3;
+                    domain_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
                     //add colour class to be written
                     xmlwriter.add_colourclass(domain_data, true);
                }
        );
+       
+       return place_xy;
     }
     
     /**
+     * @param place_xy array of last place graphical points occupied, that will be used for creating variable graphical points
      * write all variables from SN in pnpro
      */
-    private void write_variables_pnpro(){
-        //to be completed
+    private void write_variables_pnpro(int[] place_xy){
+        
+        sn.get_V().stream().forEach(
+                v -> {
+                    ArrayList<String> var_data = new ArrayList<>();
+                    var_data.add("name@=" + v.get_name());
+                    var_data.add("domain@=" + v.get_colourClass().name());
+                    //update graphics points
+                    place_xy[1] += 3;
+                    var_data.add("graphics@=" + "x=" + place_xy[0] + "y=" + place_xy[1]);
+                    //add colour class to be written
+                    xmlwriter.add_variable(var_data, true);
+                }
+        );
     }
     
     /**

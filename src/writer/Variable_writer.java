@@ -69,6 +69,10 @@ public class Variable_writer extends ElementWriter{
                         variable.setAttribute("name", this.seperate_usable_value(single_datum));
                     }else if(single_datum.contains("domain@=")){
                         variable.setAttribute("domain", this.seperate_usable_value(single_datum));
+                    }else if(single_datum.contains("graphics@=")){
+                        String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
+                        variable.setAttribute("x", xy[0]);
+                        variable.setAttribute("y", xy[1]);
                     }else{
                         throw new UnsupportedElementdataException("Can't transform one of element data in pnml: " + single_datum);
                     }

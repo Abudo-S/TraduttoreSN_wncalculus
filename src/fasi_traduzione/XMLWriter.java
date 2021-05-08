@@ -155,25 +155,30 @@ public class XMLWriter {
         transformer.transform(domsr, streamResult);
         
         System.out.println("File has been created under this name '" + modified_address + "'");
-        this.write_all_data_pnpro("CPN", true);
+        this.write_all_data_pnpro(true);
     }
     
     /**
      * write all necessary data in a pnpro document, then create a file from them
-     * @param gspn_name the name of SN
      * @param write_in_xml true means that doc_pnpro will be transformed in xml, false means that there will be other gspn nodes that might be added
      * @throws javax.xml.transform.TransformerException
      */
-    public void write_all_data_pnpro(String gspn_name, boolean write_in_xml) throws TransformerException{ //pnpro
+    public void write_all_data_pnpro(boolean write_in_xml) throws TransformerException{ //pnpro
+        String gspn_name = "original";
         //set file address.pnpro
         String modified_address = this.file_address + ".PNPRO";
         //create essential file tags
         Element gspn = this.doc_pnpro.createElement("gspn");
+        
+        if(write_in_xml){
+            gspn_name = "partial_unfolding";
+        }
+        
         gspn.setAttribute("name", gspn_name);
         gspn.setAttribute("show-fluid-cmd", "false");
         gspn.setAttribute("show-timed-cmd", "false");
         gspn.setAttribute("view-rates", "false");
-        //gspn.setAttribute("zoom", "200");
+        gspn.setAttribute("zoom", "100");
         Element nodes = this.doc_pnpro.createElement("nodes");
         
         this.ccw.get_element_data_pnpro().stream().forEach(
@@ -272,9 +277,9 @@ public class XMLWriter {
     public void add_colourclass(ArrayList<String> element_info, boolean PNPRO){
         
         if(PNPRO){
-            this.pw.add_element_data_pnpro(element_info);
+            this.ccw.add_element_data_pnpro(element_info);
         }else{
-            this.pw.add_element_data(element_info);
+            this.ccw.add_element_data(element_info);
         }
     }
     
