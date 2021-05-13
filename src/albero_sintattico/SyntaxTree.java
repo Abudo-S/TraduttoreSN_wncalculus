@@ -6,6 +6,7 @@
 package albero_sintattico;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -108,6 +109,40 @@ public class SyntaxTree {
             System.err.println(e + " in SyntaxTree/update_synt_p_t");
         }
     }
+    
+    /**
+     * 
+     * @param arc_name the name of arc that we want to find its syntactic arc object
+     * @return the Syntactic_arc found, null otherwise
+     */
+    public Syntactic_arc find_syntactic_arc_ByName(String arc_name){
+        
+        for(var i = 0; i < all_pl.size(); i++){
+            HashMap<SyntacticNode, Syntactic_arc> associated_next = all_pl.get(i).get_all_next();
+            
+            for(SyntacticNode node : associated_next.keySet()){
+                Syntactic_arc synt_arc = associated_next.get(node);
+                
+                if(synt_arc.get_name().equals(arc_name)){
+                    return synt_arc;
+                }
+            }
+        }
+        
+        for(var i = 0; i < all_st.size(); i++){
+            HashMap<SyntacticNode, Syntactic_arc> associated_next = all_st.get(i).get_all_next();
+            
+            for(SyntacticNode node : associated_next.keySet()){
+                Syntactic_arc synt_arc = associated_next.get(node);
+                
+                if(synt_arc.get_name().equals(arc_name)){
+                    return synt_arc;
+                }
+            }
+        }
+        
+        return null;
+    } 
     
 //    public void set_root(Syntactic_place root){
 //        this.root = root;
