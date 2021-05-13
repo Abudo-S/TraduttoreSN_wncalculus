@@ -103,9 +103,9 @@ public class XMLScanner {
         cc_scanner.Scan_element("partition"); //add partitioned color classes
         ArrayList<Element> elements = cc_scanner.get_element_tags();
         
-        for(Element e : elements){
+        elements.stream().forEach(e -> {
             cc_scanner.scan_info(e);
-        }
+        });
     }
     
     /**
@@ -118,9 +118,9 @@ public class XMLScanner {
         //d_scanner.remove_from_tags_list(); //remove color classes that have the same tag "namesort"
         ArrayList<Element> elements = d_scanner.get_element_tags();
         
-        for(Element e : elements){
+        elements.stream().forEach(e -> {
             d_scanner.scan_info(e);
-        }
+        });
     }
     
     /**
@@ -131,9 +131,9 @@ public class XMLScanner {
         v_scanner.Scan_element("variabledecl");
         ArrayList<Element> elements = v_scanner.get_element_tags();
         
-        for(Element e : elements){
+        elements.stream().forEach(e -> {
             v_scanner.scan_info(e);
-        }
+        });
     }
     
     /**
@@ -144,9 +144,9 @@ public class XMLScanner {
         p_scanner.Scan_element("place");
         ArrayList<Element> elements = p_scanner.get_element_tags();
         
-        for(Element e : elements){
+        elements.stream().forEach(e -> {
             p_scanner.scan_info(e);
-        }
+        });
     }
     
     /**
@@ -157,9 +157,9 @@ public class XMLScanner {
         t_scanner.Scan_element("transition");
         ArrayList<Element> elements = t_scanner.get_element_tags();
         
-        for(Element e : elements){
+        elements.stream().forEach(e -> {
             t_scanner.scan_info(e);
-        }
+        });
     }
     
     /**
@@ -170,9 +170,9 @@ public class XMLScanner {
         a_scanner.Scan_element("arc");
         ArrayList<Element> elements = a_scanner.get_element_tags();
         
-        for(Element e : elements){
+        elements.stream().forEach(e -> {
             a_scanner.scan_info(e);
-        }
+        });
     }
     
     /**
@@ -188,6 +188,9 @@ public class XMLScanner {
      * @param address the address of file that will be scanned
      * @throws NullPointerException if the file_address passed is null
      * @return single static instance
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws org.xml.sax.SAXException
+     * @throws java.io.IOException
      */
     public static XMLScanner get_instance(final String address) throws NullPointerException, ParserConfigurationException, SAXException, IOException{
         
