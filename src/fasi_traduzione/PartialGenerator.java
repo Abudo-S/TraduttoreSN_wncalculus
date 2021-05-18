@@ -112,15 +112,15 @@ public class PartialGenerator {
 //                    System.out.println(p + "," + all_places_combs_filter.get(p));
 //                }
 //        );
-        xmlwriter.write_all_data();
+        xmlwriter.write_all_data(false);
     }
     
     /**
      * 
-     * @param initial_marking HashMap of token-tuple's elements (ArrayList of linear combinartions) with their multiplicity
+     * @param initial_marking HashMap of token-tuple's elements (ArrayList of linear combinations) with their multiplicity
      * @return the equivalent String of initial marking map
      */
-    private String get_place_initial_marking(HashMap<ArrayList<LinearComb>, Integer> initial_marking){
+    public String get_place_initial_marking(HashMap<ArrayList<LinearComb>, Integer> initial_marking){
         String[] str_marking = new String[]{""};//wrapper pf marking
         Iterator it1 = initial_marking.keySet().iterator();
         
@@ -189,7 +189,7 @@ public class PartialGenerator {
      * @param expanded_filter the generated filter of a combination
      * Note: the expanded filter will be added to each tuple written on arc
      */
-    private void write_unfolded_place_arcs(Place p, String place_name_suffix, String expanded_filter){
+    public void write_unfolded_place_arcs(Place p, String place_name_suffix, String expanded_filter){
         HashMap<Node, ArcAnnotation> next_nodes = p.get_next_nodes();
         HashMap<Node, ArcAnnotation> previous_nodes = p.get_previous_nodes();
         HashMap<Node, ArcAnnotation> inhibitored_nodes = p.get_inib_nodes();
@@ -500,8 +500,13 @@ public class PartialGenerator {
                 if(invert_g){
                     str_expr += ")";
                 }
-                str_expr += "&&" + expanded_filter + "]";
-            }else{
+                
+                if(!expanded_filter.equals("")){
+                    str_expr += "&&" + expanded_filter + "]";
+                }else{
+                    str_expr += "]";
+                }
+            }else if(!expanded_filter.equals("")){
                 str_expr += "[" + expanded_filter +"]";
             }
             //check if there's a next tuple
@@ -1230,7 +1235,7 @@ public class PartialGenerator {
             filter += filter_predicates.get(i);
             
             if(i != filter_predicates.size() -1){
-                filter += " and ";
+                filter += " && ";
             }
         }
         
