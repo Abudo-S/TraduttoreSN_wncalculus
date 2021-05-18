@@ -82,6 +82,13 @@ public abstract class ElementWriter {
      */
     public ArrayList<ArrayList<String>> get_element_data_pnpro(){
         return this.element_data_pnpro;
+    } 
+            
+    /**
+     * remove all place members existing in the specified list
+     */
+    public void reset_element_data_pnpro(){
+        this.element_data_pnpro.removeAll(this.element_data_pnpro);
     }
     
     /**
