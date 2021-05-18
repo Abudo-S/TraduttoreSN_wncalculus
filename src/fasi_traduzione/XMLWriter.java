@@ -88,9 +88,10 @@ public class XMLWriter {
     
     /**
      * write all necessary data in a pnml document, then create a file from them
+     * @param write_in_pnpro true means that doc_pnpro will be transformed in xml, false means that there will be other gspn nodes that might be added
      * @throws javax.xml.transform.TransformerException
      */
-    public void write_all_data() throws TransformerException{ //pnml
+    public void write_all_data(boolean write_in_pnpro) throws TransformerException{ //pnml
         //set file address.pnml
         String modified_address = this.file_address + ".pnml";
         //create essential file tags
@@ -155,22 +156,22 @@ public class XMLWriter {
         transformer.transform(domsr, streamResult);
         
         System.out.println("File has been created under this name '" + modified_address + "'");
-        this.write_all_data_pnpro(true);
+        this.write_all_data_pnpro(false);
     }
     
     /**
      * write all necessary data in a pnpro document, then create a file from them
-     * @param write_in_xml true means that doc_pnpro will be transformed in xml, false means that there will be other gspn nodes that might be added
+     * @param write_in_pnpro true means that doc_pnpro will be transformed in xml, false means that there will be other gspn nodes that might be added
      * @throws javax.xml.transform.TransformerException
      */
-    public void write_all_data_pnpro(boolean write_in_xml) throws TransformerException{ //pnpro
+    public void write_all_data_pnpro(boolean write_in_pnpro) throws TransformerException{ //pnpro
         String gspn_name = "original";
         //set file address.pnpro
         String modified_address = this.file_address + ".PNPRO";
         //create essential file tags
         Element gspn = this.doc_pnpro.createElement("gspn");
         
-        if(write_in_xml){
+        if(!write_in_pnpro){
             gspn_name = "partial_unfolding";
         }
         
@@ -184,21 +185,21 @@ public class XMLWriter {
         this.ccw.get_element_data_pnpro().stream().forEach(
                 cc_data -> this.ccw.write_info_pnpro(cc_data, nodes)
         );
-        
+
         this.vw.get_element_data_pnpro().stream().forEach(
                 var_data -> this.vw.write_info_pnpro(var_data, nodes)
         );
-        
+
         this.pw.get_element_data_pnpro().stream().forEach(
-                place_data -> this.pw.write_info_pnpro(place_data, nodes)
+            place_data -> this.pw.write_info_pnpro(place_data, nodes)
         );
-        
+
         this.tw.get_element_data_pnpro().stream().forEach(
                 transition_data -> this.tw.write_info_pnpro(transition_data, nodes)
         );
         
         Element edges = this.doc_pnpro.createElement("edges"); 
-        
+
         this.aw.get_element_data_pnpro().stream().forEach(
                 arc_data -> this.aw.write_info_pnpro(arc_data, edges)
         );
@@ -206,7 +207,7 @@ public class XMLWriter {
         gspn.appendChild(edges);
         this.doc_pnpro.getDocumentElement().appendChild(gspn);
         
-        if(write_in_xml){
+        if(write_in_pnpro){
             //transform doc_pnpro in xml file
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
@@ -296,7 +297,22 @@ public class XMLWriter {
             this.vw.add_element_data(element_info);
         }
     }
+     
+    /**
+     * delegator
+     * remove all place members existing in the specified list
+     */
+    public void reset_places_data_pnpro(){
+        this.pw.reset_element_data_pnpro();
+    }    
         
+    /**
+     * delegator
+     * remove all arcs members existing in the specified list
+     */
+    public void reset_arcs_data_pnpro(){
+        this.aw.reset_element_data_pnpro();
+    }   
     /**
      * 
      * @param address the address of file that will be generated
