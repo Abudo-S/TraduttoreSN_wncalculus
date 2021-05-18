@@ -75,6 +75,11 @@ public class XMLScanner {
      * @throws java.lang.Exception
      */
     public void scan_file_data() throws Exception{
+        
+        if(doc == null){
+            throw new NullPointerException("Can't find folder with this name: " + this.file_address);
+        }
+        
         this.scan_color_classes();
         this.scan_domains();
         this.scan_variables();
