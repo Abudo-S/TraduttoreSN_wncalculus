@@ -8,6 +8,7 @@ package componenti;
 import eccezioni.BreakconditionException;
 import eccezioni.UnsupportedElementNameException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -132,6 +133,8 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
      * @throws RuntimeException if sub-colour class interval is unbounded which can't be estimated 
      */
     private ArrayList<Token> estimate_tokens(Interval inter, ColorClass cc) throws RuntimeException{ //tag "finiteintrange" where inter's lb != ub
+        int lb = inter.lb(), ub = inter.ub();
+        Integer[] limits = null;
         ArrayList<Token> tokens = this.find_created_subcc_tokens(inter, cc);
         ArrayList<String> tokens_names = (ArrayList<String>) tokens.stream().map(t -> t.get_Token_value()).collect(Collectors.toList());
         //update tokens with remaining tokens following inter's size
@@ -144,6 +147,12 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
             throw new RuntimeException("Calling Token_estimator/estimate_tokens() for an unbounded interval" + inter.name() + ", " + cc.name());
         }
         
+        if(lb == ub){ //implicit and non-parametric sub-class
+            limits = subcc_token_index_table.get_instance().get_subcc_limits_indices(inter.name());
+            size = limits[1] - limits[0] + 1;
+        }
+        
+        
         String prefix = cc.name().toLowerCase();
         if(!tokens.isEmpty()){
             prefix = this.find_token_prefix(tokens.get(0).get_Token_value(), inter);
@@ -152,18 +161,34 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         if(tokens.size() != size){
             
             for(var i = 0; i < size; i++){
-                String t_name = prefix;
+                String t_name = prefix;          
+                
+                if(lb == ub){ //implicit and non-parametric sub-class
+                    
+                    for(var j = limits[0]; j <= limits[1]; j++){
+                        t_name += j;
 
-                for(var j = inter.lb(); j <= inter.ub(); j++){
-                    t_name += j;
+                        if(!tokens_names.contains(t_name)){ //stop loop if token name is acceptable
+                            tokens.add(new Token(t_name, cc));
+                            tokens_names.add(t_name); //reserve that name
+                            break;
+                        }
 
-                    if(!tokens_names.contains(t_name)){ //stop loop if token name is acceptable
-                        tokens.add(new Token(t_name, cc));
-                        tokens_names.add(t_name); //reserve that name
-                        break;
+                        t_name = prefix;
                     }
+                    
+                }else{ //parametric sub-class
+                    for(var j = lb; j <= ub; j++){
+                        t_name += j;
 
-                    t_name = prefix;
+                        if(!tokens_names.contains(t_name)){ //stop loop if token name is acceptable
+                            tokens.add(new Token(t_name, cc));
+                            tokens_names.add(t_name); //reserve that name
+                            break;
+                        }
+
+                        t_name = prefix;
+                    }
                 }
 
                 if(tokens.size() == size){
@@ -171,7 +196,7 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
                 }
             }
         }
-        
+
         return tokens;
     }
     
@@ -185,17 +210,23 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
         ArrayList<Token> tokens = new ArrayList<>();
         ArrayList<Token> tokens_to_test = this.mtt.get_all_cc_tokens(cc);  
         Pattern p = Pattern.compile("(.*)(\\d+)");
-        
+
         tokens_to_test.stream().forEach(
                 token -> {
                    Matcher m = p.matcher(token.get_Token_value());
-                   
+
                    int num;
                    if(m.find()){
                        num = Integer.parseInt(m.group(2));
                        
                        if(num >= inter.lb() && num <= inter.ub()){ //check if token belongs to subclass inter
                            tokens.add(token);
+                       }else if(inter.lb() == inter.ub()){ //non parametric and explicit subclass
+                           Integer[] limits = subcc_token_index_table.get_instance().get_subcc_limits_indices(inter.name());
+
+                           if(num >= limits[0] && num <= limits[1]){
+                               tokens.add(token);
+                           }
                        }
                    }
                 }
@@ -295,7 +326,7 @@ public class Token_estimator { //used to estimate tokens of tag "finiteintrange"
             String prefix = m.group(1);
             int num = Integer.parseInt(m.group(2));
                     
-            if(num < inter.lb() || num > inter.ub() || prefix.substring(prefix.length()-1).matches("\\d")){ //check if last characher in token's prefix is a number
+            if(prefix.substring(prefix.length()-1).matches("\\d")){ //check if last characher in token's prefix is a number
                 throw new UnsupportedElementNameException("Token's name checked is unsupported : " + example
                                                          + ", try another type of naming to soddisfy this format\"(token prefix that doesn't end with a number)" + inter.toString() + "\"");
             }
