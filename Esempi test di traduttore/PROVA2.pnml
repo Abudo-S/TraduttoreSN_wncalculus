@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+	<!-- Written by GreatSPN Editor. -->
+	<net id="SWN" type="http://www.pnml.org/version-2009/grammar/symmetricnet">
+		<name>
+			<text>SWN</text>
+		</name>
+		<declaration>
+			<structure>
+				<declarations>
+					<!-- Declaration of user-defined color classes (sorts) -->
+					<partition id="C" name="C" ordered="false">
+					             <partitionelement id="C1" name="C1">
+					            	 <useroperator declaration="c1"/>
+							<useroperator declaration="c2"/>
+							<useroperator declaration="c3"/>
+						     </partitionelement>
+						     <partitionelement id="C2" name="C2">
+							<finiteintrange start="4" end="6"/>
+						     </partitionelement>
+			   		</partition>
+					<namedsort id="Comp" name="Comp">
+						<productsort>
+							<usersort declaration="C"/>
+							<usersort declaration="C"/>
+						</productsort>
+					</namedsort>
+					<!-- Declaration of user-defined color variables -->
+					<variabledecl id="x" name="x">
+						<usersort declaration="C"/>
+					</variabledecl>
+					<variabledecl id="y" name="y">
+						<usersort declaration="C"/>
+					</variabledecl>
+				</declarations>
+			</structure>
+		</declaration>
+		<page id="page0">
+			<name>
+				<text>DefaultPage</text>
+			</name>
+			<!-- List of places -->
+			<place id="P0">
+				<name>
+					<graphics>
+						<offset x="0" y="15"/>
+					</graphics>
+					<text>P0</text>
+				</name>
+				<graphics>
+					<position x="40" y="40"/>
+				</graphics>
+				<type>
+					<text>C</text>
+					<structure>
+						<usersort declaration="C"/>
+					</structure>
+				</type>
+			</place>
+			<place id="P1">
+				<name>
+					<graphics>
+						<offset x="0" y="15"/>
+					</graphics>
+					<text>P1</text>
+				</name>
+				<graphics>
+					<position x="40" y="100"/>
+				</graphics>
+				<type>
+					<text>C</text>
+					<structure>
+						<usersort declaration="C"/>
+					</structure>
+				</type>
+			</place>
+			<place id="P2">
+				<name>
+					<graphics>
+						<offset x="0" y="15"/>
+					</graphics>
+					<text>P2</text>
+				</name>
+				<graphics>
+					<position x="150" y="70"/>
+				</graphics>
+				<type>
+					<text>Comp</text>
+					<structure>
+						<usersort declaration="Comp"/>
+					</structure>
+				</type>
+			</place>
+			<!-- List of transitions -->
+			<transition id="T0">
+				<name>
+					<graphics>
+						<offset x="0" y="-15"/>
+					</graphics>
+					<text>T0</text>
+				</name>
+				<graphics>
+					<position x="95" y="70"/>
+				</graphics>
+				<condition>
+					<text>x != y</text>
+					<structure>
+						<inequality><subterm><variable refvariable="x"/></subterm><subterm><variable refvariable="y"/></subterm></inequality>
+					</structure>
+				</condition>
+			</transition>
+			<!-- List of arcs -->
+			<arc id="id1" source="P0" target="T0">
+				<graphics>
+					<position x="95" y="77"/>
+				</graphics>
+				<hlinscription>
+					<text>2&lt;x&gt;+&lt;y&gt;</text>
+					<structure>
+						<add><subterm><numberof><subterm><numberconstant value="2"><positive/></numberconstant></subterm><subterm><tuple><subterm><variable refvariable="x"/></subterm></tuple></subterm></numberof></subterm><subterm><tuple><subterm><variable refvariable="y"/></subterm></tuple></subterm></add>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="id2" source="T0" target="P2">
+				<hlinscription>
+					<text>&lt;x,y&gt;</text>
+					<structure>
+						<tuple><subterm><variable refvariable="x"/></subterm><subterm><variable refvariable="y"/></subterm></tuple>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="id3" source="P1" target="T0">
+				<hlinscription>
+					<text>&lt;y&gt;</text>
+					<structure>
+						<tuple><subterm><variable refvariable="y"/></subterm></tuple>
+					</structure>
+				</hlinscription>
+			</arc>
+		</page>
+	</net>
+</pnml>

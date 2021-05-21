@@ -87,21 +87,34 @@ public class DataParser { // will use SemanticAnalyzer
         this.check_name(class_name, "Neutral");
         Interval[] intervals = new Interval[subclasses.size()];
         cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(subclasses.keySet()));
-        
-        int i = 0;
+        subcc_token_index_table subbcc_limits_t = subcc_token_index_table.get_instance();
+                            
+        int i = 0, j = 0;
         for(String subclass_name : subclasses.keySet()){
             this.check_name(subclass_name, "Undefined interval");
             ArrayList<String> subclass_tokens = subclasses.get(subclass_name);
                     
             if(subclass_tokens.get(0).contains("lb=")){ //range
+                j++;
                 String e_lb = subclass_tokens.get(0);
                 String e_ub = subclass_tokens.get(1);
-                intervals[i] = new Interval(
-                               Integer.parseInt(e_lb.substring(e_lb.indexOf("=")+1)),
-                               Integer.parseInt(e_ub.substring(e_ub.indexOf("=")+1))
-                );    
+                
+                if(j > 1){ //wncalculus doesn't admit more than one parametric sub-class 
+                    int lb = Integer.parseInt(e_lb.substring(e_lb.indexOf("=")+1)), ub = Integer.parseInt(e_ub.substring(e_ub.indexOf("=")+1));
+                    int num = ub - lb + 1;
+                    subbcc_limits_t.add_subcc_limits_indices(subclass_name, new Integer[]{lb, ub});
+                    intervals[i] = new Interval(num, num);   
+                }else{
+                                    
+                    intervals[i] = new Interval(
+                                   Integer.parseInt(e_lb.substring(e_lb.indexOf("=")+1)),
+                                   Integer.parseInt(e_ub.substring(e_ub.indexOf("=")+1))
+                    );   
+                }
+ 
                 //add subclass_name to cc_tt as implicit color class that its tokens will be estimated later
                 cc_tt.set_explicit_cc_flag(subclass_name, false);
+                
             }else{ //finite enumeration(useroperator tag)
                 intervals[i] = new Interval(subclass_tokens.size(), subclass_tokens.size());
                 //add subclass_name to cc_tt as explicit color class that its tokens won't be estimated (because there's an existing explicit ArrayList of tokens names)
