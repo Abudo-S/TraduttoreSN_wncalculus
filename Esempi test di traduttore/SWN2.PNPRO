@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This project file has been saved by the New GreatSPN Editor, v.100 --><project name="SWN2" version="121">
+  <gspn name="CPN" show-fluid-cmd="false" show-timed-cmd="false" view-rates="false" zoom="200">
+    <nodes>
+      <place domain="C" marking="&lt;c1&gt;" name="P0" x="6.0" y="6.0"/>
+      <place domain="C" name="P1" x="6.0" y="12.0"/>
+      <transition guard="x != y" guard-y="2.0" name="T0" nservers-x="0.5" type="EXP" x="11.55" y="9.0"/>
+      <place domain="Comp" marking="&lt;c1,c2,c3,c4&gt;" name="P2" x="17.0" y="9.0"/>
+      <color-class definition="enum {c1, c2, c3} is C1  + c{4..6} is C2" name="C" x="10.125" y="17.0"/>
+      <color-var domain="C" name="x" x="9.9375" y="15.0"/>
+      <color-var domain="C" name="y" x="15.9375" y="15.0"/>
+      <color-class definition="C*C*C*C" name="Comp" x="10.1875" y="19.0"/>
+      <color-var domain="C" name="x1" x="2.9375" y="16.0"/>
+      <color-var domain="C" name="y1" x="2.875" y="18.0"/>
+    </nodes>
+    <edges>
+      <arc head="T0" kind="INPUT" mult="2&lt;x&gt;+&lt;y&gt;" mult-k="0.54951171875" mult-x="1.4996277689933777" mult-y="-2.0002233386039734" tail="P0">
+        <point x="11.5501708984375" y="9.7301025390625"/>
+      </arc>
+      <arc head="P2" kind="OUTPUT" mult="&lt;x,y,x1,y1&gt;" tail="T0"/>
+      <arc head="T0" kind="INPUT" mult="&lt;y&gt;" mult-x="0.0" tail="P1"/>
+    </edges>
+  </gspn>
+  <measures gspn-name="CPN" name="Measures" simplified-UI="false">
+    <assignments/>
+    <greatspn/>
+    <formulas>
+      <formula comment="Basic statistics of the toolchain execution." language="STAT"/>
+    </formulas>
+  </measures>
+</project>

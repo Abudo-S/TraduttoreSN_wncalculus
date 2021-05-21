@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+    <net id="CPN 1_generated.pnml" type="http://www.pnml.org/version-2009/grammar/symmetricnet">
+        <name>CPN 1_generated.pnml</name>
+        <declaration>
+            			
+            <structure>
+                				
+                <declarations>
+                    					
+                    <!-- Declaration of user-defined color classes (sorts) -->
+                    					
+                    <namedsort id="Processo" name="Processo" ordered="true">
+                        						
+                        <finiteenumeration>
+                            							
+                            <feconstant id="p1" name="p1"/>
+                            							
+                            <feconstant id="p2" name="p2"/>
+                            							
+                            <feconstant id="p3" name="p3"/>
+                            							
+                            <feconstant id="p4" name="p4"/>
+                            							
+                            <feconstant id="p5" name="p5"/>
+                            							
+                            <feconstant id="p6" name="p6"/>
+                            						
+                        </finiteenumeration>
+                        					
+                    </namedsort>
+                    					
+                    <partition id="Risorsa" name="Risorsa" ordered="false">
+                        					             
+                        <partitionelement id="R" name="R">
+                            							
+                            <useroperator declaration="r1"/>
+                            							
+                            <useroperator declaration="r2"/>
+                            							
+                            <useroperator declaration="r3"/>
+                            						     
+                        </partitionelement>
+                        						     
+                        <partitionelement id="subR" name="subR">
+                            							
+                            <finiteintrange end="6" start="4"/>
+                            						     
+                        </partitionelement>
+                        						     
+                        <partitionelement id="subR1" name="subR1">
+                            							
+                            <finiteintrange end="9" start="7"/>
+                            						     
+                        </partitionelement>
+                        			   		
+                    </partition>
+                    					
+                    <namedsort id="PD" name="PD">
+                        						
+                        <productsort>
+                            							
+                            <usersort declaration="Processo"/>
+                            							
+                            <usersort declaration="Risorsa"/>
+                            						
+                        </productsort>
+                        					
+                    </namedsort>
+                    					
+                    <!-- Declaration of user-defined color variables -->
+                    					
+                    <variabledecl id="x" name="x">
+                        						
+                        <usersort declaration="Processo"/>
+                        					
+                    </variabledecl>
+                    					
+                    <variabledecl id="y" name="y">
+                        						
+                        <usersort declaration="Risorsa"/>
+                        					
+                    </variabledecl>
+                    					
+                    <variabledecl id="y2" name="y2">
+                        						
+                        <usersort declaration="Risorsa"/>
+                        					
+                    </variabledecl>
+                    					
+                    <variabledecl id="y1" name="y1">
+                        						
+                        <usersort declaration="Risorsa"/>
+                        					
+                    </variabledecl>
+                    					
+                    <variabledecl id="x1" name="x1">
+                        						
+                        <usersort declaration="Processo"/>
+                        					
+                    </variabledecl>
+                    					
+                    <variabledecl id="x2" name="x2">
+                        						
+                        <usersort declaration="Processo"/>
+                        					
+                    </variabledecl>
+                    				
+                </declarations>
+                			
+            </structure>
+            		
+        </declaration>
+        <page>
+            <place id="P0Processo1Risorsa1">
+                <name>
+                    <text>P0Processo1Risorsa1</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="40"/>
+                </graphics>
+            </place>
+            <place id="P0Processo1Risorsa2">
+                <name>
+                    <text>P0Processo1Risorsa2</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="60"/>
+                </graphics>
+            </place>
+            <place id="P0Processo1Risorsa3">
+                <name>
+                    <text>P0Processo1Risorsa3</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="80"/>
+                </graphics>
+            </place>
+            <place id="P1Processo1">
+                <name>
+                    <text>P1Processo1</text>
+                </name>
+                <type>
+                    <text>Processo</text>
+                </type>
+                <graphics>
+                    <position x="40" y="100"/>
+                </graphics>
+            </place>
+            <place id="P2Processo1Risorsa1">
+                <name>
+                    <text>P2Processo1Risorsa1</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="120"/>
+                </graphics>
+            </place>
+            <place id="P2Processo1Risorsa2">
+                <name>
+                    <text>P2Processo1Risorsa2</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="140"/>
+                </graphics>
+            </place>
+            <place id="P2Processo1Risorsa3">
+                <name>
+                    <text>P2Processo1Risorsa3</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="160"/>
+                </graphics>
+            </place>
+            <place id="P3Processo1Risorsa1">
+                <name>
+                    <text>P3Processo1Risorsa1</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="180"/>
+                </graphics>
+            </place>
+            <place id="P3Processo1Risorsa2">
+                <name>
+                    <text>P3Processo1Risorsa2</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="200"/>
+                </graphics>
+            </place>
+            <place id="P3Processo1Risorsa3">
+                <name>
+                    <text>P3Processo1Risorsa3</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="220"/>
+                </graphics>
+            </place>
+            <place id="P4Processo1Risorsa1">
+                <name>
+                    <text>P4Processo1Risorsa1</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="240"/>
+                </graphics>
+            </place>
+            <place id="P4Processo1Risorsa2">
+                <name>
+                    <text>P4Processo1Risorsa2</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="260"/>
+                </graphics>
+            </place>
+            <place id="P4Processo1Risorsa3">
+                <name>
+                    <text>P4Processo1Risorsa3</text>
+                </name>
+                <type>
+                    <text>PD</text>
+                </type>
+                <graphics>
+                    <position x="40" y="280"/>
+                </graphics>
+            </place>
+            <place id="P5Risorsa2">
+                <name>
+                    <text>P5Risorsa2</text>
+                </name>
+                <type>
+                    <text>Risorsa</text>
+                </type>
+                <graphics>
+                    <position x="40" y="300"/>
+                </graphics>
+            </place>
+            <place id="P5Risorsa1">
+                <name>
+                    <text>P5Risorsa1</text>
+                </name>
+                <type>
+                    <text>Risorsa</text>
+                </type>
+                <graphics>
+                    <position x="40" y="320"/>
+                </graphics>
+            </place>
+            <place id="P5Risorsa3">
+                <name>
+                    <text>P5Risorsa3</text>
+                </name>
+                <type>
+                    <text>Risorsa</text>
+                </type>
+                <graphics>
+                    <position x="40" y="340"/>
+                </graphics>
+            </place>
+            <place id="P6Processo1">
+                <name>
+                    <text>P6Processo1</text>
+                </name>
+                <type>
+                    <text>Processo</text>
+                </type>
+                <graphics>
+                    <position x="40" y="360"/>
+                </graphics>
+            </place>
+            <transition id="T0">
+                <name>
+                    <text>T0</text>
+                </name>
+                <condition>
+                    <text> y1 != y2</text>
+                </condition>
+                <graphics>
+                    <position x="900" y="900"/>
+                </graphics>
+            </transition>
+            <transition id="T1">
+                <name>
+                    <text>T1</text>
+                </name>
+                <graphics>
+                    <position x="900" y="900"/>
+                </graphics>
+            </transition>
+            <transition id="T2">
+                <name>
+                    <text>T2</text>
+                </name>
+                <graphics>
+                    <position x="900" y="900"/>
+                </graphics>
+            </transition>
+            <arc id="P0Processo1Risorsa1_T0" source="P0Processo1Risorsa1" target="T0">
+                <hlinscription>
+                    <text>[x1 == x  &amp;&amp; y1 != y ]&lt;x1, y1+y2&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in R] + [y  in  R ]&lt;x, y&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in R]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P0Processo1Risorsa2_T0" source="P0Processo1Risorsa2" target="T0">
+                <hlinscription>
+                    <text>[x1 == x  &amp;&amp; y1 != y ]&lt;x1, y1+y2&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR] + [y  in  R ]&lt;x, y&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P0Processo1Risorsa3_T0" source="P0Processo1Risorsa3" target="T0">
+                <hlinscription>
+                    <text>[x1 == x  &amp;&amp; y1 != y ]&lt;x1, y1+y2&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR1] + [y  in  R ]&lt;x, y&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P1Processo1_T1" source="P1Processo1" target="T1">
+                <hlinscription>
+                    <text>2[x != x1 ]&lt;x&gt;[@Processo[0] in Processo]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P1Processo1" source="T0" target="P1Processo1">
+                <hlinscription>
+                    <text>2&lt;x&gt;[@Processo[0] in Processo]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P2Processo1Risorsa1_T2" source="P2Processo1Risorsa1" target="T2">
+                <hlinscription>
+                    <text>&lt;x, y1&gt;[@Risorsa[0] !in  R &amp;&amp;@Processo[0] in Processo &amp;&amp; @Risorsa[0] in R]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T1_P2Processo1Risorsa1" source="T1" target="P2Processo1Risorsa1">
+                <hlinscription>
+                    <text>&lt;x, y1-subR&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in R]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P2Processo1Risorsa2_T2" source="P2Processo1Risorsa2" target="T2">
+                <hlinscription>
+                    <text>&lt;x, y1&gt;[@Risorsa[0] !in  R &amp;&amp;@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T1_P2Processo1Risorsa2" source="T1" target="P2Processo1Risorsa2">
+                <hlinscription>
+                    <text>&lt;x, y1-subR&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P2Processo1Risorsa3_T2" source="P2Processo1Risorsa3" target="T2">
+                <hlinscription>
+                    <text>&lt;x, y1&gt;[@Risorsa[0] !in  R &amp;&amp;@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T1_P2Processo1Risorsa3" source="T1" target="P2Processo1Risorsa3">
+                <hlinscription>
+                    <text>&lt;x, y1-subR&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T2_P3Processo1Risorsa1" source="T2" target="P3Processo1Risorsa1">
+                <hlinscription>
+                    <text>2&lt;x, y1&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in R]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T2_P3Processo1Risorsa2" source="T2" target="P3Processo1Risorsa2">
+                <hlinscription>
+                    <text>2&lt;x, y1&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T2_P3Processo1Risorsa3" source="T2" target="P3Processo1Risorsa3">
+                <hlinscription>
+                    <text>2&lt;x, y1&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P4Processo1Risorsa1_T0" source="P4Processo1Risorsa1" target="T0">
+                <hlinscription>
+                    <text>&lt;x2, y2&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in R]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P4Processo1Risorsa2_T0" source="P4Processo1Risorsa2" target="T0">
+                <hlinscription>
+                    <text>&lt;x2, y2&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P4Processo1Risorsa3_T0" source="P4Processo1Risorsa3" target="T0">
+                <hlinscription>
+                    <text>&lt;x2, y2&gt;[@Processo[0] in Processo &amp;&amp; @Risorsa[0] in subR1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P5Risorsa2_T1" source="P5Risorsa2" target="T1">
+                <hlinscription>
+                    <text>2&lt;y&gt;[@Risorsa[0] in subR]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P5Risorsa2" source="T0" target="P5Risorsa2">
+                <hlinscription>
+                    <text>2&lt;y&gt;[@Risorsa[0] in subR]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P5Risorsa1_T1" source="P5Risorsa1" target="T1">
+                <hlinscription>
+                    <text>2&lt;y&gt;[@Risorsa[0] in R]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P5Risorsa1" source="T0" target="P5Risorsa1">
+                <hlinscription>
+                    <text>2&lt;y&gt;[@Risorsa[0] in R]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P5Risorsa3_T1" source="P5Risorsa3" target="T1">
+                <hlinscription>
+                    <text>2&lt;y&gt;[@Risorsa[0] in subR1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P5Risorsa3" source="T0" target="P5Risorsa3">
+                <hlinscription>
+                    <text>2&lt;y&gt;[@Risorsa[0] in subR1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P6Processo1_T2" source="P6Processo1" target="T2">
+                <hlinscription>
+                    <text>2&lt;x&gt;[@Processo[0] in Processo]</text>
+                </hlinscription>
+                <type type="inhibitor"/>
+            </arc>
+        </page>
+    </net>
+</pnml>
