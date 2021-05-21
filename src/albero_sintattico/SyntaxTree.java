@@ -12,7 +12,6 @@ import java.util.HashMap;
  *
  * @author dell
  */
-//part of factory pattern
 //singleton
 public class SyntaxTree {
     

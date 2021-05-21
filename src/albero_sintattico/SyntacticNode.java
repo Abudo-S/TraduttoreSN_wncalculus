@@ -11,6 +11,7 @@ import java.util.HashMap;
  *
  * @author dell
  */
+//part of facade pattern with syntax tree and semantic analyzer
 public abstract class SyntacticNode {
     
     protected final String name;

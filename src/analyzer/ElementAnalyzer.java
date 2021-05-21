@@ -12,6 +12,7 @@ import struttura_sn.SN;
  *
  * @author dell
  */
+//part of facade pattern with semantic analyzer and traduttore sn
 public abstract class ElementAnalyzer {
     
     protected static final String str_rx_element = "(([_a-zA-Z]+[_a-zA-Z0-9]*)|[@]([_a-zA-Z0-9]*)([\\[](\\d+)[\\]])?)(([\\+]{2}|[-]{2})?)";

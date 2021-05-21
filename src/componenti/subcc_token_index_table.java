@@ -11,6 +11,7 @@ import java.util.HashMap;
  *
  * @author dell
  */
+//singleton
 public class subcc_token_index_table {
     //single instance
     private static subcc_token_index_table instance = null; 

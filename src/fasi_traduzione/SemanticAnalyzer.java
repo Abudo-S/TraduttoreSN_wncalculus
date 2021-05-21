@@ -26,7 +26,7 @@ import wncalculus.expr.Sort;
  *
  * @author dell
  */
-//part of 2 factory patterns (albero_sintattico & analyzer) 
+//part of 2 facade patterns (albero_sintattico & analyzer) 
 //singleton
 public class SemanticAnalyzer {
     
@@ -94,9 +94,9 @@ public class SemanticAnalyzer {
                                 HashMap<SyntacticNode, Syntactic_arc> next_of_synt_place = synt_place.get_all_next();
                                 
                                 next_of_synt_place.keySet().stream().filter(
-                                        syntactic_tansition -> syntactic_tansition.get_name().equals(synt_transition.get_name())
+                                        syntactic_transition -> syntactic_transition.get_name().equals(synt_transition.get_name())
                                 ).forEach(
-                                        syntactic_tansition -> around_transition.add(next_of_synt_place.get(syntactic_tansition))
+                                        syntactic_transition -> around_transition.add(next_of_synt_place.get(syntactic_transition))
                                 );                                 
                             }                            
                     );

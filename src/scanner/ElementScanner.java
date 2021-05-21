@@ -15,6 +15,7 @@ import org.w3c.dom.*;
  * @author dell
  */
 
+//part of facade pattern with xml scanner and traduttore sn 
 //parent
 public abstract class ElementScanner{
     
