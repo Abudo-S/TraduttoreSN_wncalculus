@@ -756,7 +756,9 @@ public class PartialGenerator {
                                 }
                             }
                             ArrayList<String> subs_predicates = this.get_cp_subccs_predicates(subcc_repetitions, subs);
-
+//                            System.out.println(possible_comb + ":");
+//                            System.out.println(cc_base_filters.toString());
+//                            System.out.println(subs_predicates.toString());
                             if(!subs_predicates.isEmpty()){
                                 //combine each colour class base filter predicate(s) with each subclass predicate(s) in case of finding combination with N > 1 subclass-repetitions
                                 cc_all_combs.put(possible_comb, this.apply_cartesian_product(cc_base_filters, subs_predicates));
@@ -982,6 +984,12 @@ public class PartialGenerator {
         return base_filters;
     }
     
+    /**
+     * 
+     * @param cc colour class that we want to know its base filters
+     * @param cc_possible_combs array list of all possible combinations of a certain colour class
+     * @return array list of base filters
+     */
     private ArrayList<String> find_cc_base_filters(ColorClass cc, ArrayList<String> cc_possible_combs){ //uses colour class possilbe combinations
         ArrayList<String> base_filters = new ArrayList<>();
         Interval[] subs = cc.getConstraints();
@@ -1012,7 +1020,7 @@ public class PartialGenerator {
                             subcc_repetitions[subcc_index] = N;
                             
                             if(N > 1){
-                                 this.unfold_sub_cc(subs[subcc_index], N, cc.name());
+                                 this.unfold_sub_cc(subs[subcc_index], N, cc.name(), this.find_subcc_positions_in_combination(subcc_index + 1, N, possible_comb));
                             }
                         }
                     }
@@ -1027,14 +1035,31 @@ public class PartialGenerator {
         return base_filters;
     }
     
+    private int[] find_subcc_positions_in_combination(int subcc_index, int N, String cc_possible_comb){
+        int[] subcc_positions = new int[N];
+        
+        int j = 0;
+        for(var i = 0; i < cc_possible_comb.length(); i++){
+            
+            if(cc_possible_comb.charAt(i) == subcc_index + '0'){
+                subcc_positions[j] = i;
+                j++;
+            }
+            
+        }
+        //System.out.println(cc_possible_comb + "," + subcc_index + ":" + Arrays.toString(subcc_positions));
+        return subcc_positions;
+    }
+    
     /**
      * 
      * @param subcc the subclass that we want to know its predicates using function assign
      * @param N should be > 1 to call this function //numero variabili (ripetizioni della sottoclasse in cd)
      * @param cc_name the name of colour class used to generate filter variables starting with @
+     * @param subcc_positions sub-class's positions in a certain possible combination from which we'll select our variables
      * @return ArrayList of each filter's predicate in case of a certain N
      */
-    private void unfold_sub_cc(Interval subcc, int N, String cc_name){
+    private void unfold_sub_cc(Interval subcc, int N, String cc_name, int[] subcc_positions){
         vargrp vg = new vargrp();
         vg.V[1] = 1; // prima variabile assegnata al primo gruppo
         vg.grp[1][0] = 1; // primo gruppo ha 1 variabile
@@ -1049,7 +1074,7 @@ public class PartialGenerator {
         }
         
         if(!N_predicates.containsKey(N)){
-            ArrayList<String> multi_predicates = this.assign(vg, 1, 1, min(N, this.calculate_K(subcc)), N, new ArrayList<>(), cc_name);
+            ArrayList<String> multi_predicates = this.assign(vg, 1, 1, min(N, this.calculate_K(subcc)), N, new ArrayList<>(), cc_name, subcc_positions);
             
 //            System.out.println("------------------");
 //            multi_predicates.stream().forEach(
@@ -1096,6 +1121,7 @@ public class PartialGenerator {
             
             if(subcc_repetitions[i] > 1){
                 subcc1_filters = this.subcc_predicates.get(subs[i].name()).get(subcc_repetitions[i]);
+                //System.out.println(subs[i].name() + ":" + subcc1_filters.toString());
                 //calculate cartesian product between any existing different subclasses with N > 1
                 for(String subcc1_filter : subcc1_filters){
                      
@@ -1183,7 +1209,19 @@ public class PartialGenerator {
 //        return CS;
 //    }
     
-    private ArrayList<String> assign(vargrp part, int assigned, int taken, int maxgroup, int N, ArrayList<String> multi_predicates, String cc_name){
+    /**
+     * 
+     * @param part *
+     * @param assigned *
+     * @param taken *
+     * @param maxgroup *
+     * @param N multiplicity of a sub-colour class
+     * @param multi_predicates an initial empty array list that will be filled recursively
+     * @param cc_name the name of colour class, usable to create filters
+     * @param subcc_positions sub-class's positions in a certain possible combination from which we'll select our variables
+     * @return array list of all complementary filters available
+     */
+    private ArrayList<String> assign(vargrp part, int assigned, int taken, int maxgroup, int N, ArrayList<String> multi_predicates, String cc_name, int[] subcc_positions){
         ArrayList<String> filter_predicates = new ArrayList<>();
         int i,j;
         
@@ -1191,20 +1229,20 @@ public class PartialGenerator {
            System.out.printf("\n");
             
             for(i = 1;i <= N; i++)
-              System.out.printf("@%s[%d] in grp %d\n", cc_name, i-1, part.V[i]);
+              System.out.printf("@%s[%d] in grp %d\n", cc_name, subcc_positions[i-1], part.V[i]);
             for(i = 1; i <= taken; i++){ //printf("g%d : ",i);
                 
               for(j = 2; j <= part.grp[i][0]; j++){
-                System.out.printf("(@%s[%d] == @%1$s[%d])", cc_name, part.grp[i][1]-1, part.grp[i][j]-1);
-                filter_predicates.add("@" + cc_name + "[" + String.valueOf(part.grp[i][1] - 1) + "]" + " == " + "@" + cc_name + "[" + String.valueOf(part.grp[i][j] - 1) + "]");
+                System.out.printf("(@%s[%d] == @%1$s[%d])", cc_name, subcc_positions[part.grp[i][1]-1], subcc_positions[part.grp[i][j]-1]);
+                filter_predicates.add("@" + cc_name + "[" + String.valueOf(subcc_positions[part.grp[i][1]] - 1) + "]" + " == " + "@" + cc_name + "[" + String.valueOf(subcc_positions[part.grp[i][j] - 1]) + "]");
               }
               
               if(part.grp[i][0] > 1) System.out.printf(" \n");
             }
             for(i = 1; i <= taken; i++)
                for (j = i+1; j <= taken; j++){
-                System.out.printf("(@%s[%d] != @%1$s[%d])",cc_name, part.grp[i][1]-1, part.grp[j][1]-1);
-                filter_predicates.add("@" + cc_name + "[" + String.valueOf(part.grp[i][1] - 1) + "]" + " != " + "@" + cc_name + "[" + String.valueOf(part.grp[j][1] - 1) + "]");
+                System.out.printf("(@%s[%d] != @%1$s[%d])",cc_name, subcc_positions[part.grp[i][1]-1], subcc_positions[part.grp[j][1]-1]);
+                filter_predicates.add("@" + cc_name + "[" + String.valueOf(subcc_positions[part.grp[i][1] - 1]) + "]" + " != " + "@" + cc_name + "[" + String.valueOf(subcc_positions[part.grp[j][1] - 1]) + "]");
                }
             System.out.printf(" \n");
             multi_predicates.add(this.set_and_between_predicates(filter_predicates));
@@ -1219,7 +1257,7 @@ public class PartialGenerator {
 
                if(g > taken) newtaken = g; else newtaken = taken;
                
-               this.assign(part, assigned, newtaken, maxgroup, N, multi_predicates, cc_name);
+               this.assign(part, assigned, newtaken, maxgroup, N, multi_predicates, cc_name, subcc_positions);
                part.grp[g][part.grp[g][0]] = 0;
                part.grp[g][0]--;
             }
