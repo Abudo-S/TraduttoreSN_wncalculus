@@ -618,11 +618,19 @@ public class PartialGenerator {
                       definition += "}";
 
                     }else{ //Non partitioned cc
-
+                        subcc_token_index_table subcc_limits_t = subcc_token_index_table.get_instance();
+                        boolean expl_non_param;
+                                
                         for(var i = 0; i < subs.length; i++){
+                          expl_non_param = subcc_limits_t.check_if_has_subcc(subs[i].name());
                           ArrayList<Token> tokens = te.get_estimated_cc_tokens(subs[i].name());
                           
-                          if(subs[i].lb() == subs[i].ub()){ //explicit elements insertion
+                          if(expl_non_param){
+                            String prefix = te.find_token_prefix(tokens.get(0).get_Token_value(), subs[i]);
+                            Integer[] limits = subcc_limits_t.get_subcc_limits_indices(subs[i].name());
+                            
+                            definition += prefix + "{" + limits[0] + ".." + limits[1] + "} is " + subs[i].name();
+                          }else if(subs[i].lb() == subs[i].ub()){ //explicit elements insertion
                             definition += "enum {";
 
                             for(var j = 0; j < tokens.size(); j++){
