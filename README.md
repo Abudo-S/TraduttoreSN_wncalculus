@@ -7,5 +7,6 @@ Note: this repository is the new version of the abandoned repository "https://gi
 -java streams (types of functional programming)
 -OOP
 -DataStructures & algorithms
--Software engineer techniques like (SOLID)
+-Software engineering techniques like (SOLID)
 -initial UML diagram (Class diagram)
+-Regex
