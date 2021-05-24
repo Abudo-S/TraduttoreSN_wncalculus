@@ -54,6 +54,7 @@ public class Place_writer extends ElementWriter{
                     }else if(single_datum.contains("hlinitialMarking@=")){ //might use Marking_writer
                         Element hlinitialMarking = doc.createElement("hlinitialMarking");
                         hlinitialMarking.appendChild(doc.createTextNode(this.seperate_usable_value(single_datum)));
+                        place.appendChild(hlinitialMarking);
                     }else if(single_datum.contains("graphics@=")){
                         String[] xy = this.separate_usable_x_y(this.seperate_usable_value(single_datum));
                         Element graphics = doc.createElement("graphics");                        
