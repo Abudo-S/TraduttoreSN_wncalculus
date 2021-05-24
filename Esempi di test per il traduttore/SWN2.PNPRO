@@ -2,10 +2,10 @@
 <!-- This project file has been saved by the New GreatSPN Editor, v.100 --><project name="SWN2" version="121">
   <gspn name="CPN" show-fluid-cmd="false" show-timed-cmd="false" view-rates="false" zoom="200">
     <nodes>
-      <place domain="C" marking="&lt;c1&gt;" name="P0" x="6.0" y="6.0"/>
+      <place domain="C" name="P0" x="6.0" y="6.0"/>
       <place domain="C" name="P1" x="6.0" y="12.0"/>
       <transition guard="x != y" guard-y="2.0" name="T0" nservers-x="0.5" type="EXP" x="11.55" y="9.0"/>
-      <place domain="Comp" marking="&lt;c1,c2,c3,c4&gt;" name="P2" x="17.0" y="9.0"/>
+      <place domain="Comp" name="P2" x="17.0" y="9.0"/>
       <color-class definition="enum {c1, c2, c3} is C1  + c{4..6} is C2" name="C" x="10.125" y="17.0"/>
       <color-var domain="C" name="x" x="9.9375" y="15.0"/>
       <color-var domain="C" name="y" x="15.9375" y="15.0"/>
