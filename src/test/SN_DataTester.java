@@ -46,7 +46,13 @@ public class SN_DataTester {
             System.out.println("ColorClasses:");
             sn.get_C().stream().forEach(
                     x -> {
-                        System.out.print(x.name() + ", circular?" + x.isOrdered() + " ");
+                        System.out.print(x.name() + " ");
+                        boolean circ = x.isOrdered();
+                        
+                        if(circ){
+                            System.out.print(", circular?" + circ + " ");
+                        }
+                        
                         
                         Interval[] intervals = x.getConstraints();
                         
@@ -60,6 +66,8 @@ public class SN_DataTester {
                                    System.out.print(" + ");
                                }
                            }
+                        }else{
+                            System.out.print("= " + x.name() + intervals[0].toString());
                         }
                         
                         System.out.println();
@@ -103,6 +111,8 @@ public class SN_DataTester {
                         
                         if(g != null){
                             System.out.print(": " + g.toString());
+                        }else{
+                            System.out.print(": True");
                         }
                         
                         System.out.println();
@@ -118,17 +128,17 @@ public class SN_DataTester {
                         System.out.print(x.get_name() + ": ");       
                         HashMap<ArrayList<LinearComb>, Integer> x_mark = m0.get_marking_of_place(x);
                         
-                        x_mark.keySet().stream().forEach(
+                        x_mark.keySet().stream().forEach( //for each marking tuple
                                 comb_list -> {
-                                        System.out.print(x_mark.get(comb_list) + " *[");
+                                        System.out.print(x_mark.get(comb_list) + " *<");
                                         
                                         comb_list.stream().forEach(
                                                 comb_element -> this.print_linear_comb(comb_element)
                                         );
+                                        System.out.print(">   ");
                                 }
                         );
-                        
-                        System.out.println("]");
+                        System.out.println();
                     }
             );
             System.out.println();
@@ -296,7 +306,7 @@ public class SN_DataTester {
                 i++;
         }
         
-        System.out.print(")  ");
+        System.out.print(") ");
     }
     
     /**
