@@ -225,9 +225,17 @@ public class DataParser { // will use SemanticAnalyzer
     private void add_Marking_colorclass(String place_name, HashMap<String, Integer> tokens, Tuple_analyzer ta){ //for place of color class type
         //XML_DataTester.get_instance().test_add_Marking_colorclass(place_name, tokens);
         HashMap<LinearComb, Integer> multiplied_token = new HashMap<>();
-        
+
         tokens.keySet().stream().forEach(
-                t_name -> multiplied_token.put(ta.analyze_marking_tuple_element(t_name, place_name, 0), tokens.get(t_name))
+                t_name -> {
+                    LinearComb tuple_element = ta.analyze_marking_tuple_element(t_name, place_name, 0);
+                    
+                    if(multiplied_token.containsKey(tuple_element)){
+                        multiplied_token.put(tuple_element, 1 + (int) tokens.get(t_name));
+                    }else{
+                        multiplied_token.put(tuple_element, tokens.get(t_name));
+                    }
+                }
         );
         
         m0.mark_colored_place(sn.find_place(place_name), multiplied_token);
@@ -251,10 +259,15 @@ public class DataParser { // will use SemanticAnalyzer
                     for(var i = 0; i < marking_tuple_element.length; i++){
                         comb_elements.add(ta.analyze_marking_tuple_element(marking_tuple_element[i], place_name, i));
                     }
-                    multiplied_token.put(comb_elements, tokens.get(marking_tuple_element));
+                    
+                    if(multiplied_token.containsKey(comb_elements)){
+                        multiplied_token.put(comb_elements, 1 + (int) tokens.get(marking_tuple_element));
+                    }else{
+                        multiplied_token.put(comb_elements, tokens.get(marking_tuple_element));
+                    }
                 }
         );
-        
+
         m0.mark_domained_place(sn.find_place(place_name), multiplied_token);
     }
     
