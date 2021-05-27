@@ -53,7 +53,9 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_ColorClass(String class_name, int start, int end, boolean circular){ //color class with lb & ub
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, start, end, circular);
         this.check_name(class_name, "Neutral");
-        sn.add_colorClass(new ColorClass(class_name, new Interval(start, end), circular));
+        Interval inter = new Interval(start, end);
+        inter.set_name(class_name);
+        sn.add_colorClass(new ColorClass(class_name, inter, circular));
         //add class_name to cc_tt as implicit color class that its tokens will be estimated later
         cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(List.of(class_name)));
         cc_tt.set_explicit_cc_flag(class_name, false);
@@ -68,7 +70,9 @@ public class DataParser { // will use SemanticAnalyzer
     public void add_ColorClass(String class_name, ArrayList<String> token_names, boolean circular){ //finite enumeration color class
         //XML_DataTester.get_instance().test_add_ColorClass(class_name, token_names, circular);
         this.check_name(class_name, "Neutral");
-        sn.add_colorClass(new ColorClass(class_name, new Interval(token_names.size(), token_names.size()), circular)); //takes an interval of Arraylist size exactly 
+        Interval inter = new Interval(token_names.size(), token_names.size());
+        inter.set_name(class_name);
+        sn.add_colorClass(new ColorClass(class_name, inter, circular)); //takes an interval of Arraylist size exactly 
         //add class_name to cc_tt as explicit color class that its tokens won't be estimated (because there's an existing explicit ArrayList of tokens names)
         cc_tt.add_colorclass_subclasses(class_name, new ArrayList<String>(List.of(class_name)));
         cc_tt.set_explicit_cc_flag(class_name, true);
