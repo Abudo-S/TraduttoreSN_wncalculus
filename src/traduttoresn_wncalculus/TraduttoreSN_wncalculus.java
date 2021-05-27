@@ -14,7 +14,6 @@ import java.util.HashMap;
 import test.SN_DataTester;
 import test.SyntaxTree_DataTester;
 import java.util.Scanner;
-import javax.xml.parsers.ParserConfigurationException;
 import struttura_sn.Marking;
 import struttura_sn.SN;
 import struttura_sn.Token;
@@ -43,8 +42,9 @@ public class TraduttoreSN_wncalculus {
         //Semantic_DataTester.get_instance().print_all_proj_indices();
         
         SN_DataTester sn_dt = SN_DataTester.get_instance(); //for data testing
-        //sn_dt.SN_all_data();
+        sn_dt.SN_all_data();
         //sn_dt.print_nodes_connections();
+        sn_dt.print_transitions_connections();
         
         //estimate/find color tokens of all colour classes
         //estimate_all_cc_tokens();

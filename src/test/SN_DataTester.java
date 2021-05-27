@@ -162,113 +162,106 @@ public class SN_DataTester {
                         HashMap<Node, ArcAnnotation> next = place.get_next_nodes();
                         HashMap<Node, ArcAnnotation> inib = place.get_inib_nodes();
                         
-                        next.keySet().stream().forEach(
-                                next_node -> {
-                                    ArcAnnotation arc = next.get(next_node);
-                                    System.out.print("-------- " + arc.get_name() + ": ");
-                                    Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
-                                     
-                                    arc_tuples_map.keySet().stream().forEach(
-                                            tuple -> {
-                                                System.out.print(arc_tuples_map.get(tuple) + "*[");
-                                                Guard g = tuple.guard();
-                                                
-                                                if(g != null){
-                                                    System.out.print("guard #" + g.toString() + "# ");
-                                                }
-                                                
-                                                tuple.getComponents().stream().forEach(
-                                                        comb_element -> this.print_linear_comb(comb_element)
-                                                );
-                                                Guard f = tuple.filter();
-                                                
-                                                if(f != null){
-                                                    System.out.print("filter #" + f.toString() + "# ");
-                                                }
-                                                
-                                                System.out.print("] ");
-                                            }
-                                    );
-                                    
-                                    System.out.print("-------> " + next_node.get_name());
-                                    System.out.println();
-                                }
-                        );
+                        this.print_arcs(next, false);
                         
                         System.out.println(place.get_name() + ", Next inhibitors' nodes:");
-                        inib.keySet().stream().forEach(
-                                next_node -> {
-                                    ArcAnnotation arc = inib.get(next_node);
-                                    System.out.print("-------- " + arc.get_name() + ": ");
-                                    Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
-                                     
-                                    arc_tuples_map.keySet().stream().forEach(
-                                            tuple -> {
-                                                System.out.print(arc_tuples_map.get(tuple) + "*[");
-                                                Guard g = tuple.guard();
-                                                
-                                                if(g != null){
-                                                    System.out.print("guard #" + g.toString() + "# ");
-                                                }
-                                                
-                                                tuple.getComponents().stream().forEach(
-                                                        comb_element -> this.print_linear_comb(comb_element)
-                                                );
-                                                Guard f = tuple.filter();
-                                                
-                                                if(f != null){
-                                                    System.out.print("filter #" + f.toString() + "# ");
-                                                }
-                                                System.out.print("] ");
-                                            }
-                                    );
-                                    
-                                    System.out.print("-------> " + next_node.get_name());
-                                    System.out.println();
-                                }
-                        );
+                        this.print_arcs(inib, false);
                         System.out.println("End of inhibitors.");
                         System.out.println();
                 }
         );
         
-        sn.get_T().stream().forEach(transition -> {
+        sn.get_T().stream().forEach(
+                transition -> {
                     System.out.println(transition.get_name() + ", Next nodes: ");
-                        HashMap<Node, ArcAnnotation> next = transition.get_next_nodes();
-                        
-                        next.keySet().stream().forEach(
-                                next_node -> {
-                                    ArcAnnotation arc = next.get(next_node);
-                                    System.out.print("-------- " + arc.get_name() + ": ");
-                                    Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
-                                     
-                                    arc_tuples_map.keySet().stream().forEach(
-                                            tuple -> {
-                                                System.out.print(arc_tuples_map.get(tuple) + "*[");
-                                                Guard g = tuple.guard();
-                                                
-                                                if(g != null){
-                                                    System.out.print("guard #" + g.toString() + "# ");
-                                                }
-                                                
-                                                tuple.getComponents().stream().forEach(
-                                                        comb_element -> this.print_linear_comb(comb_element)
-                                                ); 
-                                                Guard f = tuple.filter();
-                                                
-                                                if(f != null){
-                                                    System.out.print("filter #" + f.toString() + "# ");
-                                                }
-                                                
-                                                System.out.print("] ");
-                                            }
-                                    );
-                                    
-                                    System.out.print("-------> " + next_node.get_name());
-                                    System.out.println();
-                                }
-                        );
+                    HashMap<Node, ArcAnnotation> next = transition.get_next_nodes();
+                    this.print_arcs(next, false);
                 }
+        );
+    }
+    
+    /**
+     * prints all associated arcs to a certain transition
+     */
+    public void print_transitions_connections(){
+        SN sn = SN.get_instance();
+        Semantic_DataTester sm_dt = Semantic_DataTester.get_instance();
+        System.out.println();
+        System.out.println("(SN)Nodes connections via arcs \"node_name ------ arc_name: arc expression ----> node_name\": ");
+        System.out.println();
+        
+        sn.get_T().stream().forEach(
+                transition -> {
+                    String transition_name = transition.get_name();
+                    //print domain of transition
+                    sm_dt.test_domain(transition_name, transition.get_node_domain());
+                    //print transition connected nodes/arcs
+                    System.out.println("STR of connected nodes to " + transition_name);
+                    System.out.println(transition_name + ", Next nodes: ");
+                    HashMap<Node, ArcAnnotation> next = transition.get_next_nodes();
+                    this.print_arcs(next, false);
+                    System.out.println(transition_name + ", Previous nodes: ");
+                    HashMap<Node, ArcAnnotation> previous = transition.get_previous_nodes();
+                    this.print_arcs(previous, false);
+                    System.out.println(transition_name + ", Inhibitor nodes: ");
+                    HashMap<Node, ArcAnnotation> inib = transition.get_inib_nodes();
+                    this.print_arcs(inib, true);
+                    System.out.println("END of connected nodes to " + transition_name);
+                    System.out.println();
+                }
+        );
+    }
+    
+    /**
+     * extract associated arcs to a certain node
+     * @param connected_nodes Map of connected nodes and their associated arcs to a certain node
+     * @param invert_arc inverts arc head in case of printing an inibitor arc and starting from a transition
+     */
+    private void print_arcs(HashMap<Node, ArcAnnotation> connected_nodes, boolean invert_arc){
+        
+        connected_nodes.keySet().stream().forEach(
+            next_node -> {
+                ArcAnnotation arc = connected_nodes.get(next_node);
+                
+                if(invert_arc){
+                    System.out.print("<-------- " + arc.get_name() + ": ");
+                }else{
+                    System.out.print("-------- " + arc.get_name() + ": ");
+                }
+                Map<WNtuple, Integer> arc_tuples_map = (Map<WNtuple, Integer>) arc.get_tuple_bag().asMap();
+
+                arc_tuples_map.keySet().stream().forEach(
+                        tuple -> {
+                            System.out.print(arc_tuples_map.get(tuple) + "*{");
+                            Guard g = tuple.guard();
+
+                            if(g != null){
+                                System.out.print("guard[" + g.toString() + "] ");
+                            }
+                            
+                            System.out.print("<");
+                            tuple.getComponents().stream().forEach(
+                                    comb_element -> this.print_linear_comb(comb_element)
+                            ); 
+                            System.out.print(">");
+                            
+                            Guard f = tuple.filter();
+
+                            if(f != null){
+                                System.out.print("filter[" + f.toString() + "] ");
+                            }
+
+                            System.out.print("} ");
+                        }
+                );
+                
+                if(invert_arc){
+                    System.out.print("------- " + next_node.get_name());
+                }else{
+                    System.out.print("-------> " + next_node.get_name());
+                }
+                System.out.println();
+            }
         );
     }
     
