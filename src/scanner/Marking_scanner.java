@@ -61,13 +61,12 @@ public class Marking_scanner extends ElementScanner{ //sub-element of Place_scan
         
         //scan tuple of tokens
         Pattern p = Pattern.compile(str_rx_TupleToken);
-        marking = marking.replaceAll(">\\s*\\s+", ">@");
+        marking = marking.replaceAll(">\\s*[+]", ">@");
         String[] mult_tuples_token = marking.split("@");
         
         //check token type (color class || domain)
         if(mult_tuples_token[0].contains(",")){ //domain
           tokens = new HashMap<String[], Integer>();
-          
         }else{ //color class
           tokens = new HashMap<String, Integer>();
         }
@@ -90,17 +89,28 @@ public class Marking_scanner extends ElementScanner{ //sub-element of Place_scan
                 colors_token = mult_tuples_token[i].split(",");
                 
                 if(colors_token.length == 1){ //color class
-                    tokens.put(colors_token[0].replaceFirst(str_rx_multiplicity, ""), multiplicity);
+                    String token = colors_token[0].replaceFirst(str_rx_multiplicity, "");
+                    
+                    if(tokens.containsKey(token)){
+                        tokens.put(token, 1 + (int) tokens.get(token));
+                    }else{
+                        tokens.put(token, multiplicity);
+                    }
                     
                 }else{ //domain
                     colors_token[0] = colors_token[0].replaceFirst(str_rx_multiplicity, "");
-                    tokens.put(colors_token, multiplicity);
+                    
+                    if(tokens.containsKey(colors_token)){
+                        tokens.put(colors_token, 1 + (int) tokens.get(colors_token));
+                    }else{
+                        tokens.put(colors_token, multiplicity);
+                    }
                 }                                               
             }else{
                 throw new NullPointerException("Can't match initial marking : " + mult_tuples_token[i]);
             }
         }
-        
+
         dp.add_Marking(place_name, tokens);
     }
     

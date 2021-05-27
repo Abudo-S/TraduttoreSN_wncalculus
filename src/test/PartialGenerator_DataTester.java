@@ -30,10 +30,11 @@ public class PartialGenerator_DataTester {
         System.out.println("the unfolding of " + p_name + ": ");
         
         all_places_combs_filter.keySet().stream().forEach(
-                place -> System.out.println(place + " <---> " + all_places_combs_filter.get(place))
+                place -> System.out.println(p_name+place + " <---> " + all_places_combs_filter.get(place))
         );
         
-        System.out.println("--------------");
+        System.out.println("END of unfolded places of " + p_name);
+        System.out.println();
     }
     /**
      * 

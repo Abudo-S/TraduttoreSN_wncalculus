@@ -155,6 +155,7 @@ public class XMLWriter {
         StreamResult streamResult = new StreamResult(new File(modified_address));
         transformer.transform(domsr, streamResult);
         
+        System.out.println("----------------------------------------------------------------");
         System.out.println("File has been created under this name '" + modified_address + "'");
         this.write_all_data_pnpro(false);
     }
