@@ -50,7 +50,9 @@ public class TraduttoreSN_wncalculus {
         //estimate_all_cc_tokens();
         
         //apply unfolding algorithm
-        System.out.println("----------------");
+        System.out.println("----------------Applying the unfolding algorithm----------------");
+        System.out.println("resulting place combination <---> resulting associated filter to that place combination");
+        System.out.println();
         PartialGenerator pg = PartialGenerator.get_instance();
         pg.unfold_all_places(); 
         //write original SN

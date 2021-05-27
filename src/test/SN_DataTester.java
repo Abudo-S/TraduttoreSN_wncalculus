@@ -239,11 +239,11 @@ public class SN_DataTester {
                                 System.out.print("guard[" + g.toString() + "] ");
                             }
                             
-                            System.out.print("<");
+                            System.out.print(" <");
                             tuple.getComponents().stream().forEach(
                                     comb_element -> this.print_linear_comb(comb_element)
                             ); 
-                            System.out.print(">");
+                            System.out.print("> ");
                             
                             Guard f = tuple.filter();
 

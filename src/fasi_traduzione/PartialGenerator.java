@@ -52,14 +52,13 @@ public class PartialGenerator {
         sn = SN.get_instance();
     }
     
-    public void unfold_all_places() throws TransformerException{        
+    public void unfold_all_places() throws TransformerException{    
         Marking mk = Marking.get_instance();
         int[] place_xy = new int[]{40, 20}; //graphics points
         int[] y_multiplier = new int[]{1};
         
         sn.get_P().stream().forEach(
                 place -> {
-                    
                     String prefix_name = place.get_name();
                     //unfold place
                     HashMap<String, String> all_places_combs_filter = this.unfold_place(place);
@@ -100,9 +99,11 @@ public class PartialGenerator {
                                 this.write_unfolded_place_arcs(place, p_name, all_places_combs_filter.get(p_name));
                             }
                     );
+                    //for data testing
+                    PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
+                    pg_dt.print_place_unfolded_places(prefix_name, all_places_combs_filter);
                 }
         );
-        
         this.write_transitions();
         place_xy[1] += 20;
         int[] xy = this.write_colourclasses_domains_pnpro(place_xy, y_multiplier);
@@ -790,9 +791,6 @@ public class PartialGenerator {
             this.cd_all_places_filters.put(cd_name, all_places_combs_filter);
         }
         
-//        PartialGenerator_DataTester pg_dt = PartialGenerator_DataTester.get_instance();
-//        pg_dt.print_place_unfolded_places(cd_name, all_places_combs_filter);
-        
         return all_places_combs_filter;
     }
     
@@ -1083,6 +1081,7 @@ public class PartialGenerator {
         }
         
         if(!N_predicates.containsKey(N)){
+            System.out.println("-----Creating complementary filters of: " + subcc.name() + " with multiplicity " + N + "-----");
             ArrayList<String> multi_predicates = this.assign(vg, 1, 1, min(N, this.calculate_K(subcc)), N, new ArrayList<>(), cc_name);
             
 //            System.out.println("------------------");
