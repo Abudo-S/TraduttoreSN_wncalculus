@@ -62,7 +62,16 @@ public class Token extends ElementaryFunction{
          this.domain_type = type;
     }
     */
-
+    
+    /**
+     *
+     * @return the description of <tt>Colour token</tt>
+     */
+    @Override
+    public String toString() {
+        return this.get_Token_value();
+    }
+    
     @Override
     public Interval card() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

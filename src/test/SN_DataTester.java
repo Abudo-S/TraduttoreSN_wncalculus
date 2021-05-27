@@ -277,21 +277,21 @@ public class SN_DataTester {
         for(ElementaryFunction comb_map_element : comb_map.keySet()){
                 System.out.print(" " + comb_map.get(comb_map_element) + "* ");
 
-                if(comb_map_element instanceof Token){
-                    Token t = (Token) comb_map_element;
-                    System.out.print(t.get_Token_value());
-
-                }else if(comb_map_element instanceof Projection){
-                    Projection p = (Projection) comb_map_element;
-                    System.out.print(p.toString());
-                }else if(comb_map_element instanceof All){ //All
-                    All all = (All) comb_map_element;
-                    System.out.print(all.toString());
-                }else{ //constant
-                    Subcl con = (Subcl) comb_map_element;
-                    System.out.print(con.toString());
-                }
-                //System.out.print(comb_map_element.getClass().getName());
+//                if(comb_map_element instanceof Token){
+//                    Token t = (Token) comb_map_element;
+//                    System.out.print(t.get_Token_value());
+//
+//                }else if(comb_map_element instanceof Projection){
+//                    Projection p = (Projection) comb_map_element;
+//                    System.out.print(p.toString());
+//                }else if(comb_map_element instanceof All){ //All
+//                    All all = (All) comb_map_element;
+//                    System.out.print(all.toString());
+//                }else{ //constant
+//                    Subcl con = (Subcl) comb_map_element;
+//                    System.out.print(con.toString());
+//                }
+                System.out.print(comb_map_element.toString());
                 
                 if(i < size-1){
                     System.out.print(" + ");
