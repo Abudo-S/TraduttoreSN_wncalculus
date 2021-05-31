@@ -105,7 +105,7 @@ public class Variable { //a projection is a variable in arc expression
         }catch(BreakconditionException e){
             return p_wrapper[0];
         }
-        
+
         Projection pro = Projection.builder(index, successor_flag, this.colour_type);
         this.add_available_projection(pro);
         return pro;

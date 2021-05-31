@@ -147,13 +147,13 @@ public class SyntaxTree {
 //        this.root = root;
 //    }
 //    
-//    public SyntacticNode get_root(){
-//        return this.root;
-//    }
-    
-//    public static void update_instance(SyntaxTree ins){
-//        instance = ins;
-//    }
+    /**
+     * 
+     * @return the first place in syntactic nodes list that from which you can reach any other node applying necessary tree algorithms
+     */
+    public SyntacticNode get_root(){
+        return (SyntacticNode) all_pl.iterator().next();
+    }
     
     /**
      * 
