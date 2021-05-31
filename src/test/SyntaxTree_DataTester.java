@@ -52,10 +52,10 @@ public class SyntaxTree_DataTester {
                                 
                                 tuples_map.keySet().stream().forEach(
                                         synt_tuple -> {
-                                            System.out.print(tuples_map.get(synt_tuple) + "*[");
+                                            System.out.print(tuples_map.get(synt_tuple) + "*{");
                                             
                                             Syntactic_guard synt_guard = synt_tuple.get_syntactic_guard();
-                                            System.out.print((synt_guard.get_invert_guard() == true)? "guard !#" : "guard #");
+                                            System.out.print((synt_guard.get_invert_guard() == true)? "guard ![" : "guard [");
                                             
                                             LinkedHashMap<Syntactic_predicate, String> separated_predicates = synt_guard.get_separated_predicates();
                                             
@@ -77,14 +77,14 @@ public class SyntaxTree_DataTester {
                                                         }
                                             );
                                                     
-                                            System.out.print("# (");
+                                            System.out.print("] (");
                                             Arrays.stream(synt_tuple.get_tuple_elements()).forEach(
                                                     tp_element -> System.out.print(tp_element + ",")
                                             );
                                             System.out.print(") ");
                                             
                                             Syntactic_guard synt_filter = synt_tuple.get_syntactic_filter();
-                                            System.out.print((synt_guard.get_invert_guard() == true)? "filter !#" : "filter #");
+                                            System.out.print((synt_guard.get_invert_guard() == true)? "filter ![" : "filter [");
                                             
                                             LinkedHashMap<Syntactic_predicate, String> separated_predicates1 = synt_filter.get_separated_predicates();
                                             
@@ -105,10 +105,10 @@ public class SyntaxTree_DataTester {
                                                             }  
                                                         }
                                             );
-                                            System.out.print("# ");
+                                            System.out.print("] ");
                                         }
                                 );
-                                System.out.print("] -------> " + synt_next.get_name());
+                                System.out.print("} -------> " + synt_next.get_name());
                                 System.out.println();
                             }
                     );
