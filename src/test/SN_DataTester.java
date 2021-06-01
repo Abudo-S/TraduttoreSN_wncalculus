@@ -50,7 +50,7 @@ public class SN_DataTester {
                         boolean circ = x.isOrdered();
                         
                         if(circ){
-                            System.out.print(", circular?" + circ + " ");
+                            System.out.print("{circular} ");
                         }
                         
                         
@@ -236,7 +236,7 @@ public class SN_DataTester {
                             Guard g = tuple.guard();
 
                             if(g != null){
-                                System.out.print("guard[" + g.toString() + "] ");
+                                System.out.print("[" + g.toString() + "] ");
                             }
                             
                             System.out.print(" <");
@@ -248,7 +248,7 @@ public class SN_DataTester {
                             Guard f = tuple.filter();
 
                             if(f != null){
-                                System.out.print("filter[" + f.toString() + "] ");
+                                System.out.print("[" + f.toString() + "] ");
                             }
 
                             System.out.print("} ");

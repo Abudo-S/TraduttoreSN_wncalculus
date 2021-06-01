@@ -145,7 +145,7 @@ public class Semantic_DataTester { //for guards and tuples
         Map<Sort,Integer> domain_elements = (Map<Sort,Integer>) d.asMap();
         
         domain_elements.keySet().stream().forEach(
-                domain_element -> System.out.print(domain_elements.get(domain_element) + "*(" + domain_element.name() + ") * ")
+                domain_element -> System.out.print("(" + domain_element.name() + " ^" + domain_elements.get(domain_element) + ") * ")
         );
         System.out.println();
     }
