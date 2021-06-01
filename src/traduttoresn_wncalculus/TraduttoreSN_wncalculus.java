@@ -48,15 +48,16 @@ public class TraduttoreSN_wncalculus {
         
         //estimate/find color tokens of all colour classes
         //estimate_all_cc_tokens();
-        
-        //apply unfolding algorithm
-        System.out.println("----------------Applying the unfolding algorithm----------------");
-        System.out.println("resulting place combination <---> resulting associated filter to that place combination");
-        System.out.println();
-        PartialGenerator pg = PartialGenerator.get_instance();
-        pg.unfold_all_places(); 
-        //write original SN
-        write_original_SN(pg);
+        if(apply_unfolding()){
+            //apply unfolding algorithm
+            System.out.println("----------------Applying the unfolding algorithm----------------");
+            System.out.println("resulting place combination <---> resulting associated filter to that place combination");
+            System.out.println();
+            PartialGenerator pg = PartialGenerator.get_instance();
+            pg.unfold_all_places(); 
+            //write original SN
+            write_original_SN(pg);
+        }
     }
     
     /**
@@ -111,6 +112,19 @@ public class TraduttoreSN_wncalculus {
         }
         
         return file_name;
+    }
+        
+    /**
+     * 
+     * @return true if the user wants to apply the unfolding algorithm on the scanned net
+     */
+    private static boolean apply_unfolding() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("-------------------------------------------------------------------------------");
+        System.out.println("Enter \"1\" to apply the unfolding algorithm, any other character to terminate:");     
+        String str_name = sc.nextLine();
+        
+        return str_name.equals("1");
     }
     
     /**
