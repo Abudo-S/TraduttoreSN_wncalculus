@@ -10,3 +10,4 @@ Note: this repository is the new version of the abandoned repository "https://gi
 -Software engineering techniques like (SOLID)
 -initial UML diagram (Class diagram)
 -Regex
+->Nota: per visualizzare il file (*.PNPRO) è necessario installare il tool GreatSPN di UNITO: https://github.com/greatspn/SOURCES
