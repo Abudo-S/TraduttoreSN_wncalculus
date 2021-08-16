@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+    <net id="Esempi di test per il traduttore/PROVA2_generated.pnml" type="http://www.pnml.org/version-2009/grammar/symmetricnet">
+        <name>Esempi di test per il traduttore/PROVA2_generated.pnml</name>
+        <declaration>
+            			
+            <structure>
+                				
+                <declarations>
+                    					
+                    <!-- Declaration of user-defined color classes (sorts) -->
+                    					
+                    <partition id="C" name="C" ordered="false">
+                        					             
+                        <partitionelement id="C1" name="C1">
+                            					            	 
+                            <useroperator declaration="c1"/>
+                            							
+                            <useroperator declaration="c2"/>
+                            							
+                            <useroperator declaration="c3"/>
+                            						     
+                        </partitionelement>
+                        						     
+                        <partitionelement id="C2" name="C2">
+                            							
+                            <finiteintrange end="6" start="4"/>
+                            						     
+                        </partitionelement>
+                        			   		
+                    </partition>
+                    					
+                    <namedsort id="Comp" name="Comp">
+                        						
+                        <productsort>
+                            							
+                            <usersort declaration="C"/>
+                            							
+                            <usersort declaration="C"/>
+                            						
+                        </productsort>
+                        					
+                    </namedsort>
+                    					
+                    <!-- Declaration of user-defined color variables -->
+                    					
+                    <variabledecl id="x" name="x">
+                        						
+                        <usersort declaration="C"/>
+                        					
+                    </variabledecl>
+                    					
+                    <variabledecl id="y" name="y">
+                        						
+                        <usersort declaration="C"/>
+                        					
+                    </variabledecl>
+                    				
+                </declarations>
+                			
+            </structure>
+            		
+        </declaration>
+        <page>
+            <place id="P0C1">
+                <name>
+                    <text>P0C1</text>
+                </name>
+                <type>
+                    <text>C</text>
+                </type>
+                <graphics>
+                    <position x="40" y="40"/>
+                </graphics>
+            </place>
+            <place id="P0C2">
+                <name>
+                    <text>P0C2</text>
+                </name>
+                <type>
+                    <text>C</text>
+                </type>
+                <graphics>
+                    <position x="40" y="60"/>
+                </graphics>
+            </place>
+            <place id="P1C1">
+                <name>
+                    <text>P1C1</text>
+                </name>
+                <type>
+                    <text>C</text>
+                </type>
+                <graphics>
+                    <position x="40" y="80"/>
+                </graphics>
+            </place>
+            <place id="P1C2">
+                <name>
+                    <text>P1C2</text>
+                </name>
+                <type>
+                    <text>C</text>
+                </type>
+                <graphics>
+                    <position x="40" y="100"/>
+                </graphics>
+            </place>
+            <place id="P2C11_2">
+                <name>
+                    <text>P2C11_2</text>
+                </name>
+                <type>
+                    <text>Comp</text>
+                </type>
+                <graphics>
+                    <position x="40" y="120"/>
+                </graphics>
+            </place>
+            <place id="P2C22_2">
+                <name>
+                    <text>P2C22_2</text>
+                </name>
+                <type>
+                    <text>Comp</text>
+                </type>
+                <graphics>
+                    <position x="40" y="140"/>
+                </graphics>
+            </place>
+            <place id="P2C11_1">
+                <name>
+                    <text>P2C11_1</text>
+                </name>
+                <type>
+                    <text>Comp</text>
+                </type>
+                <graphics>
+                    <position x="40" y="160"/>
+                </graphics>
+            </place>
+            <place id="P2C22_1">
+                <name>
+                    <text>P2C22_1</text>
+                </name>
+                <type>
+                    <text>Comp</text>
+                </type>
+                <graphics>
+                    <position x="40" y="180"/>
+                </graphics>
+            </place>
+            <place id="P2C21">
+                <name>
+                    <text>P2C21</text>
+                </name>
+                <type>
+                    <text>Comp</text>
+                </type>
+                <graphics>
+                    <position x="40" y="200"/>
+                </graphics>
+            </place>
+            <place id="P2C12">
+                <name>
+                    <text>P2C12</text>
+                </name>
+                <type>
+                    <text>Comp</text>
+                </type>
+                <graphics>
+                    <position x="40" y="220"/>
+                </graphics>
+            </place>
+            <transition id="T0">
+                <name>
+                    <text>T0</text>
+                </name>
+                <condition>
+                    <text> x != y</text>
+                </condition>
+                <graphics>
+                    <position x="900" y="900"/>
+                </graphics>
+            </transition>
+            <arc id="P0C1_T0" source="P0C1" target="T0">
+                <hlinscription>
+                    <text>2&lt;x&gt;[@C[0] in C1] + &lt;y&gt;[@C[0] in C1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P0C2_T0" source="P0C2" target="T0">
+                <hlinscription>
+                    <text>2&lt;x&gt;[@C[0] in C2] + &lt;y&gt;[@C[0] in C2]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P1C1_T0" source="P1C1" target="T0">
+                <hlinscription>
+                    <text>&lt;y&gt;[@C[0] in C1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="P1C2_T0" source="P1C2" target="T0">
+                <hlinscription>
+                    <text>&lt;y&gt;[@C[0] in C2]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P2C11_2" source="T0" target="P2C11_2">
+                <hlinscription>
+                    <text>&lt;x, y&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[0] != @C[1]]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P2C22_2" source="T0" target="P2C22_2">
+                <hlinscription>
+                    <text>&lt;x, y&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[0] != @C[1]]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P2C11_1" source="T0" target="P2C11_1">
+                <hlinscription>
+                    <text>&lt;x, y&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[0] == @C[1]]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P2C22_1" source="T0" target="P2C22_1">
+                <hlinscription>
+                    <text>&lt;x, y&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[0] == @C[1]]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P2C21" source="T0" target="P2C21">
+                <hlinscription>
+                    <text>&lt;x, y&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1]</text>
+                </hlinscription>
+            </arc>
+            <arc id="T0_P2C12" source="T0" target="P2C12">
+                <hlinscription>
+                    <text>&lt;x, y&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2]</text>
+                </hlinscription>
+            </arc>
+        </page>
+    </net>
+</pnml>

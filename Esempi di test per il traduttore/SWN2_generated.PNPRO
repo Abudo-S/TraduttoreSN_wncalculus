@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="SN" version="121">
+    <gspn name="partial_unfolding" show-fluid-cmd="false" show-timed-cmd="false" view-rates="false" zoom="100">
+        <nodes>
+            <color-class definition="enum {c1,c2,c3} is C1 + c{4..6} is C2" name="C" x="40" y="993"/>
+            <color-class definition="C * C * C * C" name="Comp" x="40" y="996"/>
+            <color-var domain="C" name="x" x="40" y="999"/>
+            <color-var domain="C" name="y" x="40" y="1002"/>
+            <color-var domain="C" name="x1" x="40" y="1005"/>
+            <color-var domain="C" name="y1" x="40" y="1008"/>
+            <place domain="C" name="P0C1" x="40" y="30"/>
+            <place domain="C" name="P0C2" x="40" y="40"/>
+            <place domain="C" name="P1C1" x="40" y="50"/>
+            <place domain="C" name="P1C2" x="40" y="60"/>
+            <place domain="Comp" name="P2C1212_1" x="40" y="70"/>
+            <place domain="Comp" name="P2C2112_4" x="40" y="80"/>
+            <place domain="Comp" name="P2C2112_1" x="40" y="90"/>
+            <place domain="Comp" name="P2C2112_3" x="40" y="100"/>
+            <place domain="Comp" name="P2C2222_10" x="40" y="110"/>
+            <place domain="Comp" name="P2C2112_2" x="40" y="120"/>
+            <place domain="Comp" name="P2C1212_4" x="40" y="130"/>
+            <place domain="Comp" name="P2C2222_12" x="40" y="140"/>
+            <place domain="Comp" name="P2C2222_11" x="40" y="150"/>
+            <place domain="Comp" name="P2C1212_2" x="40" y="160"/>
+            <place domain="Comp" name="P2C2222_14" x="40" y="170"/>
+            <place domain="Comp" name="P2C1212_3" x="40" y="180"/>
+            <place domain="Comp" name="P2C2222_13" x="40" y="190"/>
+            <place domain="Comp" name="P2C1112_3" x="40" y="200"/>
+            <place domain="Comp" name="P2C1112_4" x="40" y="210"/>
+            <place domain="Comp" name="P2C1112_5" x="40" y="220"/>
+            <place domain="Comp" name="P2C2221_5" x="40" y="230"/>
+            <place domain="Comp" name="P2C2221_4" x="40" y="240"/>
+            <place domain="Comp" name="P2C2221_3" x="40" y="250"/>
+            <place domain="Comp" name="P2C2221_2" x="40" y="260"/>
+            <place domain="Comp" name="P2C1112_1" x="40" y="270"/>
+            <place domain="Comp" name="P2C2221_1" x="40" y="280"/>
+            <place domain="Comp" name="P2C1112_2" x="40" y="290"/>
+            <place domain="Comp" name="P2C1222_2" x="40" y="300"/>
+            <place domain="Comp" name="P2C1222_1" x="40" y="310"/>
+            <place domain="Comp" name="P2C2121_3" x="40" y="320"/>
+            <place domain="Comp" name="P2C2121_2" x="40" y="330"/>
+            <place domain="Comp" name="P2C2121_4" x="40" y="340"/>
+            <place domain="Comp" name="P2C1222_5" x="40" y="350"/>
+            <place domain="Comp" name="P2C2121_1" x="40" y="360"/>
+            <place domain="Comp" name="P2C1222_4" x="40" y="370"/>
+            <place domain="Comp" name="P2C1222_3" x="40" y="380"/>
+            <place domain="Comp" name="P2C1122_4" x="40" y="390"/>
+            <place domain="Comp" name="P2C2212_5" x="40" y="400"/>
+            <place domain="Comp" name="P2C2212_4" x="40" y="410"/>
+            <place domain="Comp" name="P2C2212_3" x="40" y="420"/>
+            <place domain="Comp" name="P2C1111_14" x="40" y="430"/>
+            <place domain="Comp" name="P2C1111_13" x="40" y="440"/>
+            <place domain="Comp" name="P2C1111_12" x="40" y="450"/>
+            <place domain="Comp" name="P2C1111_11" x="40" y="460"/>
+            <place domain="Comp" name="P2C2212_2" x="40" y="470"/>
+            <place domain="Comp" name="P2C1111_10" x="40" y="480"/>
+            <place domain="Comp" name="P2C2212_1" x="40" y="490"/>
+            <place domain="Comp" name="P2C1122_1" x="40" y="500"/>
+            <place domain="Comp" name="P2C1122_2" x="40" y="510"/>
+            <place domain="Comp" name="P2C1122_3" x="40" y="520"/>
+            <place domain="Comp" name="P2C1211_1" x="40" y="530"/>
+            <place domain="Comp" name="P2C1211_2" x="40" y="540"/>
+            <place domain="Comp" name="P2C2111_5" x="40" y="550"/>
+            <place domain="Comp" name="P2C2111_2" x="40" y="560"/>
+            <place domain="Comp" name="P2C2111_1" x="40" y="570"/>
+            <place domain="Comp" name="P2C2111_4" x="40" y="580"/>
+            <place domain="Comp" name="P2C2111_3" x="40" y="590"/>
+            <place domain="Comp" name="P2C1211_5" x="40" y="600"/>
+            <place domain="Comp" name="P2C1211_3" x="40" y="610"/>
+            <place domain="Comp" name="P2C1211_4" x="40" y="620"/>
+            <place domain="Comp" name="P2C1111_4" x="40" y="630"/>
+            <place domain="Comp" name="P2C2222_7" x="40" y="640"/>
+            <place domain="Comp" name="P2C1111_5" x="40" y="650"/>
+            <place domain="Comp" name="P2C2222_6" x="40" y="660"/>
+            <place domain="Comp" name="P2C1111_6" x="40" y="670"/>
+            <place domain="Comp" name="P2C2222_5" x="40" y="680"/>
+            <place domain="Comp" name="P2C1111_7" x="40" y="690"/>
+            <place domain="Comp" name="P2C2222_4" x="40" y="700"/>
+            <place domain="Comp" name="P2C1111_8" x="40" y="710"/>
+            <place domain="Comp" name="P2C1111_9" x="40" y="720"/>
+            <place domain="Comp" name="P2C2222_9" x="40" y="730"/>
+            <place domain="Comp" name="P2C2222_8" x="40" y="740"/>
+            <place domain="Comp" name="P2C2222_3" x="40" y="750"/>
+            <place domain="Comp" name="P2C1111_1" x="40" y="760"/>
+            <place domain="Comp" name="P2C2222_2" x="40" y="770"/>
+            <place domain="Comp" name="P2C1111_2" x="40" y="780"/>
+            <place domain="Comp" name="P2C2222_1" x="40" y="790"/>
+            <place domain="Comp" name="P2C1111_3" x="40" y="800"/>
+            <place domain="Comp" name="P2C1221_3" x="40" y="810"/>
+            <place domain="Comp" name="P2C1221_2" x="40" y="820"/>
+            <place domain="Comp" name="P2C1221_1" x="40" y="830"/>
+            <place domain="Comp" name="P2C2122_5" x="40" y="840"/>
+            <place domain="Comp" name="P2C2122_2" x="40" y="850"/>
+            <place domain="Comp" name="P2C2122_1" x="40" y="860"/>
+            <place domain="Comp" name="P2C2122_4" x="40" y="870"/>
+            <place domain="Comp" name="P2C2122_3" x="40" y="880"/>
+            <place domain="Comp" name="P2C1221_4" x="40" y="890"/>
+            <place domain="Comp" name="P2C1121_5" x="40" y="900"/>
+            <place domain="Comp" name="P2C2211_4" x="40" y="910"/>
+            <place domain="Comp" name="P2C1121_1" x="40" y="920"/>
+            <place domain="Comp" name="P2C2211_3" x="40" y="930"/>
+            <place domain="Comp" name="P2C1121_2" x="40" y="940"/>
+            <place domain="Comp" name="P2C2211_2" x="40" y="950"/>
+            <place domain="Comp" name="P2C1121_3" x="40" y="960"/>
+            <place domain="Comp" name="P2C2211_1" x="40" y="970"/>
+            <place domain="Comp" name="P2C1121_4" x="40" y="980"/>
+            <transition guard=" x != y" name="T0" type="EXP" x="100" y="25"/>
+        </nodes>
+        <edges>
+            <arc head="T0" kind="INPUT" mult="2&lt;x&gt;[@C[0] in C1] + &lt;y&gt;[@C[0] in C1]" tail="P0C1"/>
+            <arc head="T0" kind="INPUT" mult="2&lt;x&gt;[@C[0] in C2] + &lt;y&gt;[@C[0] in C2]" tail="P0C2"/>
+            <arc head="T0" kind="INPUT" mult="&lt;y&gt;[@C[0] in C1]" tail="P1C1"/>
+            <arc head="T0" kind="INPUT" mult="&lt;y&gt;[@C[0] in C2]" tail="P1C2"/>
+            <arc head="P2C1212_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[3] == @C[1]]" tail="T0"/>
+            <arc head="P2C2112_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[2] != @C[1] &amp;&amp; @C[0] != @C[3]]" tail="T0"/>
+            <arc head="P2C2112_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[2] == @C[1] &amp;&amp; @C[0] == @C[3]]" tail="T0"/>
+            <arc head="P2C2112_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[2] != @C[1] &amp;&amp; @C[0] == @C[3]]" tail="T0"/>
+            <arc head="P2C2222_10" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[1] == @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2112_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[2] == @C[1] &amp;&amp; @C[0] != @C[3]]" tail="T0"/>
+            <arc head="P2C1212_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[3] != @C[1]]" tail="T0"/>
+            <arc head="P2C2222_12" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2222_11" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[1] != @C[3]]" tail="T0"/>
+            <arc head="P2C1212_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[3] != @C[1]]" tail="T0"/>
+            <arc head="P2C2222_14" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[2] == @C[3] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C1212_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[3] == @C[1]]" tail="T0"/>
+            <arc head="P2C2222_13" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[1] == @C[3] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C1112_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1112_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1112_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2221_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2221_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2221_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2221_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1112_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C2221_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C1112_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1222_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1222_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C2121_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[3] != @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C2121_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[3] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C2121_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[3] != @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1222_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2121_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[3] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C1222_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1222_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1122_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[2] != @C[3]]" tail="T0"/>
+            <arc head="P2C2212_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2212_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2212_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1111_14" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[2] == @C[3] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C1111_13" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[1] == @C[3] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C1111_12" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C1111_11" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[1] != @C[3]]" tail="T0"/>
+            <arc head="P2C2212_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1111_10" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[1] == @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2212_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C1122_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[2] == @C[3]]" tail="T0"/>
+            <arc head="P2C1122_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[2] != @C[3]]" tail="T0"/>
+            <arc head="P2C1122_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[2] == @C[3]]" tail="T0"/>
+            <arc head="P2C1211_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C1211_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C2111_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2111_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C2111_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C2111_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2111_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1211_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C1211_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1211_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1111_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[2] == @C[3] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C2222_7" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[1] == @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1111_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[2] != @C[3]]" tail="T0"/>
+            <arc head="P2C2222_6" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1111_6" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2222_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[2] != @C[3]]" tail="T0"/>
+            <arc head="P2C1111_7" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[1] == @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2222_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[2] == @C[3] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1111_8" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[1] != @C[3]]" tail="T0"/>
+            <arc head="P2C1111_9" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2222_9" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2222_8" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[1] != @C[3]]" tail="T0"/>
+            <arc head="P2C2222_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1111_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] == @C[3]]" tail="T0"/>
+            <arc head="P2C2222_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[3]]" tail="T0"/>
+            <arc head="P2C1111_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[3]]" tail="T0"/>
+            <arc head="P2C2222_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] == @C[3]]" tail="T0"/>
+            <arc head="P2C1111_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C1221_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[2] == @C[1]]" tail="T0"/>
+            <arc head="P2C1221_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[2] != @C[1]]" tail="T0"/>
+            <arc head="P2C1221_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[3] &amp;&amp; @C[2] == @C[1]]" tail="T0"/>
+            <arc head="P2C2122_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2122_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C2122_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C2122_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2122_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C2 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1221_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] != @C[3] &amp;&amp; @C[2] != @C[1]]" tail="T0"/>
+            <arc head="P2C1121_5" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] != @C[1] &amp;&amp; @C[0] != @C[2] &amp;&amp; @C[1] != @C[2]]" tail="T0"/>
+            <arc head="P2C2211_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[2] != @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1121_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] == @C[2]]" tail="T0"/>
+            <arc head="P2C2211_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[2] != @C[3] &amp;&amp; @C[0] == @C[1]]" tail="T0"/>
+            <arc head="P2C1121_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[1] &amp;&amp; @C[0] != @C[2]]" tail="T0"/>
+            <arc head="P2C2211_2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[2] == @C[3] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C1121_3" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[0] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+            <arc head="P2C2211_1" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C2 &amp;&amp; @C[1] in C2 &amp;&amp; @C[2] in C1 &amp;&amp; @C[3] in C1 &amp;&amp; @C[2] == @C[3] &amp;&amp; @C[0] == @C[1]]" tail="T0"/>
+            <arc head="P2C1121_4" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;[@C[0] in C1 &amp;&amp; @C[1] in C1 &amp;&amp; @C[2] in C2 &amp;&amp; @C[3] in C1 &amp;&amp; @C[1] == @C[2] &amp;&amp; @C[0] != @C[1]]" tail="T0"/>
+        </edges>
+    </gspn>
+    <gspn name="original" show-fluid-cmd="false" show-timed-cmd="false" view-rates="false" zoom="100">
+        <nodes>
+            <color-class definition="enum {c1,c2,c3} is C1 + c{4..6} is C2" name="C" x="40" y="993"/>
+            <color-class definition="C * C * C * C" name="Comp" x="40" y="996"/>
+            <color-var domain="C" name="x" x="40" y="999"/>
+            <color-var domain="C" name="y" x="40" y="1002"/>
+            <color-var domain="C" name="x1" x="40" y="1005"/>
+            <color-var domain="C" name="y1" x="40" y="1008"/>
+            <place domain="C" name="P0" x="40" y="30"/>
+            <place domain="C" name="P1" x="40" y="40"/>
+            <place domain="Comp" name="P2" x="40" y="50"/>
+            <transition guard=" x != y" name="T0" type="EXP" x="100" y="25"/>
+        </nodes>
+        <edges>
+            <arc head="T0" kind="INPUT" mult="2&lt;x&gt; + &lt;y&gt;" tail="P0"/>
+            <arc head="T0" kind="INPUT" mult="&lt;y&gt;" tail="P1"/>
+            <arc head="P2" kind="OUTPUT" mult="&lt;x, y, x1, y1&gt;" tail="T0"/>
+        </edges>
+    </gspn>
+</project>
